@@ -1,0 +1,20 @@
+/** Shared palette for 2D/3D house visuals (Bonyan brand). */
+export const HOUSE_COLORS = {
+    primary: '#1a4d3a',
+    primaryDark: '#143d2e',
+    olive: '#6b8e4e',
+    accent: '#d4a017',
+    accentLight: '#e8bc3a',
+    wall: '#f0e6d8',
+    wallDark: '#d9cbb8',
+    wallDeep: '#c4b5a0',
+    roof: '#2a5c47',
+    roofDark: '#1e4535',
+    roofHi: '#3d7560',
+    glass: '#a8d4e6',
+    glassHi: '#e8f4fa',
+    ground: '#d4cbb8',
+    groundDark: '#b8aa94',
+    blueprint: '#b8b0a4',
+    sky: '#e8f2ef',
+} as const;
