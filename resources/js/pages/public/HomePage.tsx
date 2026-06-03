@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { useLocale } from '@/contexts/LocaleContext';
+import { CurvedSectionBottom } from '@/components/shared/CurvedSectionBottom';
 import { cn, ENGLISH_NUMERALS_CLASS, formatCurrency, formatNumber } from '@/lib/utils';
 
 export function HomePage() {
@@ -44,14 +45,22 @@ export function HomePage() {
 
     return (
         <div>
-            <section className="relative overflow-hidden bg-gradient-to-b from-secondary/60 to-background py-12 md:py-20">
-                <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-16 lg:px-8">
+            <section className="bg-hero-gradient relative overflow-hidden rounded-b-[2rem] pb-16 pt-8 sm:rounded-b-[2.5rem] md:pb-24 md:pt-12">
+                <div
+                    className="pointer-events-none absolute -end-24 -top-24 h-72 w-72 rounded-full bg-accent/20 blur-3xl"
+                    aria-hidden
+                />
+                <div
+                    className="pointer-events-none absolute -bottom-16 -start-16 h-56 w-56 rounded-full bg-primary/15 blur-3xl"
+                    aria-hidden
+                />
+                <div className="relative mx-auto grid max-w-7xl gap-10 px-4 pb-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-16 lg:px-8">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         className="order-2 space-y-6 lg:order-1"
                     >
-                        <h1 className="font-display text-3xl font-extrabold leading-tight text-primary text-balance sm:text-4xl lg:text-5xl">
+                        <h1 className="font-display text-3xl font-extrabold leading-tight text-gradient-brand text-balance sm:text-4xl lg:text-5xl">
                             {t('home.hero_title')}
                         </h1>
                         <p className="text-lg text-muted-foreground text-balance">
@@ -92,18 +101,20 @@ export function HomePage() {
                         />
                     </div>
                 </div>
+                <CurvedSectionBottom />
             </section>
 
             {project && (
                 <section className="py-12 md:py-16">
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                        <h2 className="mb-8 text-center font-display text-2xl font-bold text-primary">
+                        <h2 className="mb-8 text-center font-display text-2xl font-bold text-gradient-brand">
                             {project.title}
                         </h2>
                         <div className="grid gap-4 sm:grid-cols-3">
                             <StatCard
                                 label={t('home.raised')}
                                 value={formatCurrency(project.raised_amount, project.currency, locale)}
+                                highlight
                             />
                             <StatCard
                                 label={t('home.goal')}
@@ -118,9 +129,9 @@ export function HomePage() {
                 </section>
             )}
 
-            <section id="about" className="bg-muted/40 py-12 md:py-16">
+            <section id="about" className="bg-section-muted py-12 md:py-16">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <h2 className="mb-10 text-center font-display text-2xl font-bold text-primary">{t('home.how_title')}</h2>
+                    <h2 className="mb-10 text-center font-display text-2xl font-bold text-gradient-brand">{t('home.how_title')}</h2>
                     <div className="grid gap-6 md:grid-cols-3">
                         {[t('home.step1'), t('home.step2'), t('home.step3')].map((step, i) => (
                             <motion.div
@@ -130,9 +141,9 @@ export function HomePage() {
                                 viewport={{ once: true }}
                                 transition={{ delay: i * 0.1 }}
                             >
-                                <Card className="h-full border-none shadow-md">
+                                <Card className="card-feature h-full border-none">
                                     <CardContent className="flex flex-col items-center gap-4 p-6 text-center">
-                                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/20 font-display text-xl font-bold text-accent">
+                                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-accent-light to-accent font-display text-xl font-bold text-accent-foreground shadow-accent">
                                             {i + 1}
                                         </span>
                                         <p className="font-medium">{step}</p>
@@ -146,9 +157,9 @@ export function HomePage() {
 
             <section className="py-12">
                 <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
-                    <Card className="border-primary/20 bg-gradient-to-br from-card to-secondary/30">
+                    <Card className="border-primary/20 bg-gradient-to-br from-card via-surface/30 to-secondary/50 shadow-brand-lg">
                         <CardContent className="flex flex-col items-center gap-4 p-8">
-                            <Shield className="h-10 w-10 text-primary" />
+                            <Shield className="h-10 w-10 text-primary drop-shadow-sm" />
                             <h3 className="font-display text-xl font-bold text-primary">{t('home.trust_title')}</h3>
                             <p className="text-muted-foreground">{t('home.trust_desc')}</p>
                             <Link to="/donate">

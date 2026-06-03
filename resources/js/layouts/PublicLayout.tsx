@@ -18,7 +18,7 @@ export function PublicLayout() {
 
     return (
         <div className="flex min-h-screen flex-col">
-            <header className="sticky top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-md">
+            <header className="sticky top-0 z-50 overflow-hidden rounded-b-2xl border-b border-primary/10 bg-card/92 shadow-brand backdrop-blur-lg sm:rounded-b-3xl supports-[backdrop-filter]:bg-card/85">
                 <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
                     <Link to="/" className="flex items-center gap-3 transition-opacity hover:opacity-90">
                         <img
@@ -27,7 +27,7 @@ export function PublicLayout() {
                             className="h-10 w-10 rounded-lg object-cover shadow-sm"
                         />
                         <div className="hidden sm:block">
-                            <p className="font-display text-lg font-bold text-primary leading-tight">{siteName}</p>
+                            <p className="font-display text-lg font-bold text-gradient-brand leading-tight">{siteName}</p>
                             <p className="text-xs text-muted-foreground">
                                 {locale === 'ar' ? 'نبني لهم حياة كريمة' : 'We build a decent life for them'}
                             </p>
@@ -54,7 +54,7 @@ export function PublicLayout() {
                 <Outlet />
             </main>
 
-            <footer className="border-t border-border bg-muted/40 py-8">
+            <footer className="border-t border-primary/15 bg-footer-gradient py-8">
                 <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-4 text-center sm:flex-row sm:justify-between sm:text-start">
                     <div className="flex items-center gap-2 text-primary">
                         <Heart className="h-4 w-4 fill-accent text-accent" />

@@ -78,7 +78,7 @@ export function ProjectsPage() {
     return (
         <div className="space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-4">
-                <h1 className="font-display text-2xl font-bold text-primary">{t('admin.projects')}</h1>
+                <h1 className="font-display text-2xl font-bold text-gradient-brand">{t('admin.projects')}</h1>
                 <Button
                     onClick={() => {
                         setShowForm(true);

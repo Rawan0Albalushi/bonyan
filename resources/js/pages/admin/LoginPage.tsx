@@ -31,11 +31,11 @@ export function LoginPage() {
     };
 
     return (
-        <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-secondary/50 to-background p-4">
+        <div className="flex min-h-screen flex-col items-center justify-center bg-hero-gradient p-4">
             <div className="absolute end-4 top-4">
                 <LanguageSwitcher />
             </div>
-            <Card className="w-full max-w-md shadow-lg">
+            <Card className="w-full max-w-md shadow-brand-lg">
                 <CardHeader className="text-center">
                     <img src="/image/logo.jpeg" alt="Bonyan" className="mx-auto mb-4 h-16 w-16 rounded-xl object-cover" />
                     <CardTitle>{t('admin.login_title')}</CardTitle>

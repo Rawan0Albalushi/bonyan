@@ -39,7 +39,7 @@ export function DonationsPage() {
 
     return (
         <div className="space-y-6">
-            <h1 className="font-display text-2xl font-bold text-primary">{t('admin.donations')}</h1>
+            <h1 className="font-display text-2xl font-bold text-gradient-brand">{t('admin.donations')}</h1>
 
             <Input
                 placeholder={t('common.search')}

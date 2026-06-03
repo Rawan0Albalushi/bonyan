@@ -55,14 +55,14 @@ export function AdminLayout() {
     }
 
     return (
-        <div className="flex min-h-screen bg-muted/30">
+        <div className="flex min-h-screen bg-page-soft">
             <aside
-                className={`fixed inset-y-0 z-40 w-64 border-e border-border bg-card shadow-lg transition-transform lg:static lg:translate-x-0 ${
+                className={`bg-admin-sidebar fixed inset-y-0 z-40 w-64 border-e border-primary/15 shadow-brand-lg transition-transform lg:static lg:translate-x-0 ${
                     mobileOpen ? 'translate-x-0' : '-translate-x-full rtl:translate-x-full rtl:lg:translate-x-0'
                 }`}
             >
-                <div className="flex h-16 items-center justify-between border-b border-border px-4">
-                    <Link to="/admin" className="font-display font-bold text-primary">
+                <div className="flex h-16 items-center justify-between border-b border-primary/10 px-4">
+                    <Link to="/admin" className="font-display font-bold text-gradient-brand">
                         Bonyan Admin
                     </Link>
                     <button className="lg:hidden" onClick={() => setMobileOpen(false)} aria-label="Close menu">
@@ -75,8 +75,8 @@ export function AdminLayout() {
                             <span
                                 className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                                     location.pathname === to
-                                        ? 'bg-primary text-primary-foreground'
-                                        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                                        ? 'bg-gradient-to-r from-primary to-primary-light text-primary-foreground shadow-brand'
+                                        : 'text-muted-foreground hover:bg-surface hover:text-primary'
                                 }`}
                             >
                                 <Icon className="h-4 w-4" />
@@ -98,7 +98,7 @@ export function AdminLayout() {
             )}
 
             <div className="flex flex-1 flex-col lg:ms-0">
-                <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-border bg-card px-4 lg:px-8">
+                <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-primary/10 bg-card/95 px-4 shadow-sm backdrop-blur-sm lg:px-8">
                     <button className="lg:hidden" onClick={() => setMobileOpen(true)} aria-label="Open menu">
                         <Menu className="h-5 w-5" />
                     </button>

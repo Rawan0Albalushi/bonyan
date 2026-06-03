@@ -53,14 +53,14 @@ export function DashboardPage() {
 
     return (
         <div className="space-y-8">
-            <h1 className="font-display text-2xl font-bold text-primary">{t('admin.dashboard')}</h1>
+            <h1 className="font-display text-2xl font-bold text-gradient-brand">{t('admin.dashboard')}</h1>
 
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 {statCards.map((card) => (
                     <Card key={card.label}>
                         <CardContent className="p-6">
                             <p className="text-sm text-muted-foreground">{card.label}</p>
-                            <p className={cn('mt-2 text-2xl font-bold text-primary', ENGLISH_NUMERALS_CLASS)}>
+                            <p className={cn('mt-2 text-2xl font-extrabold text-gradient-brand', ENGLISH_NUMERALS_CLASS)}>
                                 {card.value}
                             </p>
                         </CardContent>

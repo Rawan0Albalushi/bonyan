@@ -4,16 +4,20 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-    'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50',
+    'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50',
     {
         variants: {
             variant: {
-                default: 'bg-primary text-primary-foreground shadow hover:bg-primary/90',
-                accent: 'bg-accent text-accent-foreground shadow-md hover:bg-accent/90 hover:shadow-lg',
-                secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-                outline: 'border border-border bg-card hover:bg-muted',
-                ghost: 'hover:bg-muted',
-                destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+                default:
+                    'bg-gradient-to-b from-primary-light to-primary text-primary-foreground shadow-brand hover:brightness-110 active:brightness-95',
+                accent:
+                    'bg-gradient-to-b from-accent-light to-accent text-accent-foreground shadow-accent hover:brightness-105 active:brightness-95',
+                secondary:
+                    'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/85 border border-primary/10',
+                outline:
+                    'border-2 border-primary/25 bg-card text-primary hover:border-primary/50 hover:bg-surface/80',
+                ghost: 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                destructive: 'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',
             },
             size: {
                 default: 'h-11 px-5 py-2',

@@ -74,15 +74,15 @@ export function SuccessPage() {
     const showCelebration = isPaid && !verifying;
 
     return (
-        <div className="py-12 md:py-20">
+        <div className="bg-page-soft py-12 md:py-20">
             <div className="mx-auto max-w-2xl px-4 sm:px-6">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     className="text-center"
                 >
-                    <CheckCircle2 className="mx-auto h-16 w-16 text-primary" />
-                    <h1 className="mt-4 font-display text-3xl font-bold text-primary">
+                    <CheckCircle2 className="mx-auto h-16 w-16 text-primary-light drop-shadow-sm" />
+                    <h1 className="mt-4 font-display text-3xl font-bold text-gradient-brand">
                         {verifying ? t('success.verifying') : t('success.title')}
                     </h1>
                     <p className="mt-2 text-muted-foreground">
@@ -107,7 +107,7 @@ export function SuccessPage() {
                             />
                         </div>
 
-                        <Card className="mt-10 shadow-md">
+                        <Card className="mt-10 shadow-brand-lg">
                             <CardContent className="space-y-4 p-6">
                                 {donation && (
                                     <>
@@ -119,7 +119,7 @@ export function SuccessPage() {
                                         </div>
                                         <div className="flex justify-between border-b border-border pb-3">
                                             <span className="text-muted-foreground">{t('success.amount')}</span>
-                                            <span className={cn('font-bold text-accent', ENGLISH_NUMERALS_CLASS)} dir="ltr">
+                                            <span className={cn('font-extrabold text-accent', ENGLISH_NUMERALS_CLASS)} dir="ltr">
                                                 {formatCurrency(donation.amount, project?.currency, locale)}
                                             </span>
                                         </div>
@@ -132,7 +132,7 @@ export function SuccessPage() {
                                     </span>
                                 </div>
                                 {addedPart && (
-                                    <div className="rounded-lg bg-accent/10 px-3 py-2 text-center text-sm text-primary">
+                                    <div className="rounded-lg border border-accent/25 bg-gradient-to-r from-accent-light/25 to-accent/15 px-3 py-2 text-center text-sm font-medium text-primary">
                                         <span className="me-1">{addedPart.icon}</span>
                                         {t('house.just_added')} {t(addedPart.labelKey)}
                                     </div>

@@ -106,7 +106,7 @@ export function DonatePage() {
     }
 
     return (
-        <div className="py-10 md:py-16">
+        <div className="bg-page-soft py-10 md:py-16">
             <div className="mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-8">
                 <div className="flex flex-col items-center justify-center">
                     <HouseProgress
@@ -119,7 +119,7 @@ export function DonatePage() {
                 </div>
 
                 <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
-                    <Card className="shadow-lg">
+                    <Card className="shadow-brand-lg">
                         <CardHeader>
                             <CardTitle>{t('donation.title')}</CardTitle>
                             <CardDescription>{t('donation.subtitle')}</CardDescription>
@@ -141,8 +141,8 @@ export function DonatePage() {
                                                     ENGLISH_NUMERALS_CLASS,
                                                     'rounded-lg border px-2 py-3 text-sm font-semibold transition-all',
                                                     amount === preset && !customAmount
-                                                        ? 'border-accent bg-accent/15 text-primary shadow-sm'
-                                                        : 'border-border hover:border-primary/40',
+                                                        ? 'border-accent bg-gradient-to-b from-accent-light/30 to-accent/20 text-primary shadow-accent ring-2 ring-accent/25'
+                                                        : 'border-primary/15 bg-card hover:border-primary/40 hover:bg-surface/60',
                                                 )}
                                             >
                                                 {formatCurrency(preset, project.currency, locale)}

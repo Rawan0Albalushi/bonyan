@@ -40,7 +40,7 @@ export function AdminDataTable({ children, className }: { children: ReactNode; c
 
     return (
         <AdminTableContext.Provider value={{ isRtl }}>
-            <div className={cn('overflow-x-auto rounded-md border border-border', className)}>
+            <div className={cn('overflow-x-auto rounded-lg border border-primary/15 shadow-sm', className)}>
                 <table
                     dir={isRtl ? 'rtl' : 'ltr'}
                     className="w-full min-w-[720px] border-collapse text-sm"
@@ -65,7 +65,7 @@ export function AdminTableColGroup({ widths }: { widths: string[] }) {
 export function AdminTableHead({ children }: { children: ReactNode }) {
     return (
         <thead>
-            <tr className="border-b border-border bg-muted/50">{children}</tr>
+            <tr className="border-b border-primary/10 bg-gradient-to-r from-primary/8 via-surface/50 to-secondary/30">{children}</tr>
         </thead>
     );
 }
@@ -87,7 +87,7 @@ export function AdminTableTh({
             scope="col"
             dir={dir}
             className={cn(
-                'px-4 py-3 text-xs font-semibold text-muted-foreground',
+                'px-4 py-3 text-xs font-bold uppercase tracking-wide text-primary/80',
                 alignClass,
                 className,
             )}
@@ -103,7 +103,7 @@ export function AdminTableBody({ children }: { children: ReactNode }) {
 
 export function AdminTableRow({ children, striped }: { children: ReactNode; striped?: boolean }) {
     return (
-        <tr className={cn('transition-colors hover:bg-muted/30', striped && 'even:bg-muted/20')}>{children}</tr>
+        <tr className={cn('transition-colors hover:bg-surface/60', striped && 'even:bg-surface/30')}>{children}</tr>
     );
 }
 
