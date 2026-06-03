@@ -1,4 +1,5 @@
 import { lazy, Suspense } from 'react';
+import { HouseSceneErrorBoundary } from '@/components/house/HouseSceneErrorBoundary';
 
 const HouseCanvas = lazy(() =>
     import('@/components/house/HouseCanvas').then((m) => ({ default: m.HouseCanvas })),
@@ -7,27 +8,33 @@ const HouseCanvas = lazy(() =>
 interface HouseSceneProps {
     donationsCount: number;
     highlightedPartId?: string | null;
+    revealPartId?: string | null;
     hoveredPartId?: string | null;
     onPartHover?: (id: string | null) => void;
     onPartClick?: (id: string) => void;
     interactive?: boolean;
+    celebrateMode?: boolean;
 }
 
 function SceneFallback() {
     return (
-        <div
-            className="flex h-full w-full items-center justify-center rounded-xl bg-gradient-to-b from-[#f5faf8] to-[#e8f2ef]"
-            aria-hidden
-        >
-            <div className="h-16 w-16 animate-pulse rounded-full bg-primary/10" />
+        <div className="house-scene-fallback flex h-full w-full items-center justify-center" aria-hidden>
+            <div className="flex flex-col items-center gap-4">
+                <div className="h-12 w-12 animate-pulse rounded-full border-2 border-white/20 border-t-accent-light" />
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-white/50">Loading</span>
+            </div>
         </div>
     );
 }
 
 export function HouseScene(props: HouseSceneProps) {
     return (
-        <Suspense fallback={<SceneFallback />}>
-            <HouseCanvas {...props} />
-        </Suspense>
+        <div className="h-full w-full">
+            <HouseSceneErrorBoundary>
+                <Suspense fallback={<SceneFallback />}>
+                    <HouseCanvas {...props} />
+                </Suspense>
+            </HouseSceneErrorBoundary>
+        </div>
     );
 }

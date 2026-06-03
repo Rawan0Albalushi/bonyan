@@ -57,11 +57,18 @@
   "success": {
     "title": "Thank You for Your Generosity!",
     "subtitle": "Your donation was recorded successfully and contributed to the build.",
+    "subtitle_build": "Watch your contribution appear on the home — a new piece was just built.",
     "verifying": "Confirming your payment...",
     "pending": "Payment is still processing. Please wait a moment.",
+    "building": "Building your contribution…",
+    "you_built": "You just added to the home",
+    "impact_line": "Every brick, window, and detail brings a family closer to a real home.",
+    "step_payment": "Payment confirmed",
+    "step_build": "Built on the home",
+    "watch_build": "Watch your donation appear on the home",
     "reference": "Reference",
     "amount": "Amount",
-    "new_progress": "Current Progress",
+    "new_progress": "Construction progress",
     "back_home": "Back to Home",
     "donate_again": "Donate Again"
   },
@@ -103,7 +110,8 @@
     "row_number": "#"
   },
   "house": {
-    "interact_hint": "Drag to rotate the 3D house — hover or tap parts; each donation adds a new piece",
+    "viewer_label": "3D build preview",
+    "interact_hint": "Drag to explore the home in 3D. Each donation unlocks the next architectural stage.",
     "just_added": "Your donation just added this!",
     "next": "Next donation adds",
     "bonus_decor": "community touches",

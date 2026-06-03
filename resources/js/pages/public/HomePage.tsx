@@ -45,25 +45,24 @@ export function HomePage() {
 
     return (
         <div>
-            <section className="bg-hero-gradient relative overflow-hidden rounded-b-[2rem] pb-16 pt-8 sm:rounded-b-[2.5rem] md:pb-24 md:pt-12">
+            <section className="bg-hero-gradient relative rounded-b-[2rem] pb-16 pt-8 sm:rounded-b-[2.5rem] md:pb-24 md:pt-12">
                 <div
-                    className="pointer-events-none absolute -end-24 -top-24 h-72 w-72 rounded-full bg-accent/20 blur-3xl"
+                    className="pointer-events-none absolute inset-0 overflow-hidden rounded-b-[2rem] sm:rounded-b-[2.5rem]"
                     aria-hidden
-                />
-                <div
-                    className="pointer-events-none absolute -bottom-16 -start-16 h-56 w-56 rounded-full bg-primary/15 blur-3xl"
-                    aria-hidden
-                />
+                >
+                    <div className="absolute -end-24 -top-24 h-72 w-72 rounded-full bg-accent/20 blur-3xl" />
+                    <div className="absolute -bottom-16 -start-16 h-56 w-56 rounded-full bg-primary/15 blur-3xl" />
+                </div>
                 <div className="relative mx-auto grid max-w-7xl gap-10 px-4 pb-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-16 lg:px-8">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="order-2 space-y-6 lg:order-1"
+                        className="order-2 min-w-0 space-y-6 overflow-visible lg:order-1"
                     >
-                        <h1 className="font-display text-3xl font-extrabold leading-tight text-gradient-brand text-balance sm:text-4xl lg:text-5xl">
+                        <h1 className="font-display text-3xl font-extrabold leading-snug text-gradient-brand sm:text-4xl lg:text-5xl">
                             {t('home.hero_title')}
                         </h1>
-                        <p className="text-lg text-muted-foreground text-balance">
+                        <p className="text-lg leading-relaxed text-muted-foreground">
                             {project?.description ?? t('home.hero_subtitle')}
                         </p>
                         <div className="flex flex-wrap gap-3">
@@ -97,6 +96,7 @@ export function HomePage() {
                             percentage={progress}
                             donationsCount={donationsCount}
                             size="lg"
+                            variant="hero"
                             interactive
                         />
                     </div>

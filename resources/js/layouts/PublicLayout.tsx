@@ -27,7 +27,7 @@ export function PublicLayout() {
                             className="h-10 w-10 rounded-lg object-cover shadow-sm"
                         />
                         <div className="hidden sm:block">
-                            <p className="font-display text-lg font-bold text-gradient-brand leading-tight">{siteName}</p>
+                            <p className="font-display text-lg font-bold text-gradient-brand">{siteName}</p>
                             <p className="text-xs text-muted-foreground">
                                 {locale === 'ar' ? 'نبني لهم حياة كريمة' : 'We build a decent life for them'}
                             </p>

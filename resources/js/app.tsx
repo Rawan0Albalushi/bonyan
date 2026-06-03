@@ -4,6 +4,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import '../css/app.css';
 import '@/i18n';
 import { LocaleProvider } from '@/contexts/LocaleContext';
+import { AppErrorBoundary } from '@/components/shared/AppErrorBoundary';
 import { PublicLayout } from '@/layouts/PublicLayout';
 import { AdminLayout } from '@/layouts/AdminLayout';
 import { HomePage } from '@/pages/public/HomePage';
@@ -21,6 +22,7 @@ const root = document.getElementById('root');
 if (root) {
     createRoot(root).render(
         <StrictMode>
+            <AppErrorBoundary>
             <LocaleProvider>
                 <BrowserRouter>
                     <Routes>
@@ -43,6 +45,7 @@ if (root) {
                     </Routes>
                 </BrowserRouter>
             </LocaleProvider>
+            </AppErrorBoundary>
         </StrictMode>,
     );
 }

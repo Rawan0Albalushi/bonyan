@@ -83,7 +83,10 @@
         background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary-light));
         -webkit-background-clip: text;
         background-clip: text;
+        -webkit-text-fill-color: transparent;
         color: transparent;
+        line-height: 1.4;
+        padding-block: 0.08em;
     }
 
     .bg-hero-gradient {
@@ -161,5 +164,35 @@
         box-shadow:
             0 12px 32px -8px color-mix(in srgb, var(--color-primary) 22%, transparent),
             0 4px 12px -4px color-mix(in srgb, var(--color-accent) 12%, transparent);
+    }
+
+    .house-viewport {
+        @apply overflow-hidden rounded-2xl;
+        background: linear-gradient(165deg, #1a2e2a 0%, #0f1f1c 40%, #162420 100%);
+        box-shadow:
+            inset 0 1px 0 color-mix(in srgb, white 8%, transparent),
+            0 24px 48px -16px color-mix(in srgb, var(--color-primary) 45%, transparent);
+    }
+
+    .house-viewport-hero {
+        @apply rounded-3xl;
+        box-shadow:
+            inset 0 1px 0 color-mix(in srgb, white 10%, transparent),
+            0 28px 56px -14px color-mix(in srgb, var(--color-primary) 40%, transparent);
+    }
+
+    .house-viewport-celebration {
+        @apply rounded-3xl;
+        box-shadow:
+            inset 0 0 0 1px color-mix(in srgb, var(--color-accent) 35%, transparent),
+            0 32px 64px -16px color-mix(in srgb, var(--color-accent) 30%, transparent);
+    }
+
+    .house-viewport-chrome {
+        background: linear-gradient(180deg, rgb(0 0 0 / 0.45) 0%, transparent 100%);
+    }
+
+    .house-scene-fallback {
+        background: linear-gradient(165deg, #1a2e2a, #0f1f1c);
     }
 }

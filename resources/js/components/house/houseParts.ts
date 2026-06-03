@@ -99,6 +99,38 @@ export function getHighlightIdForDonation(donationNumber: number): string | null
     return `bonus-${donationNumber - CORE_PART_COUNT - 1}`;
 }
 
+/** World-space anchor for highlight rings / camera focus (x, y, z). */
+export const PART_ANCHORS: Record<string, [number, number, number]> = {
+    foundation: [0, 0.06, 0.2],
+    'ground-walls': [0, 0.55, 0.35],
+    columns: [0, 0.5, 0.95],
+    'upper-walls': [0, 1.45, 0.2],
+    'roof-frame': [0, 2.05, 0.15],
+    'roof-tiles': [0, 2.12, 0.15],
+    'window-left': [-0.95, 0.75, 1.02],
+    'window-right': [0.95, 0.75, 1.02],
+    door: [0, 0.55, 1.05],
+    balcony: [0, 1.35, 1.08],
+    chimney: [1.15, 1.5, 0.35],
+    facade: [0, 0.85, 1.06],
+    walkway: [0, 0.02, 1.55],
+    garden: [-1.35, 0.08, 1.4],
+    'olive-tree': [1.5, 0.6, 1.1],
+    fence: [-1.75, 0.25, 0.9],
+    lights: [0, 1.1, 1.05],
+    heart: [0, 1.05, 1.08],
+};
+
+export function getNextPartToUnlock(donationsCount: number): HousePart | null {
+    const next = HOUSE_BUILD_PARTS.find((p) => p.unlockAt === donationsCount + 1);
+    if (next) return next;
+    if (donationsCount >= CORE_PART_COUNT) {
+        const bonusIndex = donationsCount % BONUS_PARTS.length;
+        return BONUS_PARTS[bonusIndex];
+    }
+    return null;
+}
+
 export function getRecentUnlockChipIds(donationsCount: number, limit = 6): string[] {
     const chips: string[] = [];
     for (const part of HOUSE_BUILD_PARTS) {
