@@ -1,0 +1,21 @@
+/** Transform-origin anchors (0–1 in viewBox space) for build-in animations. */
+export const HOUSE_SVG_PART_ANCHORS: Record<string, { x: number; y: number }> = {
+    foundation: { x: 0.5, y: 0.92 },
+    'ground-walls': { x: 0.5, y: 0.78 },
+    columns: { x: 0.5, y: 0.68 },
+    'upper-walls': { x: 0.5, y: 0.52 },
+    'roof-frame': { x: 0.5, y: 0.34 },
+    'roof-tiles': { x: 0.5, y: 0.26 },
+    'window-left': { x: 0.28, y: 0.72 },
+    'window-right': { x: 0.72, y: 0.72 },
+    door: { x: 0.5, y: 0.76 },
+    balcony: { x: 0.62, y: 0.58 },
+    chimney: { x: 0.78, y: 0.22 },
+    walkway: { x: 0.5, y: 0.94 },
+    garden: { x: 0.12, y: 0.88 },
+    'olive-tree': { x: 0.88, y: 0.82 },
+    fence: { x: 0.06, y: 0.78 },
+    facade: { x: 0.5, y: 0.55 },
+    lights: { x: 0.5, y: 0.48 },
+    heart: { x: 0.52, y: 0.58 },
+};

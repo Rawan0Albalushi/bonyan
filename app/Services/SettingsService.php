@@ -34,6 +34,18 @@ class SettingsService
         return $this->all();
     }
 
+    public function maxDonationAmountOmr(): float
+    {
+        $settingsMax = (float) $this->get(
+            'max_donation_amount',
+            $this->defaults()['max_donation_amount'],
+        );
+
+        $gatewayMax = (float) config('payment.gateways.thawani.max_amount_omr', 5000);
+
+        return min($settingsMax, $gatewayMax);
+    }
+
     public function defaults(): array
     {
         return [
@@ -43,7 +55,7 @@ class SettingsService
             'tagline_en' => 'We build a decent life for them',
             'donation_amounts' => [5, 10, 25, 50, 100],
             'min_donation_amount' => 1,
-            'max_donation_amount' => 10000,
+            'max_donation_amount' => 5000,
             'contact_phone' => '',
             'contact_email' => '',
         ];

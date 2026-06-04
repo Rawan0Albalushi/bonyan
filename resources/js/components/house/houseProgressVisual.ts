@@ -1,4 +1,12 @@
-import { CORE_PART_COUNT, HOUSE_BUILD_PARTS, type HousePart } from '@/components/house/houseParts';
+import { BONUS_PARTS, CORE_PART_COUNT, type HousePart } from '@/components/house/houseParts';
+import {
+    getDonationContribution,
+    getPartActiveAtFunding,
+    getPartNewlyUnlockedByFunding,
+    getVisiblePartIdsFromFunding,
+    type DonationContribution,
+} from '@/components/house/houseBuildState';
+import { getFundingUnlockPercentForPartId } from '@/components/house/housePhases';
 import type { HouseStage } from '@/components/house/houseStages';
 import { getStageFromPercentage } from '@/components/house/houseStages';
 
@@ -6,21 +14,19 @@ export function clampPercentage(value: number): number {
     return Math.min(100, Math.max(0, value));
 }
 
-/** Smooth step for gentle transitions. */
 export function smoothStep(t: number): number {
     const clamped = Math.min(1, Math.max(0, t));
     return clamped * clamped * (3 - 2 * clamped);
 }
 
-/** Crossfade opacities across the five milestone stage images. */
 export function getStageBlendOpacities(percentage: number): Record<HouseStage, number> {
     const p = clampPercentage(percentage);
-    const scaled = (p / 100) * 4;
+    const scaled = (p / 100) * 3;
     const lower = Math.floor(scaled) as HouseStage;
-    const upper = Math.min(4, lower + 1) as HouseStage;
+    const upper = Math.min(3, lower + 1) as HouseStage;
     const t = smoothStep(scaled - lower);
 
-    const opacities: Record<HouseStage, number> = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 };
+    const opacities: Record<HouseStage, number> = { 0: 0, 1: 0, 2: 0, 3: 0 };
 
     if (lower === upper) {
         opacities[lower] = 1;
@@ -32,7 +38,6 @@ export function getStageBlendOpacities(percentage: number): Record<HouseStage, n
     return opacities;
 }
 
-/** Clip inset (from top) for the colored layer — gray skeleton stays fully visible underneath. */
 export function getColorRevealClip(percentage: number): number {
     const p = clampPercentage(percentage);
     if (p <= 0) {
@@ -44,12 +49,10 @@ export function getColorRevealClip(percentage: number): number {
     return Math.max(0, 100 - p);
 }
 
-/** Warm interior glow intensity tied to overall progress. */
 export function getWarmGlowOpacity(percentage: number): number {
     return smoothStep(clampPercentage(percentage) / 100) * 0.45;
 }
 
-/** Opacity for an incremental detail unlocked at a given percentage threshold. */
 export function getDetailOpacity(
     percentage: number,
     unlockAtPercent: number,
@@ -62,27 +65,21 @@ export function getDetailOpacity(
     return smoothStep((p - unlockAtPercent) / rampPercent);
 }
 
-/** Progress within the current 25% milestone segment (0–1). */
 export function getSegmentProgress(percentage: number): number {
     const p = clampPercentage(percentage);
-    const segmentIndex = Math.min(3, Math.floor(p / 25));
-    const segmentStart = segmentIndex * 25;
-    return smoothStep((p - segmentStart) / 25);
-}
-
-export function getUnlockPercentForDonation(donationNumber: number): number {
-    if (donationNumber <= 0) {
-        return 0;
+    if (p < 50) {
+        return smoothStep(p / 50);
     }
-    return clampPercentage((donationNumber / CORE_PART_COUNT) * 100);
+    if (p < 80) {
+        return smoothStep((p - 50) / 30);
+    }
+    return smoothStep((p - 80) / 20);
 }
 
-/** Funding progress toward goal (0–100) — drives house build visuals. */
 export function getFundingProgressPercentage(progressPercentage: number): number {
     return clampPercentage(progressPercentage);
 }
 
-/** Progress before a donation increased raised_amount toward the goal. */
 export function getFundingProgressBeforeDonation(
     goalAmount: number,
     raisedAmount: number,
@@ -93,52 +90,68 @@ export function getFundingProgressBeforeDonation(
     }
 
     const raisedBefore = Math.max(0, raisedAmount - donationAmount);
-    return clampPercentage(Math.round((raisedBefore / goalAmount) * 10000) / 100);
+    const before = (raisedBefore / goalAmount) * 100;
+    const after = (raisedAmount / goalAmount) * 100;
+
+    if (after - before < 0.0001) {
+        /** Step back ~¼ of one build part so the success animation has a real before/after. */
+        const step = 100 / 72;
+        return clampPercentage(Math.max(0, before - step));
+    }
+
+    return clampPercentage(before);
 }
 
 export function getMilestoneStage(percentage: number): HouseStage {
     return getStageFromPercentage(percentage);
 }
 
-/** Map each build part to a spread unlock point across 0–100% of the funding goal. */
 export function getPartUnlockPercent(partId: string): number {
-    const part = HOUSE_BUILD_PARTS.find((p) => p.id === partId);
-    if (!part) {
-        return 100;
-    }
-    return clampPercentage((part.unlockAt / CORE_PART_COUNT) * 100);
+    return getFundingUnlockPercentForPartId(partId);
 }
 
-/** Highest build part unlocked at the given funding progress. */
 export function getPartUnlockedAtPercentage(progressPercentage: number): HousePart | null {
-    const progress = clampPercentage(progressPercentage);
-    let unlocked: HousePart | null = null;
-
-    for (const part of HOUSE_BUILD_PARTS) {
-        if (progress >= getPartUnlockPercent(part.id)) {
-            unlocked = part;
-        }
-    }
-
-    return unlocked;
+    return getPartActiveAtFunding(progressPercentage);
 }
 
-/** Build part whose funding threshold was crossed between two progress values. */
 export function getPartNewlyUnlocked(previousPercent: number, currentPercent: number): HousePart | null {
-    const previous = clampPercentage(previousPercent);
-    const current = clampPercentage(currentPercent);
+    return getPartNewlyUnlockedByFunding(previousPercent, currentPercent);
+}
 
-    if (current <= previous) {
-        return null;
+export function getDonationsCountBeforeDonation(currentCount: number, donationCompleted: boolean): number {
+    if (!donationCompleted || currentCount <= 0) {
+        return Math.max(0, currentCount);
+    }
+    return Math.max(0, currentCount - 1);
+}
+
+/** What the donor contributed — driven by amount / goal, scales to any donation count. */
+export function getDonationBuildContribution(
+    previousFundingPercent: number,
+    currentFundingPercent: number,
+    donationsCount: number,
+): DonationContribution | null {
+    const core = getDonationContribution(previousFundingPercent, currentFundingPercent);
+    if (core) {
+        return core;
     }
 
-    for (let index = HOUSE_BUILD_PARTS.length - 1; index >= 0; index--) {
-        const part = HOUSE_BUILD_PARTS[index];
-        const threshold = getPartUnlockPercent(part.id);
-        if (current >= threshold && previous < threshold) {
-            return part;
+    if (clampPercentage(currentFundingPercent) >= 100 && donationsCount > CORE_PART_COUNT) {
+        const bonusIndex = (donationsCount - CORE_PART_COUNT - 1) % BONUS_PARTS.length;
+        const part = BONUS_PARTS[bonusIndex];
+        if (part) {
+            return {
+                part,
+                isNewFullLayer: false,
+                partialOpacity: 1,
+                fundingPercent: currentFundingPercent,
+            };
         }
     }
 
     return null;
+}
+
+export function getRecentUnlockChipIds(fundingPercent: number, limit = 6): string[] {
+    return getVisiblePartIdsFromFunding(fundingPercent).slice(-limit);
 }

@@ -5,7 +5,8 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
-        "house:layers": "node scripts/generate-house-layers.mjs"
+        "house:layers": "node scripts/generate-house-layers.mjs",
+        "house:optimize": "node scripts/optimize-house-assets.mjs"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",

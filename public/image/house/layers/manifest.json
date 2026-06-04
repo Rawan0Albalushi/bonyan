@@ -1,96 +1,138 @@
 {
   "base": "/image/house/layers/base.png",
   "full": "/image/house/house-full.png",
+  "shell": "/image/house/house-shell.png",
+  "exterior": "/image/house/house-exterior.png",
+  "landscapeComplete": "/image/house/house-landscape-complete.png",
+  "foundation": "/image/house/layers/base.png",
+  "phases": [
+    {
+      "id": "structure",
+      "pixelFilter": "structure",
+      "partIds": [
+        "foundation",
+        "ground-walls",
+        "columns",
+        "upper-walls",
+        "roof-frame",
+        "roof-tiles",
+        "window-left",
+        "window-right",
+        "door",
+        "balcony",
+        "chimney"
+      ]
+    },
+    {
+      "id": "landscape",
+      "pixelFilter": "landscape",
+      "partIds": [
+        "walkway",
+        "garden",
+        "olive-tree",
+        "fence"
+      ]
+    },
+    {
+      "id": "interior",
+      "pixelFilter": "interior",
+      "partIds": [
+        "facade",
+        "lights",
+        "heart"
+      ]
+    }
+  ],
   "parts": [
     {
       "id": "foundation",
       "image": "/image/house/layers/foundation.png",
-      "unlockAtDonations": 1
+      "step": 1
     },
     {
       "id": "ground-walls",
       "image": "/image/house/layers/ground-walls.png",
-      "unlockAtDonations": 2
+      "step": 2
     },
     {
       "id": "columns",
       "image": "/image/house/layers/columns.png",
-      "unlockAtDonations": 3
+      "step": 3
     },
     {
       "id": "upper-walls",
       "image": "/image/house/layers/upper-walls.png",
-      "unlockAtDonations": 4
+      "step": 4
     },
     {
       "id": "roof-frame",
       "image": "/image/house/layers/roof-frame.png",
-      "unlockAtDonations": 5
+      "step": 5
     },
     {
       "id": "roof-tiles",
       "image": "/image/house/layers/roof-tiles.png",
-      "unlockAtDonations": 6
+      "step": 6
     },
     {
       "id": "window-left",
       "image": "/image/house/layers/window-left.png",
-      "unlockAtDonations": 7
+      "step": 7
     },
     {
       "id": "window-right",
       "image": "/image/house/layers/window-right.png",
-      "unlockAtDonations": 8
+      "step": 8
     },
     {
       "id": "door",
       "image": "/image/house/layers/door.png",
-      "unlockAtDonations": 9
+      "step": 9
     },
     {
       "id": "balcony",
       "image": "/image/house/layers/balcony.png",
-      "unlockAtDonations": 10
+      "step": 10
     },
     {
       "id": "chimney",
       "image": "/image/house/layers/chimney.png",
-      "unlockAtDonations": 11
-    },
-    {
-      "id": "facade",
-      "image": "/image/house/layers/facade.png",
-      "unlockAtDonations": 12
+      "step": 11
     },
     {
       "id": "walkway",
       "image": "/image/house/layers/walkway.png",
-      "unlockAtDonations": 13
+      "step": 12
     },
     {
       "id": "garden",
       "image": "/image/house/layers/garden.png",
-      "unlockAtDonations": 14
+      "step": 13
     },
     {
       "id": "olive-tree",
       "image": "/image/house/layers/olive-tree.png",
-      "unlockAtDonations": 15
+      "step": 14
     },
     {
       "id": "fence",
       "image": "/image/house/layers/fence.png",
-      "unlockAtDonations": 16
+      "step": 15
+    },
+    {
+      "id": "facade",
+      "image": "/image/house/layers/facade.png",
+      "step": 16
     },
     {
       "id": "lights",
       "image": "/image/house/layers/lights.png",
-      "unlockAtDonations": 17
+      "step": 17
     },
     {
       "id": "heart",
       "image": "/image/house/layers/heart.png",
-      "unlockAtDonations": 18
+      "step": 18
     }
   ]
 }

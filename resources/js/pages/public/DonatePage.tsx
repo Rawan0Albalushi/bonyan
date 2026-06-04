@@ -41,7 +41,7 @@ export function DonatePage() {
 
     const selectedAmount = customAmount ? parseFloat(customAmount) : amount;
     const min = settings?.min_donation_amount ?? 1;
-    const max = settings?.max_donation_amount ?? 10000;
+    const max = settings?.max_donation_amount ?? 5000;
     const presets = settings?.donation_amounts ?? [5, 10, 25, 50, 100];
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -69,7 +69,7 @@ export function DonatePage() {
         try {
             const res = await submitDonation({
                 project_id: project.id,
-                amount: selectedAmount,
+                amount: Math.round(selectedAmount * 1000) / 1000,
                 phone: phone.trim(),
                 donor_name: donorName.trim() || undefined,
                 locale,
@@ -113,7 +113,7 @@ export function DonatePage() {
                     <HouseProgress
                         percentage={project.progress_percentage}
                         size="lg"
-                        interactive
+                        showPhaseIndicator
                     />
                     <p className="mt-6 text-center text-sm text-muted-foreground">{project.title}</p>
                 </div>

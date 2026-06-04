@@ -22,6 +22,7 @@ class ThawaniGateway implements PaymentGatewayInterface
     public function createPaymentLink(array $data): PaymentLinkResponse
     {
         $amountOmr = (float) $data['amount'];
+        $unitAmountBaisa = $this->amountToBaisa($amountOmr);
         $description = $this->formatProductName($data['description']);
 
         $body = [
@@ -30,7 +31,7 @@ class ThawaniGateway implements PaymentGatewayInterface
             'products' => [[
                 'name' => $description,
                 'quantity' => 1,
-                'unit_amount' => (int) ($amountOmr * 1000),
+                'unit_amount' => $unitAmountBaisa,
             ]],
             'success_url' => route('payment.success', ['donation_id' => $data['model_id']], true),
             'cancel_url' => route('payment.cancel', ['donation_id' => $data['model_id']], true),
@@ -164,6 +165,21 @@ class ThawaniGateway implements PaymentGatewayInterface
         }
 
         return $metadata;
+    }
+
+    private function amountToBaisa(float $amountOmr): int
+    {
+        $baisa = (int) round($amountOmr * 1000);
+        $min = 1;
+        $max = (int) config('payment.gateways.thawani.max_unit_amount_baisa', 5_000_000);
+
+        if ($baisa < $min || $baisa > $max) {
+            throw new RuntimeException(
+                "Donation amount {$amountOmr} OMR is outside Thawani limits (".($min / 1000).'–'.($max / 1000).' OMR).',
+            );
+        }
+
+        return $baisa;
     }
 
     private function formatProductName(string $name): string

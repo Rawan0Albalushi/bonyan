@@ -116,7 +116,7 @@ export function HouseVillaModel({
 }: HouseVillaModelProps) {
     const hover = onPartHover ?? (() => undefined);
     const click = onPartClick ?? (() => undefined);
-    const unlocked = (id: string) => isPartUnlocked(id, donationsCount);
+    const unlocked = (id: string) => isPartUnlocked(id, 100);
     const hi = (id: string) => highlightedPartId === id;
     const hov = (id: string) => hoveredPartId === id;
     const revealing = (id: string) => revealPartId === id;

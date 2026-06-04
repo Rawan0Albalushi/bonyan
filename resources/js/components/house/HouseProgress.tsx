@@ -1,33 +1,44 @@
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Hammer, Sparkles } from 'lucide-react';
-import { HouseImageScene } from '@/components/house/HouseImageScene';
-import { getPartById } from '@/components/house/houseParts';
+import { HouseBrickBurst } from '@/components/house/HouseBrickBurst';
+import { HouseDonationToast } from '@/components/house/HouseDonationToast';
+import { HouseLifeScene } from '@/components/house/HouseLifeScene';
+import { HousePhaseIndicator } from '@/components/house/HousePhaseIndicator';
+import { getDonationImpact } from '@/components/house/donationImpact';
+import { shouldPopDonationPart } from '@/components/house/houseBuildState';
+import {
+    getLayersToAnimate,
+    getLifeStageLabelKey,
+} from '@/components/house/houseLifeProgress';
 import {
     clampPercentage,
     getFundingProgressPercentage,
-    getPartNewlyUnlocked,
 } from '@/components/house/houseProgressVisual';
+import { useAnimatedFunding } from '@/components/house/useAnimatedFunding';
 import { cn, ENGLISH_NUMERALS_CLASS, formatNumber } from '@/lib/utils';
 import { useLocale } from '@/contexts/LocaleContext';
 
 interface HouseProgressProps {
-    /** Funding progress toward goal (raised / target), 0–100. */
     percentage: number;
-    /** Animate from this funding % to `percentage` after a donation (success page). */
     celebrateFromPercentage?: number | null;
     className?: string;
     size?: 'sm' | 'md' | 'lg' | 'celebration';
     showLabel?: boolean;
     animated?: boolean;
-    interactive?: boolean;
-    celebratePartId?: string | null;
     variant?: 'default' | 'hero';
-    showPartSummary?: boolean;
-    /** Keep `size` instead of expanding to full celebration width (e.g. success page sidebar). */
+    /** Success page: animate funding climb + part pop + toast. */
     inlineCelebration?: boolean;
+    donationAmount?: number;
+    goalAmount?: number;
+    donationsCount?: number;
+    showPhaseIndicator?: boolean;
 }
+
+const TOAST_DELAY_MS = 700;
+const TOAST_VISIBLE_MS = 4200;
+const POP_ACTIVE_MS = 2400;
+const FUNDING_ANIMATION_MS = 2600;
 
 export function HouseProgress({
     percentage,
@@ -36,78 +47,129 @@ export function HouseProgress({
     size = 'lg',
     showLabel = true,
     animated = true,
-    celebratePartId = null,
     variant = 'default',
-    showPartSummary = true,
     inlineCelebration = false,
+    donationAmount,
+    goalAmount,
+    donationsCount,
+    showPhaseIndicator = false,
 }: HouseProgressProps) {
     const { t } = useTranslation();
     const { locale } = useLocale();
 
-    const fundingProgress = getFundingProgressPercentage(percentage);
-    const previousFundingProgress =
-        celebrateFromPercentage != null ? getFundingProgressPercentage(celebrateFromPercentage) : fundingProgress;
+    const fundingTarget = getFundingProgressPercentage(percentage);
+    const previousFunding =
+        celebrateFromPercentage != null
+            ? getFundingProgressPercentage(celebrateFromPercentage)
+            : fundingTarget;
 
     const isCelebration =
-        celebrateFromPercentage != null && previousFundingProgress < fundingProgress;
+        inlineCelebration &&
+        celebrateFromPercentage != null &&
+        previousFunding < fundingTarget - 0.0001;
 
-    const [displayPercentage, setDisplayPercentage] = useState(
-        isCelebration ? previousFundingProgress : fundingProgress,
+    const displayFunding = useAnimatedFunding(
+        previousFunding,
+        fundingTarget,
+        isCelebration,
+        FUNDING_ANIMATION_MS,
     );
-    const [revealPhase, setRevealPhase] = useState<'waiting' | 'building' | 'revealed'>(
-        isCelebration ? 'waiting' : 'revealed',
+
+    const impact = useMemo(
+        () =>
+            isCelebration
+                ? getDonationImpact(previousFunding, fundingTarget, {
+                      donationAmount,
+                      goalAmount,
+                      donationsCount,
+                  })
+                : null,
+        [
+            isCelebration,
+            previousFunding,
+            fundingTarget,
+            donationAmount,
+            goalAmount,
+            donationsCount,
+        ],
     );
+
+    const animateLayerIds = useMemo(
+        () =>
+            isCelebration
+                ? getLayersToAnimate(previousFunding, displayFunding)
+                : [],
+        [isCelebration, previousFunding, displayFunding],
+    );
+
+    const popPartId = useMemo(() => {
+        if (!isCelebration || !impact || impact.partId.startsWith('bonus-')) {
+            return null;
+        }
+        if (impact.size === 'brick' && impact.brickCount > 0 && !impact.isNewFullLayer) {
+            return null;
+        }
+        if (fundingTarget >= 100 && impact.size === 'complete') {
+            return null;
+        }
+        if (
+            shouldPopDonationPart(impact.partId, previousFunding, fundingTarget) ||
+            impact.size === 'stage' ||
+            impact.size === 'phase' ||
+            impact.size === 'complete'
+        ) {
+            return impact.partId;
+        }
+        return null;
+    }, [isCelebration, impact, previousFunding, fundingTarget]);
+
+    const [popPartActive, setPopPartActive] = useState(false);
+    const [showToast, setShowToast] = useState(false);
+    const [brickBurstActive, setBrickBurstActive] = useState(false);
+
+    const toastKey = impact?.messageKey ?? 'house.life_toast.touch';
+    const toastParams = impact
+        ? { part: t(impact.partLabelKey) }
+        : undefined;
+
+    const showBrickBurst =
+        isCelebration && impact != null && impact.brickCount > 0 && popPartId == null;
 
     useEffect(() => {
         if (!isCelebration) {
-            setDisplayPercentage(fundingProgress);
-            setRevealPhase('revealed');
+            setPopPartActive(false);
+            setShowToast(false);
+            setBrickBurstActive(false);
             return;
         }
 
-        setDisplayPercentage(previousFundingProgress);
-        setRevealPhase('waiting');
+        setPopPartActive(Boolean(popPartId));
+        setBrickBurstActive(showBrickBurst);
 
-        const buildTimer = window.setTimeout(() => {
-            setRevealPhase('building');
-            setDisplayPercentage(fundingProgress);
-        }, 900);
+        const popOff = popPartId
+            ? window.setTimeout(() => setPopPartActive(false), POP_ACTIVE_MS)
+            : undefined;
 
-        const revealTimer = window.setTimeout(() => {
-            setRevealPhase('revealed');
-        }, 2800);
+        const brickOff = showBrickBurst
+            ? window.setTimeout(() => setBrickBurstActive(false), 1600)
+            : undefined;
+
+        const showTimer = window.setTimeout(() => setShowToast(true), TOAST_DELAY_MS);
+        const hideTimer = window.setTimeout(
+            () => setShowToast(false),
+            TOAST_DELAY_MS + TOAST_VISIBLE_MS,
+        );
 
         return () => {
-            window.clearTimeout(buildTimer);
-            window.clearTimeout(revealTimer);
+            if (popOff) window.clearTimeout(popOff);
+            if (brickOff) window.clearTimeout(brickOff);
+            window.clearTimeout(showTimer);
+            window.clearTimeout(hideTimer);
         };
-    }, [isCelebration, fundingProgress, previousFundingProgress]);
+    }, [isCelebration, popPartId, showBrickBurst, fundingTarget, previousFunding]);
 
-    useEffect(() => {
-        if (!isCelebration) {
-            setDisplayPercentage(fundingProgress);
-        }
-    }, [isCelebration, fundingProgress]);
-
-    const celebratedPartFromProgress = useMemo(
-        () => getPartNewlyUnlocked(previousFundingProgress, fundingProgress),
-        [previousFundingProgress, fundingProgress],
-    );
-
-    const highlightedDetailId =
-        revealPhase === 'revealed' && isCelebration
-            ? (celebratedPartFromProgress?.id ?? null)
-            : celebratePartId;
-
-    const revealDetailId =
-        revealPhase === 'building' && isCelebration ? (celebratedPartFromProgress?.id ?? null) : null;
-
-    const celebratedPart = useMemo(() => {
-        if (celebratePartId) return getPartById(celebratePartId);
-        return celebratedPartFromProgress;
-    }, [celebratePartId, celebratedPartFromProgress]);
-
-    const effectiveSize = isCelebration && !inlineCelebration ? 'celebration' : size;
+    const stageLabelKey = getLifeStageLabelKey(displayFunding);
+    const labelPercent = isCelebration ? displayFunding : fundingTarget;
 
     const sizeClasses = {
         sm: 'w-full max-w-[28rem]',
@@ -117,87 +179,72 @@ export function HouseProgress({
     };
 
     const heroSizeClass = variant === 'hero' ? 'w-full max-w-none lg:max-w-full' : '';
-
     const Wrapper = animated ? motion.div : 'div';
     const wrapperProps = animated
         ? { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.5 } }
         : {};
 
-    const showBuildingOverlay = isCelebration && (revealPhase === 'waiting' || revealPhase === 'building');
-
     return (
-        <div className={cn('flex w-full flex-col items-center', variant === 'hero' ? 'gap-0' : 'gap-4', className)}>
-            <Wrapper {...wrapperProps} className={cn('relative w-full', heroSizeClass || sizeClasses[effectiveSize])}>
+        <div
+            className={cn(
+                'flex w-full flex-col items-center',
+                variant === 'hero' ? 'gap-0' : 'gap-3',
+                className,
+            )}
+        >
+            <Wrapper
+                {...wrapperProps}
+                className={cn('relative w-full', heroSizeClass || sizeClasses[size])}
+            >
                 {showLabel && (
-                    <span
-                        dir="ltr"
-                        className={cn(
-                            'absolute end-0 top-0 z-10 rounded-full bg-primary/10 px-3 py-1 text-sm font-bold text-primary backdrop-blur-sm',
-                            ENGLISH_NUMERALS_CLASS,
-                        )}
-                    >
-                        {formatNumber(clampPercentage(displayPercentage), locale)}%
-                    </span>
+                    <div className="absolute end-0 top-0 z-10 flex flex-col items-end gap-1">
+                        <span
+                            dir="ltr"
+                            className={cn(
+                                'rounded-full bg-primary/10 px-3 py-1 text-sm font-bold text-primary backdrop-blur-sm',
+                                ENGLISH_NUMERALS_CLASS,
+                                isCelebration && 'ring-2 ring-primary/25',
+                            )}
+                        >
+                            {formatNumber(clampPercentage(labelPercent), locale)}%
+                        </span>
+                        <span className="rounded-full bg-card/90 px-2.5 py-0.5 text-[11px] font-semibold text-muted-foreground shadow-sm backdrop-blur-sm">
+                            {t(stageLabelKey)}
+                        </span>
+                    </div>
                 )}
 
-                <HouseImageScene
-                    percentage={displayPercentage}
-                    highlightDetailId={highlightedDetailId}
-                    revealDetailId={revealDetailId}
-                    size={effectiveSize}
+                <HouseLifeScene
+                    fundingPercentage={displayFunding}
+                    animateLayerIds={animateLayerIds}
+                    popPartId={popPartId}
+                    popPartActive={popPartActive}
+                    size={size}
                     variant={variant}
                 />
 
-                <AnimatePresence>
-                    {showBuildingOverlay && (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex justify-center pb-4"
-                        >
-                            <motion.div
-                                animate={{ y: [0, -4, 0] }}
-                                transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
-                                className="flex items-center gap-2.5 rounded-2xl border border-primary/15 bg-card/90 px-5 py-3 text-sm font-semibold text-primary shadow-brand backdrop-blur-md"
-                            >
-                                <Hammer className="h-4 w-4 text-accent" />
-                                {t('success.building')}
-                            </motion.div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-
-                {celebratedPart && revealPhase === 'revealed' && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.2 }}
-                        className="pointer-events-none absolute bottom-0 start-0 end-0 z-10 flex items-center gap-2 rounded-xl border border-accent/30 bg-card/90 px-3 py-2 text-primary shadow-sm backdrop-blur-md"
-                    >
-                        <Sparkles className="h-4 w-4 shrink-0 text-accent" />
-                        <span className="text-xs font-medium leading-snug">{t('house.just_added')}</span>
-                    </motion.div>
+                {showBrickBurst && impact && (
+                    <HouseBrickBurst
+                        partId={impact.partId}
+                        count={impact.brickCount}
+                        active={brickBurstActive}
+                    />
                 )}
             </Wrapper>
 
-            {showPartSummary && celebratedPart && revealPhase === 'revealed' && (
-                <motion.div
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.25 }}
-                    className="w-full max-w-lg overflow-hidden rounded-2xl border border-primary/10 bg-card shadow-brand"
-                >
-                    <div className="bg-gradient-to-r from-primary/10 via-accent-light/20 to-transparent px-5 py-4">
-                        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                            {t('success.you_built')}
-                        </p>
-                        <p className="mt-1 font-display text-xl font-bold text-primary">
-                            <span className="me-2">{celebratedPart.icon}</span>
-                            {t(celebratedPart.labelKey)}
-                        </p>
-                    </div>
-                </motion.div>
+            {showPhaseIndicator && (
+                <HousePhaseIndicator
+                    fundingPercent={labelPercent}
+                    className="mt-1 w-full max-w-lg"
+                />
+            )}
+
+            {isCelebration && (
+                <HouseDonationToast
+                    visible={showToast}
+                    messageKey={toastKey}
+                    messageParams={toastParams}
+                />
             )}
         </div>
     );

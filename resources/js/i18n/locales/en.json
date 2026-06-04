@@ -131,15 +131,50 @@
   },
   "house": {
     "viewer_label": "Build progress",
-    "interact_hint": "Each donation reveals the next stage of the home until it is fully complete.",
+    "life_stages": {
+      "base": "Foundation & structure",
+      "roof": "Roof",
+      "openings": "Doors & windows",
+      "garden": "Garden",
+      "lights": "Warm lights",
+      "interior": "Life & finishing",
+      "complete": "Home complete"
+    },
+    "life_toast": {
+      "touch": "Your gift added a new touch to the home",
+      "base": "Your gift added a new touch to the home",
+      "roof": "Your gift added a new touch to the home",
+      "openings": "Your gift added a new touch to the home",
+      "garden": "Your gift added a new touch to the home",
+      "lights": "Your gift lit a new room in the home",
+      "interior": "Your gift added a new touch to the home",
+      "complete": "Your gift brought the home to life"
+    },
+    "interact_hint": "Phase 1: structure only. Then gardens, then furnishings and lights — each gift advances the build by its amount.",
+    "queued_until": "Your donation added this piece — it becomes public for everyone at {{percent}}% funding",
+    "partial_brick": "You advanced this piece — {{percent}}% built in this stage",
     "stages": {
+      "structure": "Structure & brickwork",
+      "landscape": "Gardens & trees",
+      "interior": "Furniture & lighting",
+      "complete": "Home complete",
       "foundation": "Foundation laid",
       "walls": "Walls raised",
       "rooms": "Rooms & windows",
-      "roof": "Roof & details",
-      "complete": "Home complete"
+      "roof": "Roof & details"
     },
     "just_added": "Your donation just added this!",
+    "impact": {
+      "simple": "Your gift added a new part to the home",
+      "brick": "Your gift added new bricks to the home",
+      "detail": "Your gift added {{part}} to the home",
+      "stage": "New build stage complete: {{part}}",
+      "phase_structure": "Build phase: structure and brickwork",
+      "phase_landscape": "New phase: garden and exterior",
+      "phase_interior": "Finishing phase: furniture and warm lights",
+      "complete": "The home is complete — thank you to every donor!",
+      "bonus": "Your gift added a community touch: {{part}}"
+    },
     "next": "Next donation adds",
     "bonus_decor": "community touches",
     "parts": {

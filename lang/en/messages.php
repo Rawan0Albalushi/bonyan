@@ -2,6 +2,8 @@
 
 return [
     'donation_payment' => 'Donation - :title',
+    'donation_amount_max' => 'The maximum donation amount is :max OMR.',
+    'donation_amount_min' => 'The minimum donation amount is :min OMR.',
     'unable_to_initiate_payment' => 'Unable to initiate payment. Please try again later.',
     'payment_link_created' => 'Payment link created.',
     'donation_not_found' => 'Donation not found.',

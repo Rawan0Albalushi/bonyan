@@ -18,7 +18,9 @@ for (let i = 0; i < data.length; i += 4) {
     const saturation = max === 0 ? 0 : (max - min) / max;
 
     // Remove near-white / light gray background, keep house pixels
+    const isMintBackdrop = g > 235 && g >= r && g >= b && r > 215 && b > 215;
     const isBackground =
+        isMintBackdrop ||
         (r > 235 && g > 235 && b > 235) ||
         (r > 210 && g > 210 && b > 210 && saturation < 0.12);
 

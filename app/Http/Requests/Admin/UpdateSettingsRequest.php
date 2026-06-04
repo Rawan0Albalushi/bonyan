@@ -22,7 +22,12 @@ class UpdateSettingsRequest extends FormRequest
             'settings.donation_amounts' => ['nullable', 'array'],
             'settings.donation_amounts.*' => ['numeric', 'min:0'],
             'settings.min_donation_amount' => ['nullable', 'numeric', 'min:0'],
-            'settings.max_donation_amount' => ['nullable', 'numeric', 'min:1'],
+            'settings.max_donation_amount' => [
+                'nullable',
+                'numeric',
+                'min:1',
+                'max:'.config('payment.gateways.thawani.max_amount_omr', 5000),
+            ],
             'settings.contact_phone' => ['nullable', 'string', 'max:50'],
             'settings.contact_email' => ['nullable', 'email', 'max:255'],
         ];

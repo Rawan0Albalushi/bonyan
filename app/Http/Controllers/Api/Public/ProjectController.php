@@ -38,6 +38,9 @@ class ProjectController extends Controller
         $defaults = $this->settingsService->defaults();
         $stored = $this->settingsService->all()->pluck('value', 'key')->toArray();
 
-        return array_merge($defaults, $stored);
+        $settings = array_merge($defaults, $stored);
+        $settings['max_donation_amount'] = $this->settingsService->maxDonationAmountOmr();
+
+        return $settings;
     }
 }

@@ -7,7 +7,6 @@ import {
     ArrowRight,
     Check,
     CheckCircle2,
-    Hammer,
     Heart,
     Home,
     Loader2,
@@ -16,7 +15,10 @@ import {
 } from 'lucide-react';
 import { checkDonationPaymentStatus, fetchDonationConfirmation } from '@/api/public';
 import type { Donation, Project } from '@/api/types';
-import { getPartNewlyUnlocked, getFundingProgressBeforeDonation } from '@/components/house/houseProgressVisual';
+import {
+    clampPercentage,
+    getFundingProgressBeforeDonation,
+} from '@/components/house/houseProgressVisual';
 import { HouseProgress } from '@/components/house/HouseProgress';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -107,12 +109,19 @@ export function SuccessPage() {
         }
     }, [reference, donation, project, successFlag]);
 
-    const fundingProgress = project?.progress_percentage ?? 0;
-    const previousFundingProgress =
-        project && donation
-            ? getFundingProgressBeforeDonation(project.goal_amount, project.raised_amount, donation.amount)
+    const fundingProgress =
+        project && project.goal_amount > 0
+            ? clampPercentage((project.raised_amount / project.goal_amount) * 100)
+            : (project?.progress_percentage ?? 0);
+    const donationsCount = project?.donations_count ?? 0;
+    const fundingBefore =
+        project && donation && isPaid
+            ? getFundingProgressBeforeDonation(
+                  project.goal_amount,
+                  project.raised_amount,
+                  donation.amount,
+              )
             : fundingProgress;
-    const addedPart = getPartNewlyUnlocked(previousFundingProgress, fundingProgress);
 
     return (
         <div className="bg-page-soft min-h-full">
@@ -172,34 +181,21 @@ export function SuccessPage() {
                             animate={{ opacity: 1, y: 0 }}
                             className="order-1 lg:order-none"
                         >
-                            <div className="overflow-hidden rounded-2xl border border-primary/10 bg-card shadow-brand">
-                                <div className="flex items-center justify-between gap-4 border-b border-primary/10 bg-muted/30 px-4 py-3.5 sm:px-5 sm:py-4">
-                                    <p className="text-sm font-medium text-foreground">
-                                        {t('success.watch_build')}
-                                    </p>
-                                    <span
-                                        className={cn(
-                                            'shrink-0 rounded-lg bg-primary/10 px-2.5 py-1 text-sm font-bold text-primary',
-                                            ENGLISH_NUMERALS_CLASS,
-                                        )}
-                                        dir="ltr"
-                                    >
-                                        {formatNumber(fundingProgress, locale)}%
-                                    </span>
-                                </div>
-                                <div className="p-4 sm:p-6">
-                                    <HouseProgress
-                                        percentage={fundingProgress}
-                                        celebrateFromPercentage={previousFundingProgress}
-                                        size="md"
-                                        inlineCelebration
-                                        showLabel={false}
-                                        animated
-                                        interactive={false}
-                                        showPartSummary={false}
-                                        className="mx-auto w-full gap-0"
-                                    />
-                                </div>
+                            <div className="overflow-hidden rounded-2xl border border-primary/10 bg-card p-4 shadow-brand sm:p-6">
+                                <HouseProgress
+                                    percentage={fundingProgress}
+                                    celebrateFromPercentage={
+                                        showCelebration ? fundingBefore : null
+                                    }
+                                    donationAmount={donation?.amount}
+                                    goalAmount={project?.goal_amount}
+                                    donationsCount={donationsCount}
+                                    size="md"
+                                    inlineCelebration
+                                    showPhaseIndicator
+                                    animated
+                                    className="mx-auto w-full"
+                                />
                             </div>
                         </motion.section>
 
@@ -209,30 +205,6 @@ export function SuccessPage() {
                             transition={{ delay: 0.12 }}
                             className="order-2 space-y-5 lg:sticky lg:top-20 lg:order-none"
                         >
-                            {addedPart && (
-                                <div className="card-elevated overflow-hidden rounded-2xl">
-                                    <div className="relative overflow-hidden bg-gradient-to-br from-primary via-primary-dark to-primary px-5 py-5 text-primary-foreground">
-                                        <div
-                                            className="pointer-events-none absolute -end-6 -top-6 h-24 w-24 rounded-full bg-white/10 blur-2xl"
-                                            aria-hidden
-                                        />
-                                        <p className="relative flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary-foreground/85">
-                                            <Hammer className="h-3.5 w-3.5" />
-                                            {t('success.you_built')}
-                                        </p>
-                                        <p className="relative mt-2 font-display text-xl font-bold leading-snug sm:text-2xl">
-                                            <span className="me-2 text-2xl sm:text-3xl" aria-hidden>
-                                                {addedPart.icon}
-                                            </span>
-                                            {t(addedPart.labelKey)}
-                                        </p>
-                                    </div>
-                                    <p className="border-t border-border/50 px-5 py-4 text-sm leading-relaxed text-muted-foreground">
-                                        {t('success.impact_line')}
-                                    </p>
-                                </div>
-                            )}
-
                             <div className="card-elevated overflow-hidden rounded-2xl">
                                 <div className="border-b border-border/50 p-5 sm:p-6">
                                     <div className="flex items-center gap-2.5 text-primary">

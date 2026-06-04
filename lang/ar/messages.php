@@ -2,6 +2,8 @@
 
 return [
     'donation_payment' => 'تبرع - :title',
+    'donation_amount_max' => 'الحد الأقصى للتبرع هو :max ر.ع.',
+    'donation_amount_min' => 'الحد الأدنى للتبرع هو :min ر.ع.',
     'unable_to_initiate_payment' => 'تعذّر بدء الدفع. يرجى المحاولة مرة أخرى لاحقاً.',
     'payment_link_created' => 'تم إنشاء رابط الدفع.',
     'donation_not_found' => 'التبرع غير موجود.',
