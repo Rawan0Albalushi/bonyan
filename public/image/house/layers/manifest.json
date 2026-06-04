@@ -1,0 +1,96 @@
+{
+  "base": "/image/house/layers/base.png",
+  "full": "/image/house/house-full.png",
+  "parts": [
+    {
+      "id": "foundation",
+      "image": "/image/house/layers/foundation.png",
+      "unlockAtDonations": 1
+    },
+    {
+      "id": "ground-walls",
+      "image": "/image/house/layers/ground-walls.png",
+      "unlockAtDonations": 2
+    },
+    {
+      "id": "columns",
+      "image": "/image/house/layers/columns.png",
+      "unlockAtDonations": 3
+    },
+    {
+      "id": "upper-walls",
+      "image": "/image/house/layers/upper-walls.png",
+      "unlockAtDonations": 4
+    },
+    {
+      "id": "roof-frame",
+      "image": "/image/house/layers/roof-frame.png",
+      "unlockAtDonations": 5
+    },
+    {
+      "id": "roof-tiles",
+      "image": "/image/house/layers/roof-tiles.png",
+      "unlockAtDonations": 6
+    },
+    {
+      "id": "window-left",
+      "image": "/image/house/layers/window-left.png",
+      "unlockAtDonations": 7
+    },
+    {
+      "id": "window-right",
+      "image": "/image/house/layers/window-right.png",
+      "unlockAtDonations": 8
+    },
+    {
+      "id": "door",
+      "image": "/image/house/layers/door.png",
+      "unlockAtDonations": 9
+    },
+    {
+      "id": "balcony",
+      "image": "/image/house/layers/balcony.png",
+      "unlockAtDonations": 10
+    },
+    {
+      "id": "chimney",
+      "image": "/image/house/layers/chimney.png",
+      "unlockAtDonations": 11
+    },
+    {
+      "id": "facade",
+      "image": "/image/house/layers/facade.png",
+      "unlockAtDonations": 12
+    },
+    {
+      "id": "walkway",
+      "image": "/image/house/layers/walkway.png",
+      "unlockAtDonations": 13
+    },
+    {
+      "id": "garden",
+      "image": "/image/house/layers/garden.png",
+      "unlockAtDonations": 14
+    },
+    {
+      "id": "olive-tree",
+      "image": "/image/house/layers/olive-tree.png",
+      "unlockAtDonations": 15
+    },
+    {
+      "id": "fence",
+      "image": "/image/house/layers/fence.png",
+      "unlockAtDonations": 16
+    },
+    {
+      "id": "lights",
+      "image": "/image/house/layers/lights.png",
+      "unlockAtDonations": 17
+    },
+    {
+      "id": "heart",
+      "image": "/image/house/layers/heart.png",
+      "unlockAtDonations": 18
+    }
+  ]
+}

@@ -47,7 +47,9 @@ export interface DashboardStats {
     today_raised: number;
     active_project: {
         id: number;
+        title: string;
         title_ar: string;
+        title_en: string;
         progress_percentage: number;
         raised_amount: number;
         goal_amount: number;

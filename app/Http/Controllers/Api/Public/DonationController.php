@@ -25,14 +25,14 @@ class DonationController extends Controller
             ]);
         } catch (RuntimeException $e) {
             return response()->json([
-                'message' => 'Unable to initiate payment. Please try again later.',
+                'message' => __('messages.unable_to_initiate_payment'),
                 'error' => config('app.debug') ? $e->getMessage() : null,
             ], 502);
         }
 
         return response()->json([
             'success' => true,
-            'message' => 'Payment link created.',
+            'message' => __('messages.payment_link_created'),
             'data' => new DonationResource($result['donation']),
             'project' => new ProjectResource($result['donation']->project),
             'payment_link' => $result['payment_link'],
@@ -45,7 +45,7 @@ class DonationController extends Controller
         $record = $this->donationService->findByReference($donation);
 
         if (! $record) {
-            return response()->json(['message' => 'Donation not found.'], 404);
+            return response()->json(['message' => __('messages.donation_not_found')], 404);
         }
 
         return response()->json([

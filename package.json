@@ -4,7 +4,8 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "house:layers": "node scripts/generate-house-layers.mjs"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",

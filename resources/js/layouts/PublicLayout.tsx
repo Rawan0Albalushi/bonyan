@@ -1,6 +1,9 @@
+import { useEffect, useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Heart } from 'lucide-react';
+import { fetchActiveProject } from '@/api/public';
+import type { PublicSettings } from '@/api/types';
 import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher';
 import { Button } from '@/components/ui/button';
 import { useLocale } from '@/contexts/LocaleContext';
@@ -9,7 +12,22 @@ export function PublicLayout() {
     const { t } = useTranslation();
     const { locale } = useLocale();
     const location = useLocation();
-    const siteName = locale === 'ar' ? 'بُنيان' : 'Bonyan';
+    const [siteSettings, setSiteSettings] = useState<PublicSettings | null>(null);
+
+    useEffect(() => {
+        fetchActiveProject()
+            .then((res) => setSiteSettings(res.settings))
+            .catch(() => {});
+    }, []);
+
+    const siteName =
+        locale === 'ar'
+            ? siteSettings?.site_name_ar || t('site.name')
+            : siteSettings?.site_name_en || t('site.name');
+    const tagline =
+        locale === 'ar'
+            ? siteSettings?.tagline_ar || t('site.tagline')
+            : siteSettings?.tagline_en || t('site.tagline');
 
     const navLinks = [
         { to: '/', label: t('nav.home') },
@@ -28,9 +46,7 @@ export function PublicLayout() {
                         />
                         <div className="hidden sm:block">
                             <p className="font-display text-lg font-bold text-gradient-brand">{siteName}</p>
-                            <p className="text-xs text-muted-foreground">
-                                {locale === 'ar' ? 'نبني لهم حياة كريمة' : 'We build a decent life for them'}
-                            </p>
+                            <p className="text-xs text-muted-foreground">{tagline}</p>
                         </div>
                     </Link>
 
@@ -61,7 +77,7 @@ export function PublicLayout() {
                         <span className="font-display font-bold">{siteName}</span>
                     </div>
                     <p className="text-sm text-muted-foreground">
-                        © {new Date().getFullYear()} {siteName}. {locale === 'ar' ? 'جميع الحقوق محفوظة' : 'All rights reserved.'}
+                        © {new Date().getFullYear()} {siteName}. {t('site.copyright')}
                     </p>
                 </div>
             </footer>

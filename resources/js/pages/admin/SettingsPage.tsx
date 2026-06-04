@@ -13,12 +13,16 @@ export function SettingsPage() {
     const [amountsText, setAmountsText] = useState('');
     const [saving, setSaving] = useState(false);
     const [saved, setSaved] = useState(false);
+    const [loadError, setLoadError] = useState(false);
 
     useEffect(() => {
-        fetchSettings().then((res) => {
-            setSettings(res.data);
-            setAmountsText((res.data.donation_amounts ?? []).join(', '));
-        });
+        fetchSettings()
+            .then((res) => {
+                setSettings(res.data);
+                setAmountsText((res.data.donation_amounts ?? []).join(', '));
+                setLoadError(false);
+            })
+            .catch(() => setLoadError(true));
     }, []);
 
     const handleSave = async (e: React.FormEvent) => {
@@ -32,6 +36,9 @@ export function SettingsPage() {
                 .filter((n) => !Number.isNaN(n));
             await updateSettings({ ...settings, donation_amounts });
             setSaved(true);
+            setLoadError(false);
+        } catch {
+            setLoadError(true);
         } finally {
             setSaving(false);
         }
@@ -48,28 +55,32 @@ export function SettingsPage() {
                 <CardContent>
                     <form onSubmit={(e) => void handleSave(e)} className="grid max-w-xl gap-4">
                         <div className="space-y-2">
-                            <Label>{t('admin.title_ar')} (Site)</Label>
+                            <Label>
+                                {t('admin.title_ar')} {t('admin.site_name_suffix')}
+                            </Label>
                             <Input
                                 value={settings.site_name_ar ?? ''}
                                 onChange={(e) => setSettings({ ...settings, site_name_ar: e.target.value })}
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label>{t('admin.title_en')} (Site)</Label>
+                            <Label>
+                                {t('admin.title_en')} {t('admin.site_name_suffix')}
+                            </Label>
                             <Input
                                 value={settings.site_name_en ?? ''}
                                 onChange={(e) => setSettings({ ...settings, site_name_en: e.target.value })}
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label>Tagline (AR)</Label>
+                            <Label>{t('admin.tagline_ar')}</Label>
                             <Input
                                 value={settings.tagline_ar ?? ''}
                                 onChange={(e) => setSettings({ ...settings, tagline_ar: e.target.value })}
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label>Tagline (EN)</Label>
+                            <Label>{t('admin.tagline_en')}</Label>
                             <Input
                                 value={settings.tagline_en ?? ''}
                                 onChange={(e) => setSettings({ ...settings, tagline_en: e.target.value })}
@@ -86,7 +97,7 @@ export function SettingsPage() {
                         </div>
                         <div className="grid gap-4 sm:grid-cols-2">
                             <div className="space-y-2">
-                                <Label>Min donation</Label>
+                                <Label>{t('admin.min_donation')}</Label>
                                 <Input
                                     type="number"
                                     value={settings.min_donation_amount ?? 1}
@@ -96,7 +107,7 @@ export function SettingsPage() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label>Max donation</Label>
+                                <Label>{t('admin.max_donation')}</Label>
                                 <Input
                                     type="number"
                                     value={settings.max_donation_amount ?? 10000}
@@ -106,7 +117,10 @@ export function SettingsPage() {
                                 />
                             </div>
                         </div>
-                        {saved && <p className="text-sm text-primary">Saved successfully.</p>}
+                        {loadError && (
+                            <p className="text-sm text-destructive">{t('admin.settings_load_error')}</p>
+                        )}
+                        {saved && <p className="text-sm text-primary">{t('admin.saved_success')}</p>}
                         <Button type="submit" disabled={saving}>
                             {t('common.save')}
                         </Button>

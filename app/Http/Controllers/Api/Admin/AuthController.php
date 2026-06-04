@@ -25,14 +25,14 @@ class AuthController extends Controller
             Auth::logout();
 
             throw ValidationException::withMessages([
-                'email' => ['You do not have admin access.'],
+                'email' => [__('auth.no_admin_access')],
             ]);
         }
 
         $request->session()->regenerate();
 
         return response()->json([
-            'message' => 'Logged in successfully.',
+            'message' => __('messages.logged_in'),
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
@@ -47,7 +47,7 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return response()->json(['message' => 'Logged out successfully.']);
+        return response()->json(['message' => __('messages.logged_out')]);
     }
 
     public function me(Request $request): JsonResponse

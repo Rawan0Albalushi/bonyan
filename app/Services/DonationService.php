@@ -42,13 +42,14 @@ class DonationService
 
             $this->paymentService->switchGateway('thawani');
 
-            $title = mb_substr($project->title, 0, 30);
+            $locale = $data['locale'] ?? 'ar';
+            $title = mb_substr($project->localizedTitle($locale), 0, 30);
             $payment = $this->paymentService->createPaymentLink([
                 'model_type' => Donation::class,
                 'model_id' => $donation->id,
                 'amount' => (float) $donation->amount,
                 'currency' => $project->currency ?? 'OMR',
-                'description' => 'Donation - '.$title,
+                'description' => __('messages.donation_payment', ['title' => $title], $locale),
                 'donation_data' => [
                     'reference' => (string) $donation->reference,
                     'locale' => (string) $donation->locale,

@@ -37,7 +37,7 @@ export function LoginPage() {
             </div>
             <Card className="w-full max-w-md shadow-brand-lg">
                 <CardHeader className="text-center">
-                    <img src="/image/logo.jpeg" alt="Bonyan" className="mx-auto mb-4 h-16 w-16 rounded-xl object-cover" />
+                    <img src="/image/logo.jpeg" alt={t('site.name')} className="mx-auto mb-4 h-16 w-16 rounded-xl object-cover" />
                     <CardTitle>{t('admin.login_title')}</CardTitle>
                 </CardHeader>
                 <CardContent>

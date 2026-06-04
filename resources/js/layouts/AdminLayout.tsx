@@ -63,9 +63,9 @@ export function AdminLayout() {
             >
                 <div className="flex h-16 items-center justify-between border-b border-primary/10 px-4">
                     <Link to="/admin" className="font-display font-bold text-gradient-brand">
-                        Bonyan Admin
+                        {t('admin.brand')}
                     </Link>
-                    <button className="lg:hidden" onClick={() => setMobileOpen(false)} aria-label="Close menu">
+                    <button className="lg:hidden" onClick={() => setMobileOpen(false)} aria-label={t('admin.close_menu')}>
                         <X className="h-5 w-5" />
                     </button>
                 </div>
@@ -99,7 +99,7 @@ export function AdminLayout() {
 
             <div className="flex flex-1 flex-col lg:ms-0">
                 <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-primary/10 bg-card/95 px-4 shadow-sm backdrop-blur-sm lg:px-8">
-                    <button className="lg:hidden" onClick={() => setMobileOpen(true)} aria-label="Open menu">
+                    <button className="lg:hidden" onClick={() => setMobileOpen(true)} aria-label={t('admin.open_menu')}>
                         <Menu className="h-5 w-5" />
                     </button>
                     <p className="text-sm text-muted-foreground">

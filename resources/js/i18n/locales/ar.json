@@ -1,4 +1,13 @@
 {
+  "site": {
+    "name": "بُنيان",
+    "tagline": "نبني لهم حياة كريمة",
+    "copyright": "جميع الحقوق محفوظة"
+  },
+  "error": {
+    "title": "حدث خطأ",
+    "reload": "إعادة تحميل الصفحة"
+  },
   "nav": {
     "home": "الرئيسية",
     "donate": "تبرع الآن",
@@ -107,7 +116,18 @@
     "actions": "إجراءات",
     "active_badge": "نشط",
     "no_results": "لا توجد سجلات",
-    "row_number": "#"
+    "row_number": "#",
+    "brand": "إدارة بُنيان",
+    "open_menu": "فتح القائمة",
+    "close_menu": "إغلاق القائمة",
+    "site_name_suffix": "(الموقع)",
+    "tagline_ar": "الشعار (عربي)",
+    "tagline_en": "الشعار (إنجليزي)",
+    "min_donation": "الحد الأدنى للتبرع",
+    "max_donation": "الحد الأقصى للتبرع",
+    "saved_success": "تم حفظ الإعدادات بنجاح.",
+    "settings_load_error": "تعذّر تحميل الإعدادات. يرجى تسجيل الدخول مرة أخرى.",
+    "delete_project_confirm": "هل تريد حذف هذا المشروع؟"
   },
   "house": {
     "viewer_label": "تقدّم البناء",
@@ -147,6 +167,8 @@
       "bonus_flag": "راية أمل تُرفع",
       "bonus_bench": "مقعد حديقة للعائلة",
       "bonus_flowers": "زهور شكر في الحديقة"
-    }
+    },
+    "scene_unavailable": "معاينة ثلاثية الأبعاد غير متاحة",
+    "scene_unavailable_hint": "باقي الصفحة يعمل بشكل طبيعي. جرّب تحديث الصفحة."
   }
 }

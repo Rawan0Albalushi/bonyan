@@ -31,7 +31,7 @@ class SettingController extends Controller
         $stored = $this->settingsService->all()->pluck('value', 'key')->toArray();
 
         return response()->json([
-            'message' => 'Settings updated successfully.',
+            'message' => __('messages.settings_updated'),
             'data' => array_merge($defaults, $stored),
         ]);
     }

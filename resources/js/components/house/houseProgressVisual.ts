@@ -1,4 +1,4 @@
-import { CORE_PART_COUNT, HOUSE_BUILD_PARTS } from '@/components/house/houseParts';
+import { CORE_PART_COUNT, HOUSE_BUILD_PARTS, type HousePart } from '@/components/house/houseParts';
 import type { HouseStage } from '@/components/house/houseStages';
 import { getStageFromPercentage } from '@/components/house/houseStages';
 
@@ -77,21 +77,68 @@ export function getUnlockPercentForDonation(donationNumber: number): number {
     return clampPercentage((donationNumber / CORE_PART_COUNT) * 100);
 }
 
-export function getPreviousPercentageForCelebration(currentPercent: number, donationNumber: number): number {
-    const fromDonation = getUnlockPercentForDonation(Math.max(0, donationNumber - 1));
-    const fromStep = clampPercentage(currentPercent - 100 / CORE_PART_COUNT);
-    return Math.min(fromDonation, fromStep);
+/** Funding progress toward goal (0–100) — drives house build visuals. */
+export function getFundingProgressPercentage(progressPercentage: number): number {
+    return clampPercentage(progressPercentage);
+}
+
+/** Progress before a donation increased raised_amount toward the goal. */
+export function getFundingProgressBeforeDonation(
+    goalAmount: number,
+    raisedAmount: number,
+    donationAmount: number,
+): number {
+    if (goalAmount <= 0) {
+        return 0;
+    }
+
+    const raisedBefore = Math.max(0, raisedAmount - donationAmount);
+    return clampPercentage(Math.round((raisedBefore / goalAmount) * 10000) / 100);
 }
 
 export function getMilestoneStage(percentage: number): HouseStage {
     return getStageFromPercentage(percentage);
 }
 
-/** Map each build part to a spread unlock point across 0–100%. */
+/** Map each build part to a spread unlock point across 0–100% of the funding goal. */
 export function getPartUnlockPercent(partId: string): number {
     const part = HOUSE_BUILD_PARTS.find((p) => p.id === partId);
     if (!part) {
         return 100;
     }
     return clampPercentage((part.unlockAt / CORE_PART_COUNT) * 100);
+}
+
+/** Highest build part unlocked at the given funding progress. */
+export function getPartUnlockedAtPercentage(progressPercentage: number): HousePart | null {
+    const progress = clampPercentage(progressPercentage);
+    let unlocked: HousePart | null = null;
+
+    for (const part of HOUSE_BUILD_PARTS) {
+        if (progress >= getPartUnlockPercent(part.id)) {
+            unlocked = part;
+        }
+    }
+
+    return unlocked;
+}
+
+/** Build part whose funding threshold was crossed between two progress values. */
+export function getPartNewlyUnlocked(previousPercent: number, currentPercent: number): HousePart | null {
+    const previous = clampPercentage(previousPercent);
+    const current = clampPercentage(currentPercent);
+
+    if (current <= previous) {
+        return null;
+    }
+
+    for (let index = HOUSE_BUILD_PARTS.length - 1; index >= 0; index--) {
+        const part = HOUSE_BUILD_PARTS[index];
+        const threshold = getPartUnlockPercent(part.id);
+        if (current >= threshold && previous < threshold) {
+            return part;
+        }
+    }
+
+    return null;
 }

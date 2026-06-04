@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { checkDonationPaymentStatus, fetchDonationConfirmation } from '@/api/public';
 import type { Donation, Project } from '@/api/types';
-import { getPartUnlockedByDonation } from '@/components/house/houseParts';
+import { getPartNewlyUnlocked, getFundingProgressBeforeDonation } from '@/components/house/houseProgressVisual';
 import { HouseProgress } from '@/components/house/HouseProgress';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -107,9 +107,12 @@ export function SuccessPage() {
         }
     }, [reference, donation, project, successFlag]);
 
-    const progress = project?.progress_percentage ?? 0;
-    const donationsCount = project?.donations_count ?? 0;
-    const addedPart = getPartUnlockedByDonation(donationsCount);
+    const fundingProgress = project?.progress_percentage ?? 0;
+    const previousFundingProgress =
+        project && donation
+            ? getFundingProgressBeforeDonation(project.goal_amount, project.raised_amount, donation.amount)
+            : fundingProgress;
+    const addedPart = getPartNewlyUnlocked(previousFundingProgress, fundingProgress);
 
     return (
         <div className="bg-page-soft min-h-full">
@@ -180,13 +183,12 @@ export function SuccessPage() {
                                     )}
                                     dir="ltr"
                                 >
-                                    {formatNumber(progress, locale)}%
+                                    {formatNumber(fundingProgress, locale)}%
                                 </span>
                             </div>
                             <HouseProgress
-                                percentage={progress}
-                                donationsCount={donationsCount}
-                                celebrateDonationNumber={donationsCount}
+                                percentage={fundingProgress}
+                                celebrateFromPercentage={previousFundingProgress}
                                 size="celebration"
                                 showLabel
                                 animated
@@ -241,10 +243,10 @@ export function SuccessPage() {
                                         )}
                                         dir="ltr"
                                     >
-                                        {formatNumber(progress, locale)}%
+                                        {formatNumber(fundingProgress, locale)}%
                                     </span>
                                 </div>
-                                <Progress value={progress} className="mt-4 h-2.5" />
+                                <Progress value={fundingProgress} className="mt-4 h-2.5" />
                             </div>
 
                             {donation && (

@@ -112,7 +112,6 @@ export function DonatePage() {
                 <div className="flex flex-col items-center justify-center">
                     <HouseProgress
                         percentage={project.progress_percentage}
-                        donationsCount={project.donations_count ?? 0}
                         size="lg"
                         interactive
                     />

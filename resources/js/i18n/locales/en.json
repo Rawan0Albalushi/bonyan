@@ -1,4 +1,13 @@
 {
+  "site": {
+    "name": "Bonyan",
+    "tagline": "We build a decent life for them",
+    "copyright": "All rights reserved."
+  },
+  "error": {
+    "title": "Something went wrong",
+    "reload": "Reload page"
+  },
   "nav": {
     "home": "Home",
     "donate": "Donate Now",
@@ -107,7 +116,18 @@
     "actions": "Actions",
     "active_badge": "Active",
     "no_results": "No records found",
-    "row_number": "#"
+    "row_number": "#",
+    "brand": "Bonyan Admin",
+    "open_menu": "Open menu",
+    "close_menu": "Close menu",
+    "site_name_suffix": "(Site)",
+    "tagline_ar": "Tagline (Arabic)",
+    "tagline_en": "Tagline (English)",
+    "min_donation": "Minimum donation",
+    "max_donation": "Maximum donation",
+    "saved_success": "Settings saved successfully.",
+    "settings_load_error": "Could not load settings. Please sign in again.",
+    "delete_project_confirm": "Delete this project?"
   },
   "house": {
     "viewer_label": "Build progress",
@@ -147,6 +167,8 @@
       "bonus_flag": "Hope banner raised",
       "bonus_bench": "Garden bench for the family",
       "bonus_flowers": "Blooms of thanks in the garden"
-    }
+    },
+    "scene_unavailable": "3D preview unavailable",
+    "scene_unavailable_hint": "The rest of the page should still work. Try refreshing."
   }
 }

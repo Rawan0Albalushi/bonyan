@@ -68,6 +68,7 @@ export async function fetchSettings() {
 }
 
 export async function updateSettings(settings: Partial<PublicSettings>) {
+    await ensureCsrfCookie();
     const { data } = await api.put<{ data: PublicSettings }>('/admin/settings', { settings });
     return data;
 }

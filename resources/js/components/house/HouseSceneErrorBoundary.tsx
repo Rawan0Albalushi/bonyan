@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
+import i18n from '@/i18n';
 
 interface Props {
     children: ReactNode;
@@ -25,8 +26,8 @@ export class HouseSceneErrorBoundary extends Component<Props, State> {
             return (
                 this.props.fallback ?? (
                     <div className="house-scene-fallback flex h-full min-h-[12rem] w-full flex-col items-center justify-center gap-2 p-6 text-center">
-                        <p className="text-sm font-medium text-white/80">3D preview unavailable</p>
-                        <p className="text-xs text-white/50">The rest of the page should still work. Try refreshing.</p>
+                        <p className="text-sm font-medium text-white/80">{i18n.t('house.scene_unavailable')}</p>
+                        <p className="text-xs text-white/50">{i18n.t('house.scene_unavailable_hint')}</p>
                     </div>
                 )
             );

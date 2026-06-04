@@ -28,7 +28,9 @@ class DashboardController extends Controller
                     ->sum('amount'),
                 'active_project' => $activeProject ? [
                     'id' => $activeProject->id,
+                    'title' => $activeProject->localizedTitle(app()->getLocale()),
                     'title_ar' => $activeProject->title_ar,
+                    'title_en' => $activeProject->title_en,
                     'progress_percentage' => $activeProject->progressPercentage(),
                     'raised_amount' => (float) $activeProject->raised_amount,
                     'goal_amount' => (float) $activeProject->goal_amount,
@@ -45,7 +47,7 @@ class DashboardController extends Controller
                     'amount' => (float) $d->amount,
                     'phone' => $d->phone,
                     'created_at' => $d->created_at?->toIso8601String(),
-                    'project_title' => $d->project?->title_ar,
+                    'project_title' => $d->project?->localizedTitle(app()->getLocale()),
                 ]),
         ]);
     }

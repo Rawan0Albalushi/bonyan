@@ -85,7 +85,7 @@ class PaymentController extends Controller
             ?? $request->input('order_id');
 
         if (! $sessionId) {
-            return response()->json(['message' => 'Missing session identifier.'], 422);
+            return response()->json(['message' => __('messages.missing_session_identifier')], 422);
         }
 
         $validation = $this->paymentService->validatePayment((string) $sessionId);
@@ -110,7 +110,7 @@ class PaymentController extends Controller
         $donation = Donation::query()->find($donationId);
 
         if (! $donation) {
-            return response()->json(['message' => 'Donation not found.'], 404);
+            return response()->json(['message' => __('messages.donation_not_found')], 404);
         }
 
         if ($donation->status === DonationStatus::Completed) {
@@ -123,7 +123,7 @@ class PaymentController extends Controller
         $session = $this->paymentService->getLatestSessionForDonation($donationId);
 
         if (! $session) {
-            return response()->json(['status' => 'failed', 'message' => 'No payment session.'], 404);
+            return response()->json(['status' => 'failed', 'message' => __('messages.no_payment_session')], 404);
         }
 
         $validation = $this->paymentService->validatePayment($session->id);

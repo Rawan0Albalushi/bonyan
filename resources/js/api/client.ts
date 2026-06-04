@@ -16,6 +16,23 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        const status = error.response?.status;
+        const url = error.config?.url ?? '';
+
+        if (status === 401 && url.includes('/admin/') && !url.includes('/admin/login')) {
+            const loginPath = '/admin/login';
+            if (!window.location.pathname.startsWith(loginPath)) {
+                window.location.assign(loginPath);
+            }
+        }
+
+        return Promise.reject(error);
+    },
+);
+
 export async function ensureCsrfCookie(): Promise<void> {
     await axios.get('/sanctum/csrf-cookie', { withCredentials: true });
 }

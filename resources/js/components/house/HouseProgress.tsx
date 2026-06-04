@@ -3,68 +3,71 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Hammer, Sparkles } from 'lucide-react';
 import { HouseImageScene } from '@/components/house/HouseImageScene';
+import { getPartById } from '@/components/house/houseParts';
 import {
-    getHighlightIdForDonation,
-    getPartById,
-    getPartUnlockedByDonation,
-} from '@/components/house/houseParts';
-import { getPreviousPercentageForCelebration } from '@/components/house/houseProgressVisual';
+    clampPercentage,
+    getFundingProgressPercentage,
+    getPartNewlyUnlocked,
+} from '@/components/house/houseProgressVisual';
 import { cn, ENGLISH_NUMERALS_CLASS, formatNumber } from '@/lib/utils';
 import { useLocale } from '@/contexts/LocaleContext';
 
 interface HouseProgressProps {
+    /** Funding progress toward goal (raised / target), 0–100. */
     percentage: number;
-    donationsCount?: number;
+    /** Animate from this funding % to `percentage` after a donation (success page). */
+    celebrateFromPercentage?: number | null;
     className?: string;
     size?: 'sm' | 'md' | 'lg' | 'celebration';
     showLabel?: boolean;
     animated?: boolean;
     interactive?: boolean;
     celebratePartId?: string | null;
-    celebrateDonationNumber?: number;
     variant?: 'default' | 'hero';
     showPartSummary?: boolean;
 }
 
 export function HouseProgress({
     percentage,
+    celebrateFromPercentage = null,
     className,
     size = 'lg',
     showLabel = true,
     animated = true,
     celebratePartId = null,
-    celebrateDonationNumber,
     variant = 'default',
     showPartSummary = true,
 }: HouseProgressProps) {
     const { t } = useTranslation();
     const { locale } = useLocale();
-    const clamped = Math.min(100, Math.max(0, percentage));
 
-    const isCelebration = celebrateDonationNumber != null && celebrateDonationNumber > 0;
-    const previousPercentage =
-        isCelebration && celebrateDonationNumber != null
-            ? getPreviousPercentageForCelebration(clamped, celebrateDonationNumber)
-            : clamped;
+    const fundingProgress = getFundingProgressPercentage(percentage);
+    const previousFundingProgress =
+        celebrateFromPercentage != null ? getFundingProgressPercentage(celebrateFromPercentage) : fundingProgress;
 
-    const [displayPercentage, setDisplayPercentage] = useState(isCelebration ? previousPercentage : clamped);
+    const isCelebration =
+        celebrateFromPercentage != null && previousFundingProgress < fundingProgress;
+
+    const [displayPercentage, setDisplayPercentage] = useState(
+        isCelebration ? previousFundingProgress : fundingProgress,
+    );
     const [revealPhase, setRevealPhase] = useState<'waiting' | 'building' | 'revealed'>(
         isCelebration ? 'waiting' : 'revealed',
     );
 
     useEffect(() => {
         if (!isCelebration) {
-            setDisplayPercentage(clamped);
+            setDisplayPercentage(fundingProgress);
             setRevealPhase('revealed');
             return;
         }
 
-        setDisplayPercentage(previousPercentage);
+        setDisplayPercentage(previousFundingProgress);
         setRevealPhase('waiting');
 
         const buildTimer = window.setTimeout(() => {
             setRevealPhase('building');
-            setDisplayPercentage(clamped);
+            setDisplayPercentage(fundingProgress);
         }, 900);
 
         const revealTimer = window.setTimeout(() => {
@@ -75,29 +78,31 @@ export function HouseProgress({
             window.clearTimeout(buildTimer);
             window.clearTimeout(revealTimer);
         };
-    }, [isCelebration, celebrateDonationNumber, clamped, previousPercentage]);
+    }, [isCelebration, fundingProgress, previousFundingProgress]);
 
     useEffect(() => {
         if (!isCelebration) {
-            setDisplayPercentage(clamped);
+            setDisplayPercentage(fundingProgress);
         }
-    }, [isCelebration, clamped]);
+    }, [isCelebration, fundingProgress]);
+
+    const celebratedPartFromProgress = useMemo(
+        () => getPartNewlyUnlocked(previousFundingProgress, fundingProgress),
+        [previousFundingProgress, fundingProgress],
+    );
 
     const highlightedDetailId =
-        revealPhase === 'revealed' && celebrateDonationNumber != null
-            ? getHighlightIdForDonation(celebrateDonationNumber)
+        revealPhase === 'revealed' && isCelebration
+            ? (celebratedPartFromProgress?.id ?? null)
             : celebratePartId;
 
     const revealDetailId =
-        revealPhase === 'building' && celebrateDonationNumber != null
-            ? getHighlightIdForDonation(celebrateDonationNumber)
-            : null;
+        revealPhase === 'building' && isCelebration ? (celebratedPartFromProgress?.id ?? null) : null;
 
     const celebratedPart = useMemo(() => {
         if (celebratePartId) return getPartById(celebratePartId);
-        if (celebrateDonationNumber) return getPartUnlockedByDonation(celebrateDonationNumber);
-        return null;
-    }, [celebratePartId, celebrateDonationNumber]);
+        return celebratedPartFromProgress;
+    }, [celebratePartId, celebratedPartFromProgress]);
 
     const effectiveSize = isCelebration ? 'celebration' : size;
 
@@ -128,7 +133,7 @@ export function HouseProgress({
                             ENGLISH_NUMERALS_CLASS,
                         )}
                     >
-                        {formatNumber(clamped, locale)}%
+                        {formatNumber(clampPercentage(displayPercentage), locale)}%
                     </span>
                 )}
 

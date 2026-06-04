@@ -97,7 +97,7 @@ export function DashboardPage() {
             {stats.active_project && (
                 <Card>
                     <CardHeader>
-                        <CardTitle>{stats.active_project.title_ar}</CardTitle>
+                        <CardTitle>{stats.active_project.title}</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <p className={cn('text-lg font-bold text-accent', ENGLISH_NUMERALS_CLASS)} dir="ltr">

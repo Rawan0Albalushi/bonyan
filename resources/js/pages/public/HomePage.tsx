@@ -41,7 +41,6 @@ export function HomePage() {
     }
 
     const progress = project?.progress_percentage ?? 0;
-    const donationsCount = project?.donations_count ?? 0;
 
     return (
         <div>
@@ -94,7 +93,6 @@ export function HomePage() {
                     <div className="order-1 flex w-full justify-center lg:order-2 lg:justify-end">
                         <HouseProgress
                             percentage={progress}
-                            donationsCount={donationsCount}
                             size="lg"
                             variant="hero"
                             showLabel={false}

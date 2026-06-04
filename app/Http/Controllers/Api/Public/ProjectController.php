@@ -23,7 +23,7 @@ class ProjectController extends Controller
             return response()->json([
                 'data' => null,
                 'settings' => $this->buildPublicSettings(),
-                'message' => 'No active project.',
+                'message' => __('messages.no_active_project'),
             ]);
         }
 

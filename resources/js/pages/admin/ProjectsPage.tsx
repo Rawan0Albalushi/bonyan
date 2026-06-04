@@ -71,7 +71,7 @@ export function ProjectsPage() {
     };
 
     const handleDelete = async (id: number) => {
-        if (!confirm('Delete this project?')) return;
+        if (!confirm(t('admin.delete_project_confirm'))) return;
         await deleteProject(id);
         await load();
     };
@@ -184,7 +184,7 @@ export function ProjectsPage() {
                     <Card key={p.id}>
                         <CardContent className="flex flex-wrap items-center justify-between gap-4 p-6">
                             <div>
-                                <p className="font-bold">{p.title_ar}</p>
+                                <p className="font-bold">{locale === 'en' ? p.title_en : p.title_ar}</p>
                                 <p className={cn('text-sm text-muted-foreground', ENGLISH_NUMERALS_CLASS)} dir="ltr">
                                     <CurrencyAmountInline
                                         amounts={[p.raised_amount, p.goal_amount]}
@@ -195,7 +195,7 @@ export function ProjectsPage() {
                                 </p>
                                 {p.is_active && (
                                     <span className="mt-1 inline-block rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">
-                                        Active
+                                        {t('admin.active_badge')}
                                     </span>
                                 )}
                             </div>
