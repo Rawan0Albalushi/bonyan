@@ -21,7 +21,8 @@ import { HouseProgress } from '@/components/house/HouseProgress';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { useLocale } from '@/contexts/LocaleContext';
-import { cn, ENGLISH_NUMERALS_CLASS, formatCurrency, formatNumber } from '@/lib/utils';
+import { CurrencyAmount } from '@/components/shared/CurrencyAmount';
+import { cn, ENGLISH_NUMERALS_CLASS, formatNumber } from '@/lib/utils';
 
 function SuccessSteps({ active }: { active: boolean }) {
     const { t } = useTranslation();
@@ -259,14 +260,14 @@ export function SuccessPage() {
                                             <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                                                 {t('success.amount')}
                                             </p>
-                                            <p
-                                                className={cn(
-                                                    'mt-1.5 font-display text-xl font-bold text-accent',
-                                                    ENGLISH_NUMERALS_CLASS,
-                                                )}
-                                                dir="ltr"
-                                            >
-                                                {formatCurrency(donation.amount, project?.currency, locale)}
+                                            <p className="mt-1.5" dir="ltr">
+                                                <CurrencyAmount
+                                                    amount={donation.amount}
+                                                    currency={project?.currency}
+                                                    className="font-display text-xl font-bold"
+                                                    amountClassName="text-accent"
+                                                    iconSize="lg"
+                                                />
                                             </p>
                                         </div>
                                         <div className="rounded-xl border border-border/60 bg-muted/40 p-4">

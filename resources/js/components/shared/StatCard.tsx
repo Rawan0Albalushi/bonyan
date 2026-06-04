@@ -1,34 +1,38 @@
-import { cn, ENGLISH_NUMERALS_CLASS } from '@/lib/utils';
+import { type ReactNode } from 'react';
+import { CurrencyAmount } from '@/components/shared/CurrencyAmount';
+import { cn } from '@/lib/utils';
 
 interface StatCardProps {
     label: string;
-    value: string;
+    amount?: number;
+    currency?: string;
+    value?: ReactNode;
     className?: string;
     highlight?: boolean;
 }
 
-export function StatCard({ label, value, className, highlight }: StatCardProps) {
+export function StatCard({ label, amount, currency, value, className, highlight }: StatCardProps) {
+    const content =
+        amount !== undefined ? (
+            <CurrencyAmount amount={amount} currency={currency} brand layout="stat" />
+        ) : (
+            value
+        );
+
     return (
-        <div
+        <article
             className={cn(
-                'card-elevated relative overflow-hidden p-5 text-center transition-transform hover:-translate-y-0.5',
+                'stat-card card-elevated relative flex flex-col items-center overflow-visible px-5 py-6 text-center transition-transform hover:-translate-y-0.5 md:px-6 md:py-7',
                 highlight && 'ring-2 ring-accent/30',
                 className,
             )}
         >
             <div
-                className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary via-primary-light to-accent"
+                className="absolute inset-x-0 top-0 h-1 rounded-t-xl bg-gradient-to-r from-primary via-primary-light to-accent"
                 aria-hidden
             />
-            <p className="text-xs font-medium text-muted-foreground md:text-sm">{label}</p>
-            <p
-                className={cn(
-                    'mt-2 text-lg font-extrabold text-gradient-brand md:text-2xl',
-                    ENGLISH_NUMERALS_CLASS,
-                )}
-            >
-                {value}
-            </p>
-        </div>
+            <p className="text-xs font-medium tracking-wide text-muted-foreground md:text-sm">{label}</p>
+            <div className="stat-card-value mt-3 flex w-full items-center justify-center">{content}</div>
+        </article>
     );
 }

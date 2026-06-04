@@ -1,13 +1,14 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Hammer, Layers, Sparkles } from 'lucide-react';
-import { HouseScene } from '@/components/house/HouseScene';
+import { Hammer, Sparkles } from 'lucide-react';
+import { HouseImageScene } from '@/components/house/HouseImageScene';
 import {
     getHighlightIdForDonation,
     getPartById,
     getPartUnlockedByDonation,
 } from '@/components/house/houseParts';
+import { getPreviousPercentageForCelebration } from '@/components/house/houseProgressVisual';
 import { cn, ENGLISH_NUMERALS_CLASS, formatNumber } from '@/lib/utils';
 import { useLocale } from '@/contexts/LocaleContext';
 
@@ -27,12 +28,10 @@ interface HouseProgressProps {
 
 export function HouseProgress({
     percentage,
-    donationsCount = 0,
     className,
     size = 'lg',
     showLabel = true,
     animated = true,
-    interactive = true,
     celebratePartId = null,
     celebrateDonationNumber,
     variant = 'default',
@@ -41,27 +40,31 @@ export function HouseProgress({
     const { t } = useTranslation();
     const { locale } = useLocale();
     const clamped = Math.min(100, Math.max(0, percentage));
-    const count = Math.max(0, donationsCount);
 
     const isCelebration = celebrateDonationNumber != null && celebrateDonationNumber > 0;
-    const [displayCount, setDisplayCount] = useState(isCelebration ? Math.max(0, celebrateDonationNumber - 1) : count);
+    const previousPercentage =
+        isCelebration && celebrateDonationNumber != null
+            ? getPreviousPercentageForCelebration(clamped, celebrateDonationNumber)
+            : clamped;
+
+    const [displayPercentage, setDisplayPercentage] = useState(isCelebration ? previousPercentage : clamped);
     const [revealPhase, setRevealPhase] = useState<'waiting' | 'building' | 'revealed'>(
         isCelebration ? 'waiting' : 'revealed',
     );
 
     useEffect(() => {
         if (!isCelebration) {
-            setDisplayCount(count);
+            setDisplayPercentage(clamped);
             setRevealPhase('revealed');
             return;
         }
 
-        setDisplayCount(Math.max(0, celebrateDonationNumber - 1));
+        setDisplayPercentage(previousPercentage);
         setRevealPhase('waiting');
 
         const buildTimer = window.setTimeout(() => {
             setRevealPhase('building');
-            setDisplayCount(celebrateDonationNumber);
+            setDisplayPercentage(clamped);
         }, 900);
 
         const revealTimer = window.setTimeout(() => {
@@ -72,14 +75,20 @@ export function HouseProgress({
             window.clearTimeout(buildTimer);
             window.clearTimeout(revealTimer);
         };
-    }, [isCelebration, celebrateDonationNumber, count]);
+    }, [isCelebration, celebrateDonationNumber, clamped, previousPercentage]);
 
-    const highlightedPartId =
+    useEffect(() => {
+        if (!isCelebration) {
+            setDisplayPercentage(clamped);
+        }
+    }, [isCelebration, clamped]);
+
+    const highlightedDetailId =
         revealPhase === 'revealed' && celebrateDonationNumber != null
             ? getHighlightIdForDonation(celebrateDonationNumber)
             : celebratePartId;
 
-    const revealPartId =
+    const revealDetailId =
         revealPhase === 'building' && celebrateDonationNumber != null
             ? getHighlightIdForDonation(celebrateDonationNumber)
             : null;
@@ -93,18 +102,13 @@ export function HouseProgress({
     const effectiveSize = isCelebration ? 'celebration' : size;
 
     const sizeClasses = {
-        sm: 'w-full max-w-[10rem]',
-        md: 'w-full max-w-[15rem]',
-        lg: 'w-full max-w-[20rem] md:max-w-[26rem] lg:max-w-[30rem]',
-        celebration: 'w-full max-w-[24rem] sm:max-w-[30rem] md:max-w-[38rem] lg:max-w-[42rem]',
+        sm: 'w-full max-w-[28rem]',
+        md: 'w-full max-w-[42rem] sm:max-w-[48rem]',
+        lg: 'w-full max-w-[48rem] sm:max-w-[56rem] lg:max-w-[68rem] xl:max-w-[820px]',
+        celebration: 'w-full max-w-[50rem] sm:max-w-[60rem] md:max-w-[70rem] lg:max-w-[84rem]',
     };
 
-    const aspectClasses = {
-        sm: 'min-h-[11rem]',
-        md: 'min-h-[14rem]',
-        lg: 'min-h-[15rem] md:min-h-[18rem]',
-        celebration: 'min-h-[19rem] sm:min-h-[22rem] md:min-h-[26rem] lg:min-h-[28rem]',
-    };
+    const heroSizeClass = variant === 'hero' ? 'w-full max-w-none lg:max-w-full' : '';
 
     const Wrapper = animated ? motion.div : 'div';
     const wrapperProps = animated
@@ -115,75 +119,58 @@ export function HouseProgress({
 
     return (
         <div className={cn('flex w-full flex-col items-center gap-4', className)}>
-            <Wrapper {...wrapperProps} className={cn('relative w-full', sizeClasses[effectiveSize])}>
-                <div
-                    className={cn(
-                        'house-viewport relative aspect-[4/5] w-full overflow-hidden',
-                        aspectClasses[effectiveSize],
-                        variant === 'hero' && 'house-viewport-hero',
-                        isCelebration && 'house-viewport-celebration',
-                    )}
-                >
-                    <div className="house-viewport-chrome pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center justify-between px-4 py-3">
-                        <span className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/80">
-                            <Layers className="h-3 w-3" />
-                            {t('house.viewer_label')}
-                        </span>
-                        {showLabel && (
-                            <span
-                                dir="ltr"
-                                className={cn(
-                                    'rounded-md bg-black/35 px-2.5 py-1 text-xs font-bold text-white backdrop-blur-sm',
-                                    ENGLISH_NUMERALS_CLASS,
-                                )}
-                            >
-                                {formatNumber(clamped, locale)}%
-                            </span>
+            <Wrapper {...wrapperProps} className={cn('relative w-full', heroSizeClass || sizeClasses[effectiveSize])}>
+                {showLabel && (
+                    <span
+                        dir="ltr"
+                        className={cn(
+                            'absolute end-0 top-0 z-10 rounded-full bg-primary/10 px-3 py-1 text-sm font-bold text-primary backdrop-blur-sm',
+                            ENGLISH_NUMERALS_CLASS,
                         )}
-                    </div>
+                    >
+                        {formatNumber(clamped, locale)}%
+                    </span>
+                )}
 
-                    <div className="absolute inset-0 h-full w-full">
-                        <HouseScene
-                            donationsCount={displayCount}
-                            highlightedPartId={highlightedPartId}
-                            revealPartId={revealPartId}
-                            interactive={interactive && !isCelebration}
-                            celebrateMode={isCelebration}
-                        />
-                    </div>
+                <HouseImageScene
+                    percentage={displayPercentage}
+                    highlightDetailId={highlightedDetailId}
+                    revealDetailId={revealDetailId}
+                    size={effectiveSize}
+                    variant={variant}
+                />
 
-                    <AnimatePresence>
-                        {showBuildingOverlay && (
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-end bg-gradient-to-t from-[#0c2420]/70 via-[#0c2420]/20 to-transparent pb-8"
-                            >
-                                <motion.div
-                                    animate={{ y: [0, -6, 0] }}
-                                    transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
-                                    className="flex items-center gap-2.5 rounded-2xl border border-white/20 bg-white/10 px-5 py-3 text-sm font-semibold text-white shadow-lg backdrop-blur-md"
-                                >
-                                    <Hammer className="h-4 w-4 text-accent-light" />
-                                    {t('success.building')}
-                                </motion.div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-
-                    {celebratedPart && revealPhase === 'revealed' && (
+                <AnimatePresence>
+                    {showBuildingOverlay && (
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: 0.2 }}
-                            className="pointer-events-none absolute bottom-3 start-3 end-3 z-10 flex items-center gap-2 rounded-xl border border-accent/40 bg-black/50 px-3 py-2 text-white backdrop-blur-md"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex justify-center pb-4"
                         >
-                            <Sparkles className="h-4 w-4 shrink-0 text-accent-light" />
-                            <span className="text-xs font-medium leading-snug">{t('house.just_added')}</span>
+                            <motion.div
+                                animate={{ y: [0, -4, 0] }}
+                                transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+                                className="flex items-center gap-2.5 rounded-2xl border border-primary/15 bg-card/90 px-5 py-3 text-sm font-semibold text-primary shadow-brand backdrop-blur-md"
+                            >
+                                <Hammer className="h-4 w-4 text-accent" />
+                                {t('success.building')}
+                            </motion.div>
                         </motion.div>
                     )}
-                </div>
+                </AnimatePresence>
+
+                {celebratedPart && revealPhase === 'revealed' && (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.2 }}
+                        className="pointer-events-none absolute bottom-0 start-0 end-0 z-10 flex items-center gap-2 rounded-xl border border-accent/30 bg-card/90 px-3 py-2 text-primary shadow-sm backdrop-blur-md"
+                    >
+                        <Sparkles className="h-4 w-4 shrink-0 text-accent" />
+                        <span className="text-xs font-medium leading-snug">{t('house.just_added')}</span>
+                    </motion.div>
+                )}
             </Wrapper>
 
             {showPartSummary && celebratedPart && revealPhase === 'revealed' && (

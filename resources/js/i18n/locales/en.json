@@ -110,8 +110,15 @@
     "row_number": "#"
   },
   "house": {
-    "viewer_label": "3D build preview",
-    "interact_hint": "Drag to explore the home in 3D. Each donation unlocks the next architectural stage.",
+    "viewer_label": "Build progress",
+    "interact_hint": "Each donation reveals the next stage of the home until it is fully complete.",
+    "stages": {
+      "foundation": "Foundation laid",
+      "walls": "Walls raised",
+      "rooms": "Rooms & windows",
+      "roof": "Roof & details",
+      "complete": "Home complete"
+    },
     "just_added": "Your donation just added this!",
     "next": "Next donation adds",
     "bonus_decor": "community touches",

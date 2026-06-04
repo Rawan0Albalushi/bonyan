@@ -15,7 +15,8 @@ import {
 } from '@/components/admin/AdminDataTable';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { formatAdminDate, formatCurrency, formatPhone, formatReference } from '@/lib/utils';
+import { CurrencyAmount } from '@/components/shared/CurrencyAmount';
+import { formatAdminDate, formatPhone, formatReference } from '@/lib/utils';
 import { useLocale } from '@/contexts/LocaleContext';
 
 export function DonationsPage() {
@@ -76,7 +77,7 @@ export function DonationsPage() {
                                             {formatReference(d.reference)}
                                         </AdminTableTd>
                                         <AdminTableTd variant="numeric" className="font-medium">
-                                            {formatCurrency(d.amount, d.project?.currency ?? 'OMR', locale)}
+                                            <CurrencyAmount amount={d.amount} currency={d.project?.currency ?? 'OMR'} iconSize="sm" />
                                         </AdminTableTd>
                                         <AdminTableTd variant="numeric">{formatPhone(d.phone)}</AdminTableTd>
                                         <AdminTableTd variant="text">

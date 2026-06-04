@@ -13,11 +13,11 @@ import {
     AdminTableTh,
 } from '@/components/admin/AdminDataTable';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { CurrencyAmount, CurrencyAmountInline } from '@/components/shared/CurrencyAmount';
 import {
     cn,
     ENGLISH_NUMERALS_CLASS,
     formatAdminDate,
-    formatCurrency,
     formatNumber,
     formatPhone,
 } from '@/lib/utils';
@@ -44,9 +44,29 @@ export function DashboardPage() {
 
     const statCards = [
         { label: t('admin.stats_total'), value: String(stats.total_donations) },
-        { label: t('admin.stats_raised'), value: formatCurrency(stats.total_raised, 'OMR', locale) },
+        {
+            label: t('admin.stats_raised'),
+            value: (
+                <CurrencyAmount
+                    amount={stats.total_raised}
+                    brand
+                    iconSize="lg"
+                    className="text-2xl font-extrabold"
+                />
+            ),
+        },
         { label: t('admin.stats_today'), value: String(stats.today_donations) },
-        { label: t('admin.stats_today_raised'), value: formatCurrency(stats.today_raised, 'OMR', locale) },
+        {
+            label: t('admin.stats_today_raised'),
+            value: (
+                <CurrencyAmount
+                    amount={stats.today_raised}
+                    brand
+                    iconSize="lg"
+                    className="text-2xl font-extrabold"
+                />
+            ),
+        },
     ];
 
     const colCount = 4;
@@ -60,9 +80,15 @@ export function DashboardPage() {
                     <Card key={card.label}>
                         <CardContent className="p-6">
                             <p className="text-sm text-muted-foreground">{card.label}</p>
-                            <p className={cn('mt-2 text-2xl font-extrabold text-gradient-brand', ENGLISH_NUMERALS_CLASS)}>
+                            <div
+                                className={cn(
+                                    'mt-2 text-2xl font-extrabold',
+                                    typeof card.value === 'string' && 'text-gradient-brand',
+                                    typeof card.value === 'string' && ENGLISH_NUMERALS_CLASS,
+                                )}
+                            >
                                 {card.value}
-                            </p>
+                            </div>
                         </CardContent>
                     </Card>
                 ))}
@@ -78,8 +104,12 @@ export function DashboardPage() {
                             {formatNumber(stats.active_project.progress_percentage, locale)}%
                         </p>
                         <p className={cn('text-sm text-muted-foreground', ENGLISH_NUMERALS_CLASS)} dir="ltr">
-                            {formatCurrency(stats.active_project.raised_amount, 'OMR', locale)} /{' '}
-                            {formatCurrency(stats.active_project.goal_amount, 'OMR', locale)}
+                            <CurrencyAmountInline
+                                amounts={[
+                                    stats.active_project.raised_amount,
+                                    stats.active_project.goal_amount,
+                                ]}
+                            />
                         </p>
                     </CardContent>
                 </Card>
@@ -105,7 +135,7 @@ export function DashboardPage() {
                                 recent.map((d) => (
                                     <AdminTableRow key={d.id} striped>
                                         <AdminTableTd variant="numeric" className="font-medium">
-                                            {formatCurrency(d.amount, 'OMR', locale)}
+                                            <CurrencyAmount amount={d.amount} iconSize="sm" />
                                         </AdminTableTd>
                                         <AdminTableTd variant="numeric">{formatPhone(d.phone)}</AdminTableTd>
                                         <AdminTableTd variant="text">{d.project_title}</AdminTableTd>

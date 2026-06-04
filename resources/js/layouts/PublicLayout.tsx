@@ -19,12 +19,12 @@ export function PublicLayout() {
     return (
         <div className="flex min-h-screen flex-col">
             <header className="sticky top-0 z-50 overflow-hidden rounded-b-2xl border-b border-primary/10 bg-card/92 shadow-brand backdrop-blur-lg sm:rounded-b-3xl supports-[backdrop-filter]:bg-card/85">
-                <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-                    <Link to="/" className="flex items-center gap-3 transition-opacity hover:opacity-90">
+                <div className="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between gap-4 px-4 sm:h-20 sm:px-6 lg:px-8">
+                    <Link to="/" className="flex shrink-0 items-center gap-3 transition-opacity hover:opacity-90">
                         <img
                             src="/image/logo.jpeg"
                             alt={siteName}
-                            className="h-10 w-10 rounded-lg object-cover shadow-sm"
+                            className="h-14 w-auto max-h-[3.5rem] object-contain sm:h-16 sm:max-h-16"
                         />
                         <div className="hidden sm:block">
                             <p className="font-display text-lg font-bold text-gradient-brand">{siteName}</p>

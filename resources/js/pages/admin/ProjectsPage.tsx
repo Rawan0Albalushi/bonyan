@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { cn, ENGLISH_NUMERALS_CLASS, formatCurrency, formatNumber } from '@/lib/utils';
+import { CurrencyAmountInline } from '@/components/shared/CurrencyAmount';
+import { cn, ENGLISH_NUMERALS_CLASS, formatNumber } from '@/lib/utils';
 import { useLocale } from '@/contexts/LocaleContext';
 
 const emptyForm = {
@@ -185,9 +186,12 @@ export function ProjectsPage() {
                             <div>
                                 <p className="font-bold">{p.title_ar}</p>
                                 <p className={cn('text-sm text-muted-foreground', ENGLISH_NUMERALS_CLASS)} dir="ltr">
-                                    {formatCurrency(p.raised_amount, p.currency, locale)} /{' '}
-                                    {formatCurrency(p.goal_amount, p.currency, locale)} —{' '}
-                                    {formatNumber(p.progress_percentage, locale)}%
+                                    <CurrencyAmountInline
+                                        amounts={[p.raised_amount, p.goal_amount]}
+                                        currency={p.currency}
+                                        iconSize="sm"
+                                    />{' '}
+                                    — {formatNumber(p.progress_percentage, locale)}%
                                 </p>
                                 {p.is_active && (
                                     <span className="mt-1 inline-block rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">

@@ -12,7 +12,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { useLocale } from '@/contexts/LocaleContext';
 import { CurvedSectionBottom } from '@/components/shared/CurvedSectionBottom';
-import { cn, ENGLISH_NUMERALS_CLASS, formatCurrency, formatNumber } from '@/lib/utils';
+import { cn, ENGLISH_NUMERALS_CLASS, formatNumber } from '@/lib/utils';
 
 export function HomePage() {
     const { t } = useTranslation();
@@ -91,13 +91,14 @@ export function HomePage() {
                         )}
                     </motion.div>
 
-                    <div className="order-1 flex justify-center lg:order-2">
+                    <div className="order-1 flex w-full justify-center lg:order-2 lg:justify-end">
                         <HouseProgress
                             percentage={progress}
                             donationsCount={donationsCount}
                             size="lg"
                             variant="hero"
-                            interactive
+                            showLabel={false}
+                            className="w-full max-w-none lg:max-w-full"
                         />
                     </div>
                 </div>
@@ -113,16 +114,19 @@ export function HomePage() {
                         <div className="grid gap-4 sm:grid-cols-3">
                             <StatCard
                                 label={t('home.raised')}
-                                value={formatCurrency(project.raised_amount, project.currency, locale)}
+                                amount={project.raised_amount}
+                                currency={project.currency}
                                 highlight
                             />
                             <StatCard
                                 label={t('home.goal')}
-                                value={formatCurrency(project.goal_amount, project.currency, locale)}
+                                amount={project.goal_amount}
+                                currency={project.currency}
                             />
                             <StatCard
                                 label={t('home.remaining')}
-                                value={formatCurrency(project.remaining_amount, project.currency, locale)}
+                                amount={project.remaining_amount}
+                                currency={project.currency}
                             />
                         </div>
                     </div>

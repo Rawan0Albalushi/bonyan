@@ -10,7 +10,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useLocale } from '@/contexts/LocaleContext';
-import { cn, ENGLISH_NUMERALS_CLASS, formatCurrency } from '@/lib/utils';
+import { CurrencyAmount } from '@/components/shared/CurrencyAmount';
+import { cn, ENGLISH_NUMERALS_CLASS } from '@/lib/utils';
 
 export function DonatePage() {
     const { t } = useTranslation();
@@ -112,7 +113,7 @@ export function DonatePage() {
                     <HouseProgress
                         percentage={project.progress_percentage}
                         donationsCount={project.donations_count ?? 0}
-                        size="md"
+                        size="lg"
                         interactive
                     />
                     <p className="mt-6 text-center text-sm text-muted-foreground">{project.title}</p>
@@ -145,7 +146,11 @@ export function DonatePage() {
                                                         : 'border-primary/15 bg-card hover:border-primary/40 hover:bg-surface/60',
                                                 )}
                                             >
-                                                {formatCurrency(preset, project.currency, locale)}
+                                                <CurrencyAmount
+                                                    amount={preset}
+                                                    currency={project.currency}
+                                                    iconSize="sm"
+                                                />
                                             </button>
                                         ))}
                                     </div>

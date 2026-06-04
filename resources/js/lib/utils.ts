@@ -18,9 +18,18 @@ function formatDecimalEn(
     });
 }
 
+export function normalizeCurrencyCode(currency?: string): string {
+    return typeof currency === 'string' && /^[A-Z]{3}$/i.test(currency) ? currency.toUpperCase() : 'OMR';
+}
+
+export function formatCurrencyAmount(amount: number): string {
+    return formatDecimalEn(amount, { maximumFractionDigits: 3 });
+}
+
+/** @deprecated Use `<CurrencyAmount />` for OMR sprite display. */
 export function formatCurrency(amount: number, currency = 'OMR', _locale = 'ar'): string {
-    const safeCurrency = typeof currency === 'string' && /^[A-Z]{3}$/i.test(currency) ? currency.toUpperCase() : 'OMR';
-    const formatted = formatDecimalEn(amount, { maximumFractionDigits: 3 });
+    const safeCurrency = normalizeCurrencyCode(currency);
+    const formatted = formatCurrencyAmount(amount);
 
     if (safeCurrency === 'OMR') {
         return `${formatted} ر.ع.`;
