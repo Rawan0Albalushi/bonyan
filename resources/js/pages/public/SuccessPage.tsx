@@ -37,17 +37,17 @@ function SuccessSteps({ active }: { active: boolean }) {
     ];
 
     return (
-        <ol className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
+        <ol className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
             {steps.map((step, i) => (
-                <li key={step.label} className="flex items-center gap-2">
-                    <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-card px-3.5 py-1.5 text-xs font-semibold text-primary shadow-sm">
-                        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                            <Check className="h-3 w-3" strokeWidth={3} />
+                <li key={step.label} className="flex items-center gap-1.5">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-card px-2.5 py-1 text-[11px] font-semibold text-primary shadow-sm sm:gap-2 sm:px-3 sm:py-1.5 sm:text-xs">
+                        <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-primary-foreground sm:h-5 sm:w-5">
+                            <Check className="h-2.5 w-2.5 sm:h-3 sm:w-3" strokeWidth={3} />
                         </span>
                         {step.label}
                     </span>
                     {i < steps.length - 1 && (
-                        <Arrow className="h-4 w-4 shrink-0 text-muted-foreground/70 rtl:rotate-180" aria-hidden />
+                        <Arrow className="h-3.5 w-3.5 shrink-0 text-muted-foreground/70 rtl:rotate-180 sm:h-4 sm:w-4" aria-hidden />
                     )}
                 </li>
             ))}
@@ -122,87 +122,92 @@ export function SuccessPage() {
                     <div className="absolute -bottom-12 -start-12 h-48 w-48 rounded-full bg-primary/20 blur-3xl" />
                 </div>
 
-                <div className="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 md:py-14 lg:px-8">
+                <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 md:py-8 lg:px-8">
                     <motion.div
                         initial={{ opacity: 0, y: 12 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between"
+                        className="flex flex-col items-center gap-4 text-center md:gap-5"
                     >
-                        <div className="flex flex-col items-center gap-4 text-center md:items-start md:text-start">
-                            <motion.div
-                                initial={{ scale: 0.85 }}
-                                animate={{ scale: 1 }}
-                                transition={{ type: 'spring', stiffness: 260, damping: 18 }}
-                                className={cn(
-                                    'flex h-16 w-16 items-center justify-center rounded-2xl shadow-brand-lg',
-                                    showCelebration
-                                        ? 'bg-primary text-primary-foreground'
-                                        : 'bg-muted text-muted-foreground',
-                                )}
-                            >
-                                {verifying ? (
-                                    <Loader2 className="h-8 w-8 animate-spin" />
-                                ) : (
-                                    <CheckCircle2 className="h-8 w-8" />
-                                )}
-                            </motion.div>
-                            <div className="space-y-2">
-                                <h1 className="font-display text-3xl font-extrabold text-gradient-brand sm:text-4xl">
-                                    {verifying ? t('success.verifying') : t('success.title')}
-                                </h1>
-                                <p className="max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-                                    {verifying
-                                        ? t('success.pending')
-                                        : showCelebration
-                                          ? t('success.subtitle_build')
-                                          : t('success.pending')}
-                                </p>
-                            </div>
+                        <motion.div
+                            initial={{ scale: 0.85 }}
+                            animate={{ scale: 1 }}
+                            transition={{ type: 'spring', stiffness: 260, damping: 18 }}
+                            className={cn(
+                                'flex h-12 w-12 items-center justify-center rounded-xl shadow-brand sm:h-14 sm:w-14 sm:rounded-2xl',
+                                showCelebration
+                                    ? 'bg-primary text-primary-foreground'
+                                    : 'bg-muted text-muted-foreground',
+                            )}
+                        >
+                            {verifying ? (
+                                <Loader2 className="h-6 w-6 animate-spin sm:h-7 sm:w-7" />
+                            ) : (
+                                <CheckCircle2 className="h-6 w-6 sm:h-7 sm:w-7" />
+                            )}
+                        </motion.div>
+                        <div className="space-y-2">
+                            <h1 className="font-display text-2xl font-extrabold text-gradient-brand sm:text-3xl">
+                                {verifying ? t('success.verifying') : t('success.title')}
+                            </h1>
+                            <p className="mx-auto max-w-lg text-sm leading-relaxed text-muted-foreground sm:text-base">
+                                {verifying
+                                    ? t('success.pending')
+                                    : showCelebration
+                                      ? t('success.subtitle_build')
+                                      : t('success.pending')}
+                            </p>
                         </div>
-                        <SuccessSteps active={showCelebration} />
+                        <div className="mt-1">
+                            <SuccessSteps active={showCelebration} />
+                        </div>
                     </motion.div>
                 </div>
             </section>
 
-            <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 md:py-12 lg:px-8">
+            <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 md:py-10 lg:px-8">
                 {showCelebration ? (
-                    <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(300px,380px)] lg:items-start lg:gap-10">
+                    <div className="grid gap-8 lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-12">
                         <motion.section
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="order-1 space-y-4 lg:order-none"
+                            className="order-1 lg:order-none"
                         >
-                            <div className="flex items-center justify-between gap-3 rounded-2xl border border-primary/10 bg-card/80 px-4 py-3 shadow-sm backdrop-blur-sm">
-                                <p className="text-sm font-medium text-muted-foreground">
-                                    {t('success.watch_build')}
-                                </p>
-                                <span
-                                    className={cn(
-                                        'rounded-lg bg-primary/10 px-2.5 py-1 text-sm font-bold text-primary',
-                                        ENGLISH_NUMERALS_CLASS,
-                                    )}
-                                    dir="ltr"
-                                >
-                                    {formatNumber(fundingProgress, locale)}%
-                                </span>
+                            <div className="overflow-hidden rounded-2xl border border-primary/10 bg-card shadow-brand">
+                                <div className="flex items-center justify-between gap-4 border-b border-primary/10 bg-muted/30 px-4 py-3.5 sm:px-5 sm:py-4">
+                                    <p className="text-sm font-medium text-foreground">
+                                        {t('success.watch_build')}
+                                    </p>
+                                    <span
+                                        className={cn(
+                                            'shrink-0 rounded-lg bg-primary/10 px-2.5 py-1 text-sm font-bold text-primary',
+                                            ENGLISH_NUMERALS_CLASS,
+                                        )}
+                                        dir="ltr"
+                                    >
+                                        {formatNumber(fundingProgress, locale)}%
+                                    </span>
+                                </div>
+                                <div className="p-4 sm:p-6">
+                                    <HouseProgress
+                                        percentage={fundingProgress}
+                                        celebrateFromPercentage={previousFundingProgress}
+                                        size="md"
+                                        inlineCelebration
+                                        showLabel={false}
+                                        animated
+                                        interactive={false}
+                                        showPartSummary={false}
+                                        className="mx-auto w-full gap-0"
+                                    />
+                                </div>
                             </div>
-                            <HouseProgress
-                                percentage={fundingProgress}
-                                celebrateFromPercentage={previousFundingProgress}
-                                size="celebration"
-                                showLabel
-                                animated
-                                interactive={false}
-                                showPartSummary={false}
-                                className="mx-auto lg:mx-0"
-                            />
                         </motion.section>
 
                         <motion.aside
                             initial={{ opacity: 0, x: isRtl ? -16 : 16 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.12 }}
-                            className="order-2 space-y-4 lg:sticky lg:top-24 lg:order-none"
+                            className="order-2 space-y-5 lg:sticky lg:top-20 lg:order-none"
                         >
                             {addedPart && (
                                 <div className="card-elevated overflow-hidden rounded-2xl">
@@ -215,8 +220,8 @@ export function SuccessPage() {
                                             <Hammer className="h-3.5 w-3.5" />
                                             {t('success.you_built')}
                                         </p>
-                                        <p className="relative mt-2 font-display text-2xl font-bold leading-snug">
-                                            <span className="me-2 text-3xl" aria-hidden>
+                                        <p className="relative mt-2 font-display text-xl font-bold leading-snug sm:text-2xl">
+                                            <span className="me-2 text-2xl sm:text-3xl" aria-hidden>
                                                 {addedPart.icon}
                                             </span>
                                             {t(addedPart.labelKey)}
@@ -228,79 +233,79 @@ export function SuccessPage() {
                                 </div>
                             )}
 
-                            <div className="card-elevated rounded-2xl p-5">
-                                <div className="flex items-center gap-2 text-primary">
-                                    <TrendingUp className="h-4 w-4" />
-                                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                                        {t('success.new_progress')}
-                                    </p>
-                                </div>
-                                <div className="mt-3 flex items-baseline justify-between gap-3">
-                                    <span
+                            <div className="card-elevated overflow-hidden rounded-2xl">
+                                <div className="border-b border-border/50 p-5 sm:p-6">
+                                    <div className="flex items-center gap-2.5 text-primary">
+                                        <TrendingUp className="h-4 w-4 shrink-0" />
+                                        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                                            {t('success.new_progress')}
+                                        </p>
+                                    </div>
+                                    <p
                                         className={cn(
-                                            'font-display text-4xl font-bold text-primary',
+                                            'mt-3 font-display text-3xl font-bold text-primary',
                                             ENGLISH_NUMERALS_CLASS,
                                         )}
                                         dir="ltr"
                                     >
                                         {formatNumber(fundingProgress, locale)}%
-                                    </span>
+                                    </p>
+                                    <Progress value={fundingProgress} className="mt-4 h-2.5" />
                                 </div>
-                                <Progress value={fundingProgress} className="mt-4 h-2.5" />
-                            </div>
 
-                            {donation && (
-                                <div className="card-elevated rounded-2xl p-5">
-                                    <div className="mb-4 flex items-center gap-2">
-                                        <Receipt className="h-4 w-4 text-primary" />
-                                        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                                            {t('success.subtitle')}
-                                        </p>
-                                    </div>
-                                    <div className="grid gap-3">
-                                        <div className="rounded-xl border border-border/60 bg-muted/40 p-4">
-                                            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                                                {t('success.amount')}
-                                            </p>
-                                            <p className="mt-1.5" dir="ltr">
-                                                <CurrencyAmount
-                                                    amount={donation.amount}
-                                                    currency={project?.currency}
-                                                    className="font-display text-xl font-bold"
-                                                    amountClassName="text-accent"
-                                                    iconSize="lg"
-                                                />
+                                {donation && (
+                                    <div className="border-b border-border/50 p-5 sm:p-6">
+                                        <div className="mb-4 flex items-center gap-2.5">
+                                            <Receipt className="h-4 w-4 shrink-0 text-primary" />
+                                            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                                                {t('success.subtitle')}
                                             </p>
                                         </div>
-                                        <div className="rounded-xl border border-border/60 bg-muted/40 p-4">
-                                            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                                                {t('success.reference')}
-                                            </p>
-                                            <p
-                                                className="mt-1.5 break-all font-mono text-xs leading-relaxed text-foreground sm:text-sm"
-                                                dir="ltr"
-                                                title={donation.reference}
-                                            >
-                                                {donation.reference}
-                                            </p>
+                                        <div className="grid gap-4">
+                                            <div className="rounded-xl border border-border/60 bg-muted/40 px-4 py-3.5">
+                                                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                                                    {t('success.amount')}
+                                                </p>
+                                                <p className="mt-2" dir="ltr">
+                                                    <CurrencyAmount
+                                                        amount={donation.amount}
+                                                        currency={project?.currency}
+                                                        className="font-display text-lg font-bold"
+                                                        amountClassName="text-accent"
+                                                        iconSize="md"
+                                                    />
+                                                </p>
+                                            </div>
+                                            <div className="rounded-xl border border-border/60 bg-muted/40 px-4 py-3.5">
+                                                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                                                    {t('success.reference')}
+                                                </p>
+                                                <p
+                                                    className="mt-2 break-all font-mono text-xs leading-relaxed text-foreground"
+                                                    dir="ltr"
+                                                    title={donation.reference}
+                                                >
+                                                    {donation.reference}
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            )}
+                                )}
 
-                            <div className="flex flex-col gap-3 pt-1">
-                                <Link to="/donate">
-                                    <Button variant="accent" size="lg" className="w-full gap-2 shadow-accent">
-                                        <Heart className="h-4 w-4 fill-current" />
-                                        {t('success.donate_again')}
-                                    </Button>
-                                </Link>
-                                <Link to="/">
-                                    <Button variant="outline" size="lg" className="w-full gap-2">
-                                        <Home className="h-4 w-4" />
-                                        {t('success.back_home')}
-                                    </Button>
-                                </Link>
+                                <div className="flex flex-col gap-3 p-5 sm:p-6">
+                                    <Link to="/donate">
+                                        <Button variant="accent" className="h-11 w-full gap-2 shadow-accent">
+                                            <Heart className="h-4 w-4 fill-current" />
+                                            {t('success.donate_again')}
+                                        </Button>
+                                    </Link>
+                                    <Link to="/">
+                                        <Button variant="outline" className="h-11 w-full gap-2">
+                                            <Home className="h-4 w-4" />
+                                            {t('success.back_home')}
+                                        </Button>
+                                    </Link>
+                                </div>
                             </div>
                         </motion.aside>
                     </div>

@@ -25,6 +25,8 @@ interface HouseProgressProps {
     celebratePartId?: string | null;
     variant?: 'default' | 'hero';
     showPartSummary?: boolean;
+    /** Keep `size` instead of expanding to full celebration width (e.g. success page sidebar). */
+    inlineCelebration?: boolean;
 }
 
 export function HouseProgress({
@@ -37,6 +39,7 @@ export function HouseProgress({
     celebratePartId = null,
     variant = 'default',
     showPartSummary = true,
+    inlineCelebration = false,
 }: HouseProgressProps) {
     const { t } = useTranslation();
     const { locale } = useLocale();
@@ -104,7 +107,7 @@ export function HouseProgress({
         return celebratedPartFromProgress;
     }, [celebratePartId, celebratedPartFromProgress]);
 
-    const effectiveSize = isCelebration ? 'celebration' : size;
+    const effectiveSize = isCelebration && !inlineCelebration ? 'celebration' : size;
 
     const sizeClasses = {
         sm: 'w-full max-w-[28rem]',
@@ -123,7 +126,7 @@ export function HouseProgress({
     const showBuildingOverlay = isCelebration && (revealPhase === 'waiting' || revealPhase === 'building');
 
     return (
-        <div className={cn('flex w-full flex-col items-center gap-4', className)}>
+        <div className={cn('flex w-full flex-col items-center', variant === 'hero' ? 'gap-0' : 'gap-4', className)}>
             <Wrapper {...wrapperProps} className={cn('relative w-full', heroSizeClass || sizeClasses[effectiveSize])}>
                 {showLabel && (
                     <span

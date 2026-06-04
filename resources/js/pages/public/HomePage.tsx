@@ -44,7 +44,7 @@ export function HomePage() {
 
     return (
         <div>
-            <section className="bg-hero-gradient relative rounded-b-[2rem] pb-16 pt-8 sm:rounded-b-[2.5rem] md:pb-24 md:pt-12">
+            <section className="bg-hero-gradient relative rounded-b-[2rem] pb-10 pt-10 sm:rounded-b-[2.5rem] sm:pb-12 sm:pt-12 md:pb-14 md:pt-14 lg:pb-16 lg:pt-16">
                 <div
                     className="pointer-events-none absolute inset-0 overflow-hidden rounded-b-[2rem] sm:rounded-b-[2.5rem]"
                     aria-hidden
@@ -52,11 +52,11 @@ export function HomePage() {
                     <div className="absolute -end-24 -top-24 h-72 w-72 rounded-full bg-accent/20 blur-3xl" />
                     <div className="absolute -bottom-16 -start-16 h-56 w-56 rounded-full bg-primary/15 blur-3xl" />
                 </div>
-                <div className="relative mx-auto grid max-w-7xl gap-10 px-4 pb-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-16 lg:px-8">
+                <div className="relative mx-auto grid max-w-7xl gap-8 px-4 sm:gap-10 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-12 lg:px-8 xl:gap-14">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="order-2 min-w-0 space-y-6 overflow-visible lg:order-1"
+                        className="order-2 flex min-w-0 flex-col justify-center space-y-5 overflow-visible sm:space-y-6 lg:order-1 lg:pe-4 xl:pe-8"
                     >
                         <h1 className="font-display text-3xl font-extrabold leading-snug text-gradient-brand sm:text-4xl lg:text-5xl">
                             {t('home.hero_title')}
@@ -90,7 +90,7 @@ export function HomePage() {
                         )}
                     </motion.div>
 
-                    <div className="order-1 flex w-full justify-center lg:order-2 lg:justify-end">
+                    <div className="order-1 flex w-full items-center justify-center lg:order-2 lg:justify-end lg:ps-2 xl:ps-6">
                         <HouseProgress
                             percentage={progress}
                             size="lg"
@@ -100,7 +100,7 @@ export function HomePage() {
                         />
                     </div>
                 </div>
-                <CurvedSectionBottom />
+                <CurvedSectionBottom className="[&_svg]:h-8 [&_svg]:sm:h-10 [&_svg]:md:h-14" />
             </section>
 
             {project && (

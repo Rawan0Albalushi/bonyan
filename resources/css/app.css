@@ -398,17 +398,18 @@
     }
 
     .house-scene-inner {
-        transform: translateZ(16px);
+        transform: translateZ(16px) scale(1.22);
+        transform-origin: 50% 76%;
         transform-style: preserve-3d;
     }
 
     .house-ground-shadow {
         position: absolute;
-        bottom: 4%;
+        bottom: 5%;
         left: 50%;
         z-index: -1;
-        width: 72%;
-        height: 14%;
+        width: 52%;
+        height: 9%;
         transform: translateX(-50%) rotateX(72deg) translateZ(-20px);
         transform-origin: center center;
         background: radial-gradient(

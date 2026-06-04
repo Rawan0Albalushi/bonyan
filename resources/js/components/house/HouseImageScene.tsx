@@ -9,13 +9,14 @@ import {
 } from '@/components/house/houseLayers';
 
 const SIZE_HEIGHT: Record<string, string> = {
-    sm: 'min-h-[18rem] max-h-[28rem] sm:max-h-[34rem]',
-    md: 'min-h-[22rem] max-h-[38rem] sm:max-h-[48rem]',
-    lg: 'min-h-[26rem] max-h-[48rem] sm:max-h-[58rem] lg:max-h-[68rem] xl:max-h-[76rem]',
-    celebration: 'min-h-[28rem] max-h-[50rem] sm:max-h-[60rem] md:max-h-[68rem] lg:max-h-[80rem]',
+    sm: 'min-h-[15rem] max-h-[22rem] sm:max-h-[28rem]',
+    md: 'min-h-[18rem] max-h-[30rem] sm:max-h-[38rem]',
+    lg: 'min-h-[20rem] max-h-[36rem] sm:max-h-[44rem] lg:max-h-[52rem] xl:max-h-[58rem]',
+    celebration: 'min-h-[22rem] max-h-[38rem] sm:max-h-[46rem] md:max-h-[52rem] lg:max-h-[62rem]',
 };
 
-const HERO_HEIGHT = 'min-h-[28rem] max-h-[52rem] sm:max-h-[62rem] lg:max-h-[min(88vh,880px)]';
+const HERO_HEIGHT =
+    'min-h-[26rem] max-h-[48rem] sm:max-h-[58rem] md:max-h-[64rem] lg:min-h-[34rem] lg:max-h-[min(88vh,880px)]';
 
 interface HouseImageSceneProps {
     /** Funding progress toward goal (raised / target), 0–100. */
