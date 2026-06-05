@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight, Shield, Sparkles } from 'lucide-react';
 import { fetchActiveProject } from '@/api/public';
 import type { Project, PublicSettings } from '@/api/types';
 import { HouseProgress } from '@/components/house/HouseProgress';
+import { HowDonateStepCard } from '@/components/shared/HowDonateStepCard';
 import { StatCard } from '@/components/shared/StatCard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -37,7 +38,7 @@ export function HomePage() {
         return (
             <section
                 className={cn(
-                    'bg-hero-gradient relative overflow-hidden rounded-b-[2rem] sm:rounded-b-[2.5rem]',
+                    'bg-hero-gradient-home relative overflow-hidden rounded-b-[2rem] sm:rounded-b-[2.5rem]',
                     PUBLIC_HEADER_SPACER_CLASS,
                 )}
             >
@@ -54,14 +55,15 @@ export function HomePage() {
         <div>
             <section
                 className={cn(
-                    'bg-hero-gradient relative overflow-hidden rounded-b-[2rem] pb-10 sm:rounded-b-[2.5rem] sm:pb-12 md:pb-14 lg:pb-16',
+                    'bg-hero-gradient-home relative overflow-hidden rounded-b-[2rem] pb-10 shadow-[inset_0_-1px_0_0_color-mix(in_srgb,var(--color-primary)_12%,transparent)] sm:rounded-b-[2.5rem] sm:pb-12 md:pb-14 lg:pb-16',
                     PUBLIC_HEADER_SPACER_CLASS,
                 )}
             >
                 <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-b-[2rem] sm:rounded-b-[2.5rem]" aria-hidden>
-                    <div className="absolute -end-24 -top-24 h-72 w-72 rounded-full bg-accent/20 blur-3xl" />
-                    <div className="absolute -bottom-16 -start-16 h-56 w-56 rounded-full bg-primary/15 blur-3xl" />
-                    <div className="absolute start-1/2 top-0 h-40 w-[min(90%,36rem)] -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
+                    <div className="absolute -end-20 -top-20 h-80 w-80 rounded-full bg-accent/35 blur-3xl" />
+                    <div className="absolute -bottom-12 -start-12 h-64 w-64 rounded-full bg-primary/28 blur-3xl" />
+                    <div className="absolute start-1/2 top-0 h-48 w-[min(92%,38rem)] -translate-x-1/2 rounded-full bg-primary-light/22 blur-3xl" />
+                    <div className="absolute bottom-1/4 end-1/3 h-40 w-40 rounded-full bg-olive/20 blur-2xl" />
                 </div>
 
                 <div className="relative mx-auto grid max-w-7xl gap-8 px-4 sm:gap-10 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-12 lg:px-8 xl:gap-14">
@@ -70,10 +72,10 @@ export function HomePage() {
                         animate={{ opacity: 1, y: 0 }}
                         className="order-2 flex min-w-0 flex-col justify-center space-y-5 overflow-visible sm:space-y-6 lg:order-1 lg:pe-4 xl:pe-8"
                     >
-                        <h1 className="font-display text-3xl font-extrabold leading-snug text-gradient-brand sm:text-4xl lg:text-5xl">
+                        <h1 className="font-display text-3xl font-extrabold leading-snug text-gradient-brand-hero drop-shadow-sm sm:text-4xl lg:text-5xl">
                             {t('home.hero_title')}
                         </h1>
-                        <p className="text-lg leading-relaxed text-muted-foreground">
+                        <p className="text-lg leading-relaxed text-foreground/85">
                             {project?.description ?? t('home.hero_subtitle')}
                         </p>
                         <div className="flex flex-wrap gap-3">
@@ -84,20 +86,27 @@ export function HomePage() {
                                 </Button>
                             </Link>
                             <a href="#about">
-                                <Button variant="outline" size="lg">
+                                <Button
+                                    variant="outline"
+                                    size="lg"
+                                    className="border-primary/35 bg-white/55 backdrop-blur-sm hover:bg-white/80"
+                                >
                                     {t('home.cta_learn')}
                                 </Button>
                             </a>
                         </div>
                         {project && (
-                            <div className="space-y-2">
+                            <div className="space-y-2.5">
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">{t('home.progress_label')}</span>
-                                    <span className={cn('font-bold text-primary', ENGLISH_NUMERALS_CLASS)} dir="ltr">
+                                    <span className="font-medium text-foreground/75">{t('home.progress_label')}</span>
+                                    <span
+                                        className={cn('text-base font-extrabold text-primary-dark', ENGLISH_NUMERALS_CLASS)}
+                                        dir="ltr"
+                                    >
                                         {formatNumber(progress, locale)}%
                                     </span>
                                 </div>
-                                <Progress value={progress} className="h-2" />
+                                <Progress value={progress} variant="hero" className="h-2.5 sm:h-3" />
                             </div>
                         )}
                     </motion.div>
@@ -121,22 +130,28 @@ export function HomePage() {
                         <h2 className="mb-8 text-center font-display text-2xl font-bold text-gradient-brand">
                             {project.title}
                         </h2>
-                        <div className="grid gap-4 sm:grid-cols-3">
+                        <div className="grid gap-5 sm:grid-cols-3 sm:gap-6">
                             <StatCard
                                 label={t('home.raised')}
                                 amount={project.raised_amount}
                                 currency={project.currency}
+                                variant="raised"
+                                index={0}
                                 highlight
                             />
                             <StatCard
                                 label={t('home.goal')}
                                 amount={project.goal_amount}
                                 currency={project.currency}
+                                variant="goal"
+                                index={1}
                             />
                             <StatCard
                                 label={t('home.remaining')}
                                 amount={project.remaining_amount}
                                 currency={project.currency}
+                                variant="remaining"
+                                index={2}
                             />
                         </div>
                     </div>
@@ -145,26 +160,33 @@ export function HomePage() {
 
             <section id="about" className="bg-section-muted py-12 md:py-16">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <h2 className="mb-10 text-center font-display text-2xl font-bold text-gradient-brand">{t('home.how_title')}</h2>
-                    <div className="grid gap-6 md:grid-cols-3">
-                        {[t('home.step1'), t('home.step2'), t('home.step3')].map((step, i) => (
-                            <motion.div
-                                key={step}
-                                initial={{ opacity: 0, y: 16 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: i * 0.1 }}
-                            >
-                                <Card className="card-feature h-full border-none">
-                                    <CardContent className="flex flex-col items-center gap-4 p-6 text-center">
-                                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-accent-light to-accent font-display text-xl font-bold text-accent-foreground shadow-accent">
-                                            {i + 1}
-                                        </span>
-                                        <p className="font-medium">{step}</p>
-                                    </CardContent>
-                                </Card>
-                            </motion.div>
-                        ))}
+                    <h2 className="mb-10 text-center font-display text-2xl font-bold text-gradient-brand md:mb-12">
+                        {t('home.how_title')}
+                    </h2>
+                    <div className="flex flex-col items-center gap-12 sm:gap-14 md:flex-row md:items-start md:justify-center md:gap-0">
+                        <HowDonateStepCard
+                            step={1}
+                            label={t('home.step1')}
+                            variant="amount"
+                            index={0}
+                            showConnector
+                            className="md:flex-1 md:max-w-[15rem]"
+                        />
+                        <HowDonateStepCard
+                            step={2}
+                            label={t('home.step2')}
+                            variant="phone"
+                            index={1}
+                            showConnector
+                            className="md:flex-1 md:max-w-[15rem]"
+                        />
+                        <HowDonateStepCard
+                            step={3}
+                            label={t('home.step3')}
+                            variant="complete"
+                            index={2}
+                            className="md:flex-1 md:max-w-[15rem]"
+                        />
                     </div>
                 </div>
             </section>

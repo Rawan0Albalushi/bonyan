@@ -229,6 +229,27 @@
         padding-block: 0.08em;
     }
 
+    .progress-indicator-hero {
+        box-shadow:
+            0 0 10px color-mix(in srgb, var(--color-primary) 32%, transparent),
+            inset 0 1px 0 color-mix(in srgb, white 50%, transparent);
+    }
+
+    .text-gradient-brand-hero {
+        background: linear-gradient(
+            135deg,
+            var(--color-primary-dark) 0%,
+            var(--color-primary) 45%,
+            color-mix(in srgb, var(--color-primary-light) 80%, var(--color-accent) 20%) 100%
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+        line-height: 1.4;
+        padding-block: 0.08em;
+    }
+
     .bg-hero-gradient {
         background: linear-gradient(
             135deg,
@@ -236,6 +257,32 @@
             color-mix(in srgb, var(--color-secondary) 90%, white) 45%,
             color-mix(in srgb, var(--color-accent) 8%, var(--color-background)) 100%
         );
+    }
+
+    .bg-hero-gradient-home {
+        background:
+            radial-gradient(
+                ellipse 75% 55% at 88% 12%,
+                color-mix(in srgb, var(--color-accent) 28%, transparent),
+                transparent 52%
+            ),
+            radial-gradient(
+                ellipse 65% 50% at 8% 85%,
+                color-mix(in srgb, var(--color-primary) 24%, transparent),
+                transparent 55%
+            ),
+            radial-gradient(
+                ellipse 50% 40% at 50% 0%,
+                color-mix(in srgb, var(--color-primary-light) 18%, transparent),
+                transparent 60%
+            ),
+            linear-gradient(
+                135deg,
+                color-mix(in srgb, var(--color-primary) 26%, var(--color-surface)) 0%,
+                color-mix(in srgb, var(--color-secondary) 100%, white) 36%,
+                color-mix(in srgb, var(--color-surface) 85%, var(--color-primary) 10%) 68%,
+                color-mix(in srgb, var(--color-accent) 16%, var(--color-background)) 100%
+            );
     }
 
     .public-header-spacer {
@@ -404,6 +451,11 @@
 
     .house-scene {
         isolation: isolate;
+        cursor: default;
+    }
+
+    .house-scene-realistic {
+        pointer-events: none;
     }
 
     .house-scene-3d {
@@ -488,6 +540,9 @@
 
     .house-picture-img {
         user-select: none;
+        cursor: default;
+        -webkit-user-drag: none;
+        user-drag: none;
     }
 
     .house-impact-layer {
