@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'Bonyan') }}</title>
     <link rel="icon" href="/image/logo.jpeg" type="image/jpeg">
+    @viteReactRefresh
     @vite(['resources/css/app.css', 'resources/js/app.tsx'])
 </head>
 <body class="antialiased">

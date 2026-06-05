@@ -1,17 +1,15 @@
 import { useEffect, useState } from 'react';
-import { Link, Outlet, useLocation } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Heart } from 'lucide-react';
 import { fetchActiveProject } from '@/api/public';
 import type { PublicSettings } from '@/api/types';
-import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher';
-import { Button } from '@/components/ui/button';
+import { PublicHeader } from '@/components/shared/PublicHeader';
 import { useLocale } from '@/contexts/LocaleContext';
 
 export function PublicLayout() {
     const { t } = useTranslation();
     const { locale } = useLocale();
-    const location = useLocation();
     const [siteSettings, setSiteSettings] = useState<PublicSettings | null>(null);
 
     useEffect(() => {
@@ -24,47 +22,10 @@ export function PublicLayout() {
         locale === 'ar'
             ? siteSettings?.site_name_ar || t('site.name')
             : siteSettings?.site_name_en || t('site.name');
-    const tagline =
-        locale === 'ar'
-            ? siteSettings?.tagline_ar || t('site.tagline')
-            : siteSettings?.tagline_en || t('site.tagline');
-
-    const navLinks = [
-        { to: '/', label: t('nav.home') },
-        { to: '/donate', label: t('nav.donate') },
-    ];
 
     return (
         <div className="flex min-h-screen flex-col">
-            <header className="sticky top-0 z-50 overflow-hidden rounded-b-2xl border-b border-primary/10 bg-card/92 shadow-brand backdrop-blur-lg sm:rounded-b-3xl supports-[backdrop-filter]:bg-card/85">
-                <div className="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between gap-4 px-4 sm:h-20 sm:px-6 lg:px-8">
-                    <Link to="/" className="flex shrink-0 items-center gap-3 transition-opacity hover:opacity-90">
-                        <img
-                            src="/image/logo.jpeg"
-                            alt={siteName}
-                            className="h-14 w-auto max-h-[3.5rem] object-contain sm:h-16 sm:max-h-16"
-                        />
-                        <div className="hidden sm:block">
-                            <p className="font-display text-lg font-bold text-gradient-brand">{siteName}</p>
-                            <p className="text-xs text-muted-foreground">{tagline}</p>
-                        </div>
-                    </Link>
-
-                    <nav className="flex items-center gap-1 sm:gap-2">
-                        {navLinks.map((link) => (
-                            <Link key={link.to} to={link.to}>
-                                <Button
-                                    variant={location.pathname === link.to ? 'secondary' : 'ghost'}
-                                    size="sm"
-                                >
-                                    {link.label}
-                                </Button>
-                            </Link>
-                        ))}
-                        <LanguageSwitcher />
-                    </nav>
-                </div>
-            </header>
+            <PublicHeader siteSettings={siteSettings} />
 
             <main className="flex-1">
                 <Outlet />

@@ -1,14 +1,16 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { XCircle } from 'lucide-react';
+import { PUBLIC_HEADER_SPACER_CLASS } from '@/components/shared/PublicHeader';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 
 export function CancelPage() {
     const { t } = useTranslation();
 
     return (
-        <div className="bg-page-soft py-12 md:py-20">
+        <div className={cn('bg-page-soft pb-12 md:pb-20', PUBLIC_HEADER_SPACER_CLASS)}>
             <div className="mx-auto max-w-lg px-4 text-center sm:px-6">
                 <XCircle className="mx-auto h-16 w-16 text-muted-foreground/80" />
                 <h1 className="mt-4 font-display text-3xl font-bold text-gradient-brand">{t('payment_cancel.title')}</h1>

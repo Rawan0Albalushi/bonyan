@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useLocale } from '@/contexts/LocaleContext';
 import { CurrencyAmount } from '@/components/shared/CurrencyAmount';
+import { PUBLIC_HEADER_SPACER_CLASS } from '@/components/shared/PublicHeader';
 import { cn, ENGLISH_NUMERALS_CLASS } from '@/lib/utils';
 
 export function DonatePage() {
@@ -92,7 +93,7 @@ export function DonatePage() {
 
     if (loading) {
         return (
-            <div className="flex min-h-[50vh] items-center justify-center">
+            <div className={cn('bg-page-soft flex min-h-[50vh] items-center justify-center', PUBLIC_HEADER_SPACER_CLASS)}>
                 <p className="text-muted-foreground">{t('common.loading')}</p>
             </div>
         );
@@ -100,15 +101,15 @@ export function DonatePage() {
 
     if (!project) {
         return (
-            <div className="mx-auto max-w-lg px-4 py-20 text-center">
+            <div className={cn('bg-page-soft mx-auto max-w-lg px-4 pb-20 text-center', PUBLIC_HEADER_SPACER_CLASS)}>
                 <p className="text-muted-foreground">{t('admin.no_project')}</p>
             </div>
         );
     }
 
     return (
-        <div className="bg-page-soft py-10 md:py-16">
-            <div className="mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-8">
+        <div className={cn('bg-page-soft min-h-full', PUBLIC_HEADER_SPACER_CLASS)}>
+            <div className="mx-auto grid max-w-6xl gap-10 px-4 pb-10 sm:px-6 md:pb-16 lg:grid-cols-2 lg:gap-16 lg:px-8">
                 <div className="flex flex-col items-center justify-center">
                     <HouseProgress
                         percentage={project.progress_percentage}

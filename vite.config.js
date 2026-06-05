@@ -4,12 +4,15 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 
+// Set VITE_TLS_HOST=bonyan.test in .env after securing the site in Herd (Sites → Secure).
+const tlsHost = process.env.VITE_TLS_HOST;
+
 export default defineConfig({
     plugins: [
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.tsx'],
             refresh: true,
-            detectTls: 'bonyan.test',
+            ...(tlsHost ? { detectTls: tlsHost } : {}),
         }),
         react(),
         tailwindcss(),
@@ -21,6 +24,9 @@ export default defineConfig({
     },
     server: {
         host: '127.0.0.1',
+        port: 5173,
+        strictPort: true,
+        cors: true,
         hmr: {
             host: '127.0.0.1',
         },

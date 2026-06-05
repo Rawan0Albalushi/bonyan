@@ -238,6 +238,10 @@
         );
     }
 
+    .public-header-spacer {
+        padding-top: calc(var(--public-header-offset, 5.75rem) + var(--public-header-gap, 1rem));
+    }
+
     .bg-section-muted {
         background: linear-gradient(
             180deg,

@@ -12,6 +12,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { useLocale } from '@/contexts/LocaleContext';
 import { CurvedSectionBottom } from '@/components/shared/CurvedSectionBottom';
+import { PUBLIC_HEADER_SPACER_CLASS } from '@/components/shared/PublicHeader';
 import { cn, ENGLISH_NUMERALS_CLASS, formatNumber } from '@/lib/utils';
 
 export function HomePage() {
@@ -34,9 +35,16 @@ export function HomePage() {
 
     if (loading) {
         return (
-            <div className="flex min-h-[50vh] items-center justify-center">
-                <p className="text-muted-foreground">{t('common.loading')}</p>
-            </div>
+            <section
+                className={cn(
+                    'bg-hero-gradient relative overflow-hidden rounded-b-[2rem] sm:rounded-b-[2.5rem]',
+                    PUBLIC_HEADER_SPACER_CLASS,
+                )}
+            >
+                <div className="flex min-h-[50vh] items-center justify-center pb-16">
+                    <p className="text-muted-foreground">{t('common.loading')}</p>
+                </div>
+            </section>
         );
     }
 
@@ -44,14 +52,18 @@ export function HomePage() {
 
     return (
         <div>
-            <section className="bg-hero-gradient relative rounded-b-[2rem] pb-10 pt-10 sm:rounded-b-[2.5rem] sm:pb-12 sm:pt-12 md:pb-14 md:pt-14 lg:pb-16 lg:pt-16">
-                <div
-                    className="pointer-events-none absolute inset-0 overflow-hidden rounded-b-[2rem] sm:rounded-b-[2.5rem]"
-                    aria-hidden
-                >
+            <section
+                className={cn(
+                    'bg-hero-gradient relative overflow-hidden rounded-b-[2rem] pb-10 sm:rounded-b-[2.5rem] sm:pb-12 md:pb-14 lg:pb-16',
+                    PUBLIC_HEADER_SPACER_CLASS,
+                )}
+            >
+                <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-b-[2rem] sm:rounded-b-[2.5rem]" aria-hidden>
                     <div className="absolute -end-24 -top-24 h-72 w-72 rounded-full bg-accent/20 blur-3xl" />
                     <div className="absolute -bottom-16 -start-16 h-56 w-56 rounded-full bg-primary/15 blur-3xl" />
+                    <div className="absolute start-1/2 top-0 h-40 w-[min(90%,36rem)] -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
                 </div>
+
                 <div className="relative mx-auto grid max-w-7xl gap-8 px-4 sm:gap-10 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-12 lg:px-8 xl:gap-14">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}

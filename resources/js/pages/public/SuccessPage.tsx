@@ -24,6 +24,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { useLocale } from '@/contexts/LocaleContext';
 import { CurrencyAmount } from '@/components/shared/CurrencyAmount';
+import { PUBLIC_HEADER_SPACER_CLASS } from '@/components/shared/PublicHeader';
 import { cn, ENGLISH_NUMERALS_CLASS, formatNumber } from '@/lib/utils';
 
 function SuccessSteps({ active }: { active: boolean }) {
@@ -125,13 +126,18 @@ export function SuccessPage() {
 
     return (
         <div className="bg-page-soft min-h-full">
-            <section className="relative overflow-hidden border-b border-primary/10 bg-hero-gradient">
+            <section
+                className={cn(
+                    'relative overflow-hidden border-b border-primary/10 bg-hero-gradient',
+                    PUBLIC_HEADER_SPACER_CLASS,
+                )}
+            >
                 <div className="pointer-events-none absolute inset-0" aria-hidden>
                     <div className="absolute -end-20 -top-16 h-64 w-64 rounded-full bg-accent/25 blur-3xl" />
                     <div className="absolute -bottom-12 -start-12 h-48 w-48 rounded-full bg-primary/20 blur-3xl" />
                 </div>
 
-                <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 md:py-8 lg:px-8">
+                <div className="relative mx-auto max-w-7xl px-4 pb-6 sm:px-6 md:pb-8 lg:px-8">
                     <motion.div
                         initial={{ opacity: 0, y: 12 }}
                         animate={{ opacity: 1, y: 0 }}
