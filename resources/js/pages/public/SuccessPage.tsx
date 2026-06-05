@@ -3,13 +3,11 @@ import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import {
-    ArrowLeft,
-    ArrowRight,
-    Check,
     CheckCircle2,
     Heart,
     Home,
     Loader2,
+    PartyPopper,
     Receipt,
     TrendingUp,
 } from 'lucide-react';
@@ -24,39 +22,9 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { useLocale } from '@/contexts/LocaleContext';
 import { CurrencyAmount } from '@/components/shared/CurrencyAmount';
+import { CurvedSectionBottom } from '@/components/shared/CurvedSectionBottom';
 import { PUBLIC_HEADER_SPACER_CLASS } from '@/components/shared/PublicHeader';
 import { cn, ENGLISH_NUMERALS_CLASS, formatNumber } from '@/lib/utils';
-
-function SuccessSteps({ active }: { active: boolean }) {
-    const { t } = useTranslation();
-    const { isRtl } = useLocale();
-    const Arrow = isRtl ? ArrowLeft : ArrowRight;
-
-    if (!active) return null;
-
-    const steps = [
-        { label: t('success.step_payment'), done: true },
-        { label: t('success.step_build'), done: true },
-    ];
-
-    return (
-        <ol className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
-            {steps.map((step, i) => (
-                <li key={step.label} className="flex items-center gap-1.5">
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-card px-2.5 py-1 text-[11px] font-semibold text-primary shadow-sm sm:gap-2 sm:px-3 sm:py-1.5 sm:text-xs">
-                        <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-primary-foreground sm:h-5 sm:w-5">
-                            <Check className="h-2.5 w-2.5 sm:h-3 sm:w-3" strokeWidth={3} />
-                        </span>
-                        {step.label}
-                    </span>
-                    {i < steps.length - 1 && (
-                        <Arrow className="h-3.5 w-3.5 shrink-0 text-muted-foreground/70 rtl:rotate-180 sm:h-4 sm:w-4" aria-hidden />
-                    )}
-                </li>
-            ))}
-        </ol>
-    );
-}
 
 export function SuccessPage() {
     const { t } = useTranslation();
@@ -128,55 +96,122 @@ export function SuccessPage() {
         <div className="bg-page-soft min-h-full">
             <section
                 className={cn(
-                    'relative overflow-hidden border-b border-primary/10 bg-hero-gradient',
+                    'relative w-full max-w-full overflow-x-clip rounded-b-[2rem] bg-hero-gradient-success pb-6 shadow-[inset_0_-1px_0_0_color-mix(in_srgb,var(--color-primary)_12%,transparent)] sm:rounded-b-[2.5rem] sm:pb-8 md:pb-10',
                     PUBLIC_HEADER_SPACER_CLASS,
                 )}
             >
-                <div className="pointer-events-none absolute inset-0" aria-hidden>
-                    <div className="absolute -end-20 -top-16 h-64 w-64 rounded-full bg-accent/25 blur-3xl" />
-                    <div className="absolute -bottom-12 -start-12 h-48 w-48 rounded-full bg-primary/20 blur-3xl" />
+                <div
+                    className="pointer-events-none absolute inset-0 overflow-hidden rounded-b-[2rem] sm:rounded-b-[2.5rem]"
+                    aria-hidden
+                >
+                    <div className="absolute -top-20 -end-20 h-80 w-80 rounded-full bg-accent/35 blur-3xl" />
+                    <div className="absolute -bottom-12 -start-12 h-64 w-64 rounded-full bg-primary/28 blur-3xl" />
+                    <div className="absolute start-1/2 top-0 h-48 w-[min(92%,38rem)] -translate-x-1/2 rounded-full bg-primary-light/22 blur-3xl rtl:translate-x-1/2" />
+                    {showCelebration && (
+                        <>
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.6 }}
+                                animate={{ opacity: [0.4, 0.8, 0.4], scale: [0.9, 1.1, 0.9] }}
+                                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                                className="absolute end-[12%] top-[18%] h-3 w-3 rounded-full bg-accent/70"
+                            />
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: [0.3, 0.7, 0.3] }}
+                                transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
+                                className="absolute start-[14%] top-[28%] h-2 w-2 rounded-full bg-primary-light/80"
+                            />
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: [0.25, 0.6, 0.25] }}
+                                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1.4 }}
+                                className="absolute bottom-[32%] end-[20%] h-2.5 w-2.5 rounded-full bg-accent/50"
+                            />
+                        </>
+                    )}
                 </div>
 
-                <div className="relative page-container pb-6 md:pb-8">
+                <div className="relative page-container py-3 pb-14 sm:py-4 sm:pb-16 md:pb-[4.5rem]">
                     <motion.div
-                        initial={{ opacity: 0, y: 12 }}
+                        initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="flex flex-col items-center gap-4 text-center md:gap-5"
+                        transition={{ duration: 0.45, ease: 'easeOut' }}
+                        className="flex w-full min-w-0 flex-col items-center gap-4 overflow-visible text-center sm:gap-5 md:gap-6"
                     >
-                        <motion.div
-                            initial={{ scale: 0.85 }}
-                            animate={{ scale: 1 }}
-                            transition={{ type: 'spring', stiffness: 260, damping: 18 }}
-                            className={cn(
-                                'flex h-12 w-12 items-center justify-center rounded-xl shadow-brand sm:h-14 sm:w-14 sm:rounded-2xl',
-                                showCelebration
-                                    ? 'bg-primary text-primary-foreground'
-                                    : 'bg-muted text-muted-foreground',
-                            )}
-                        >
-                            {verifying ? (
-                                <Loader2 className="h-6 w-6 animate-spin sm:h-7 sm:w-7" />
-                            ) : (
-                                <CheckCircle2 className="h-6 w-6 sm:h-7 sm:w-7" />
-                            )}
-                        </motion.div>
-                        <div className="space-y-2">
-                            <h1 className="font-display text-2xl font-extrabold text-gradient-brand sm:text-3xl">
-                                {verifying ? t('success.verifying') : t('success.title')}
-                            </h1>
-                            <p className="mx-auto max-w-lg text-sm leading-relaxed text-muted-foreground sm:text-base">
+                        {showCelebration ? (
+                            <motion.span
+                                initial={{ opacity: 0, y: -6 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.1 }}
+                                className="inline-flex items-center gap-1.5 rounded-full border border-accent/35 bg-white/60 px-3.5 py-1.5 text-xs font-semibold text-primary shadow-sm backdrop-blur-sm sm:gap-2 sm:px-4 sm:py-2 sm:text-sm"
+                            >
+                                <PartyPopper className="h-3.5 w-3.5 shrink-0 text-accent sm:h-4 sm:w-4" />
+                                {t('success.step_payment')}
+                            </motion.span>
+                        ) : (
+                            <span className="inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-white/50 px-3.5 py-1.5 text-xs font-medium text-muted-foreground backdrop-blur-sm sm:text-sm">
+                                {verifying && (
+                                    <Loader2 className="h-3.5 w-3.5 animate-spin text-primary sm:h-4 sm:w-4" />
+                                )}
+                                {verifying ? t('success.verifying') : t('success.pending')}
+                            </span>
+                        )}
+
+                        <div className="w-full min-w-0 space-y-3 overflow-visible px-1 sm:space-y-3.5">
+                            <div className="overflow-visible py-0.5">
+                                <h1
+                                    className={cn(
+                                        'font-display text-[1.75rem] font-extrabold sm:text-3xl md:text-4xl',
+                                        showCelebration ? 'text-gradient-brand-hero' : 'text-gradient-brand',
+                                    )}
+                                >
+                                    {verifying ? t('success.verifying') : t('success.title')}
+                                </h1>
+                            </div>
+                            <p className="mx-auto max-w-xl text-[0.9375rem] leading-7 text-foreground/80 sm:text-base sm:leading-relaxed">
                                 {verifying
                                     ? t('success.pending')
                                     : showCelebration
                                       ? t('success.subtitle_build')
                                       : t('success.pending')}
                             </p>
+                            {showCelebration && (
+                                <p className="mx-auto max-w-md text-xs leading-relaxed text-muted-foreground sm:text-sm sm:leading-6">
+                                    {t('success.impact_line')}
+                                </p>
+                            )}
                         </div>
-                        <div className="mt-1">
-                            <SuccessSteps active={showCelebration} />
-                        </div>
+
+                        {showCelebration && donation && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.18, duration: 0.4 }}
+                                className="mt-0.5 inline-flex max-w-full items-center gap-2.5 rounded-2xl border border-accent/30 bg-white/65 px-5 py-3 shadow-brand backdrop-blur-md sm:mt-1 sm:gap-3 sm:px-6 sm:py-3.5"
+                            >
+                                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent/15 sm:h-10 sm:w-10">
+                                    <Heart className="h-4 w-4 fill-accent text-accent sm:h-5 sm:w-5" />
+                                </span>
+                                <div className="text-start">
+                                    <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground sm:text-xs">
+                                        {t('success.amount')}
+                                    </p>
+                                    <p className="mt-0.5" dir="ltr">
+                                        <CurrencyAmount
+                                            amount={donation.amount}
+                                            currency={project?.currency}
+                                            className="font-display text-lg font-bold sm:text-xl"
+                                            amountClassName="text-accent"
+                                            iconSize="md"
+                                        />
+                                    </p>
+                                </div>
+                            </motion.div>
+                        )}
                     </motion.div>
                 </div>
+
+                <CurvedSectionBottom className="[&_svg]:h-8 [&_svg]:sm:h-10 [&_svg]:md:h-12" />
             </section>
 
             <main className="page-container py-6 md:py-10">
@@ -187,22 +222,20 @@ export function SuccessPage() {
                             animate={{ opacity: 1, y: 0 }}
                             className="order-1 lg:order-none"
                         >
-                            <div className="overflow-hidden rounded-2xl border border-primary/10 bg-card p-4 shadow-brand sm:p-6">
-                                <HouseProgress
-                                    percentage={fundingProgress}
-                                    celebrateFromPercentage={
-                                        showCelebration ? fundingBefore : null
-                                    }
-                                    donationAmount={donation?.amount}
-                                    goalAmount={project?.goal_amount}
-                                    donationsCount={donationsCount}
-                                    size="md"
-                                    inlineCelebration
-                                    showLabel={false}
-                                    animated
-                                    className="mx-auto w-full"
-                                />
-                            </div>
+                            <HouseProgress
+                                percentage={fundingProgress}
+                                celebrateFromPercentage={
+                                    showCelebration ? fundingBefore : null
+                                }
+                                donationAmount={donation?.amount}
+                                goalAmount={project?.goal_amount}
+                                donationsCount={donationsCount}
+                                size="md"
+                                inlineCelebration
+                                showLabel={false}
+                                animated
+                                className="mx-auto w-full"
+                            />
                         </motion.section>
 
                         <motion.aside

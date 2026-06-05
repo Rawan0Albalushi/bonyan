@@ -59,11 +59,31 @@ export function HomePage() {
                     PUBLIC_HEADER_SPACER_CLASS,
                 )}
             >
-                <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-b-[2rem] sm:rounded-b-[2.5rem]" aria-hidden>
-                    <div className="absolute -top-20 -right-20 h-80 w-80 rounded-full bg-accent/35 blur-3xl" />
-                    <div className="absolute -bottom-12 -left-12 h-64 w-64 rounded-full bg-primary/28 blur-3xl" />
-                    <div className="absolute left-1/2 top-0 h-48 w-[min(92%,38rem)] -translate-x-1/2 rounded-full bg-primary-light/22 blur-3xl" />
-                    <div className="absolute bottom-1/4 right-1/3 h-40 w-40 rounded-full bg-olive/20 blur-2xl" />
+                <div
+                    className="pointer-events-none absolute inset-0 overflow-hidden rounded-b-[2rem] sm:rounded-b-[2.5rem]"
+                    aria-hidden
+                >
+                    <div className="absolute -top-20 -end-20 h-80 w-80 rounded-full bg-accent/35 blur-3xl" />
+                    <div className="absolute -bottom-12 -start-12 h-64 w-64 rounded-full bg-primary/28 blur-3xl" />
+                    <div className="absolute start-1/2 top-0 h-48 w-[min(92%,38rem)] -translate-x-1/2 rounded-full bg-primary-light/22 blur-3xl rtl:translate-x-1/2" />
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.6 }}
+                        animate={{ opacity: [0.4, 0.8, 0.4], scale: [0.9, 1.1, 0.9] }}
+                        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                        className="absolute end-[12%] top-[18%] h-3 w-3 rounded-full bg-accent/70"
+                    />
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: [0.3, 0.7, 0.3] }}
+                        transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
+                        className="absolute start-[14%] top-[28%] h-2 w-2 rounded-full bg-primary-light/80"
+                    />
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: [0.25, 0.6, 0.25] }}
+                        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1.4 }}
+                        className="absolute bottom-[32%] end-[20%] h-2.5 w-2.5 rounded-full bg-accent/50"
+                    />
                 </div>
 
                 <div className="relative page-container grid w-full gap-5 sm:gap-8 lg:grid-cols-2 lg:items-center lg:gap-12 xl:gap-14">
@@ -127,8 +147,8 @@ export function HomePage() {
             {project && (
                 <section className="page-section">
                     <div className="page-container">
-                        <h2 className="mb-6 text-center font-display text-xl font-bold text-gradient-brand sm:mb-8 sm:text-2xl">
-                            {project.title}
+                        <h2 className="mb-6 text-center font-display text-xl font-bold sm:mb-8 sm:text-2xl">
+                            <span className="text-gradient-brand">{project.title}</span>
                         </h2>
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
                             <StatCard
@@ -160,8 +180,8 @@ export function HomePage() {
 
             <section id="about" className="bg-section-muted page-section">
                 <div className="page-container">
-                    <h2 className="mb-8 text-center font-display text-xl font-bold text-gradient-brand sm:mb-10 sm:text-2xl md:mb-12">
-                        {t('home.how_title')}
+                    <h2 className="mb-8 text-center font-display text-xl font-bold sm:mb-10 sm:text-2xl md:mb-12">
+                        <span className="text-gradient-brand">{t('home.how_title')}</span>
                     </h2>
                     <div className="flex flex-col items-center gap-12 sm:gap-14 md:flex-row md:items-start md:justify-center md:gap-0">
                         <HowDonateStepCard

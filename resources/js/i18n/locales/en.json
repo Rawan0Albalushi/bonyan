@@ -81,6 +81,8 @@
     "reference": "Reference",
     "amount": "Amount",
     "new_progress": "Progress",
+    "receipt_details": "Donation details",
+    "progress_added": "added by your gift",
     "back_home": "Back to Home",
     "donate_again": "Donate Again"
   },

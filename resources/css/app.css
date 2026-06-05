@@ -97,7 +97,7 @@
     }
 
     .layout-main {
-        @apply w-full min-w-0 max-w-full flex-1 overflow-x-clip;
+        @apply flex w-full min-w-0 max-w-full flex-1 flex-col overflow-x-clip;
     }
 
     .admin-shell {
@@ -342,8 +342,10 @@
         background-clip: text;
         -webkit-text-fill-color: transparent;
         color: transparent;
-        line-height: 1.4;
-        padding-block: 0.08em;
+        display: inline-block;
+        overflow: visible;
+        line-height: 1.55;
+        padding-block: 0.28em 0.12em;
     }
 
     .progress-indicator-hero {
@@ -363,8 +365,10 @@
         background-clip: text;
         -webkit-text-fill-color: transparent;
         color: transparent;
-        line-height: 1.4;
-        padding-block: 0.08em;
+        display: inline-block;
+        overflow: visible;
+        line-height: 1.6;
+        padding-block: 0.34em 0.14em;
     }
 
     .bg-hero-gradient {
@@ -399,6 +403,32 @@
                 color-mix(in srgb, var(--color-secondary) 100%, white) 36%,
                 color-mix(in srgb, var(--color-surface) 85%, var(--color-primary) 10%) 68%,
                 color-mix(in srgb, var(--color-accent) 16%, var(--color-background)) 100%
+            );
+    }
+
+    .bg-hero-gradient-success {
+        background:
+            radial-gradient(
+                ellipse 72% 52% at 92% 10%,
+                color-mix(in srgb, var(--color-accent) 38%, transparent),
+                transparent 50%
+            ),
+            radial-gradient(
+                ellipse 62% 48% at 6% 88%,
+                color-mix(in srgb, var(--color-primary) 30%, transparent),
+                transparent 54%
+            ),
+            radial-gradient(
+                ellipse 48% 38% at 50% 0%,
+                color-mix(in srgb, var(--color-primary-light) 22%, transparent),
+                transparent 58%
+            ),
+            linear-gradient(
+                155deg,
+                color-mix(in srgb, var(--color-primary) 24%, var(--color-surface)) 0%,
+                color-mix(in srgb, var(--color-secondary) 100%, white) 38%,
+                color-mix(in srgb, var(--color-surface) 82%, var(--color-accent) 12%) 72%,
+                color-mix(in srgb, var(--color-accent) 18%, var(--color-background)) 100%
             );
     }
 

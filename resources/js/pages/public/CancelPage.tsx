@@ -10,8 +10,13 @@ export function CancelPage() {
     const { t } = useTranslation();
 
     return (
-        <div className={cn('bg-page-soft pb-10 safe-bottom md:pb-20', PUBLIC_HEADER_SPACER_CLASS)}>
-            <div className="page-container-tight text-center">
+        <div
+            className={cn(
+                'bg-page-soft flex flex-1 items-center justify-center py-10 safe-bottom md:py-20',
+                PUBLIC_HEADER_SPACER_CLASS,
+            )}
+        >
+            <div className="page-container-tight w-full text-center">
                 <XCircle className="mx-auto h-14 w-14 text-muted-foreground/80 sm:h-16 sm:w-16" />
                 <h1 className="mt-4 font-display text-2xl font-bold text-gradient-brand sm:text-3xl">
                     {t('payment_cancel.title')}
