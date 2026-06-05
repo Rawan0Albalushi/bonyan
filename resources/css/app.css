@@ -741,6 +741,15 @@
         filter: contrast(1.05) saturate(1.08) brightness(1.02);
     }
 
+    .house-scene-life .house-life-base,
+    .house-scene-life .house-life-base-front {
+        filter: contrast(1.12) saturate(1.15) brightness(1.06);
+    }
+
+    .house-scene-life .house-life-base-front {
+        opacity: 1;
+    }
+
     .house-life-layer {
         will-change: opacity, transform;
     }

@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { HousePicture } from '@/components/house/HousePicture';
 import {
+    HOUSE_LIFE_BASE_IMAGE,
     getLifeStepImage,
     getLifeStepRender,
     type HouseLifeLayerId,
@@ -86,7 +87,7 @@ export function HouseLifeScene({
             : SIZE_HEIGHT[size] ?? SIZE_HEIGHT.lg;
 
     const stepRender = useMemo(() => getLifeStepRender(progress), [progress]);
-    const layoutSrc = isComplete ? HOUSE_FULL_IMAGE : getLifeStepImage(stepRender.currentStep);
+    const layoutSrc = HOUSE_LIFE_BASE_IMAGE;
 
     return (
         <div
@@ -107,24 +108,36 @@ export function HouseLifeScene({
 
             <div className="house-scene-stage absolute inset-0">
                 <div className="house-scene-inner absolute inset-0">
+                    <div className="house-scene-layer house-life-base absolute inset-0 z-0">
+                        <HousePicture src={HOUSE_LIFE_BASE_IMAGE} eager />
+                    </div>
+
                     {isComplete ? (
-                        animateLayerIds.includes('complete') ? (
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.96 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
-                                className="house-scene-layer house-life-layer house-life-layer-reveal absolute inset-0"
-                                data-life-layer="complete"
-                            >
-                                <HousePicture src={HOUSE_FULL_IMAGE} eager />
-                            </motion.div>
-                        ) : (
-                            <div className="house-scene-layer house-life-layer absolute inset-0">
-                                <HousePicture src={HOUSE_FULL_IMAGE} eager />
-                            </div>
-                        )
+                        <div
+                            className="absolute inset-0 z-[1]"
+                            style={{ clipPath: 'inset(0 0 7% 0)' }}
+                        >
+                            {animateLayerIds.includes('complete') ? (
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.96 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+                                    className="house-scene-layer house-life-layer house-life-layer-reveal absolute inset-0"
+                                    data-life-layer="complete"
+                                >
+                                    <HousePicture src={HOUSE_FULL_IMAGE} eager />
+                                </motion.div>
+                            ) : (
+                                <div className="house-scene-layer house-life-layer absolute inset-0">
+                                    <HousePicture src={HOUSE_FULL_IMAGE} eager />
+                                </div>
+                            )}
+                        </div>
                     ) : (
-                        <>
+                        <div
+                            className="absolute inset-0 z-[1]"
+                            style={{ clipPath: 'inset(0 0 7% 0)' }}
+                        >
                             <LifeStepFrame
                                 step={stepRender.currentStep}
                                 animate={animateReveal}
@@ -137,8 +150,17 @@ export function HouseLifeScene({
                                     animate={animateReveal}
                                 />
                             )}
-                        </>
+                        </div>
                     )}
+
+                    {/* Stone platform — always on top in the lower band */}
+                    <div
+                        className="house-scene-layer house-life-base-front pointer-events-none absolute inset-0 z-[2]"
+                        style={{ clipPath: 'inset(58% 0 0 0)' }}
+                        aria-hidden
+                    >
+                        <HousePicture src={HOUSE_LIFE_BASE_IMAGE} eager />
+                    </div>
                 </div>
             </div>
         </div>

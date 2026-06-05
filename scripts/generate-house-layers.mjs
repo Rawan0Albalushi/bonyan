@@ -93,11 +93,30 @@ function isStructurePixel(r, g, b, a) {
     return true;
 }
 
+function isLandscapeBackdropPixel(r, g, b, a) {
+    if (a < 24) return false;
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    const saturation = max === 0 ? 0 : (max - min) / max;
+    return (
+        (g > 145 && g >= r && g >= b && r > 110 && b > 110 && saturation < 0.22) ||
+        (g > 175 && g >= r && r > 150 && b > 150 && saturation < 0.14)
+    );
+}
+
 function isLandscapePixel(r, g, b, a, y, height, minY) {
     if (a < 24) return false;
     if (y < minY) return false;
-    if (g > r + 12 && g > 70) return true;
-    if (r > 90 && r < 200 && g > 80 && b < 120 && Math.abs(r - g) < 50) return true;
+    if (isLandscapeBackdropPixel(r, g, b, a)) return false;
+
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    const saturation = max === 0 ? 0 : (max - min) / max;
+
+    // Foliage & garden plants — saturated greens only
+    if (g > r + 22 && g > b + 18 && g > 85 && saturation > 0.12) return true;
+    // Walkway / stone / soil in the garden band
+    if (r > 85 && r < 210 && g > 65 && b < 135 && r - b > 15 && saturation > 0.08) return true;
     return false;
 }
 
@@ -365,6 +384,73 @@ function stripGhostPixels(data, minAlpha = 40) {
     }
 }
 
+/** Remove sage/mint wash left by stage-3 landscape deltas. */
+function stripSageBackdrop(data) {
+    for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+        if (isLandscapeBackdropPixel(r, g, b, data[i + 3])) {
+            data[i + 3] = 0;
+        }
+    }
+}
+
+/** Kill semi-transparent fringe below the platform (faint white/mint line). */
+function stripBottomFeather(data, info, cutPercent = 0.09, minAlpha = 220) {
+    const { width, height } = info;
+    const cutY = Math.floor(height * (1 - cutPercent));
+
+    for (let y = cutY; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+            const i = (width * y + x) * 4;
+            if (data[i + 3] < minAlpha) {
+                data[i] = 0;
+                data[i + 1] = 0;
+                data[i + 2] = 0;
+                data[i + 3] = 0;
+            }
+        }
+    }
+}
+
+/** Extend the lowest solid platform row for a clean bottom edge. */
+function solidifyBaseBottom(data, info) {
+    const { width, height } = info;
+    let lastSolidY = -1;
+
+    for (let y = height - 1; y >= 0; y--) {
+        let opaque = 0;
+        for (let x = 0; x < width; x++) {
+            if (data[(width * y + x) * 4 + 3] > 200) {
+                opaque++;
+            }
+        }
+        if (opaque > 80) {
+            lastSolidY = y;
+            break;
+        }
+    }
+
+    if (lastSolidY < 0 || lastSolidY >= height - 2) {
+        return;
+    }
+
+    const endY = Math.min(height - 1, lastSolidY + 6);
+    for (let y = lastSolidY + 1; y <= endY; y++) {
+        for (let x = 0; x < width; x++) {
+            const src = (width * lastSolidY + x) * 4;
+            const dst = (width * y + x) * 4;
+            if (data[src + 3] > 200) {
+                data[dst] = data[src];
+                data[dst + 1] = data[src + 1];
+                data[dst + 2] = data[src + 2];
+                data[dst + 3] = 255;
+            }
+        }
+    }
+}
+
 /**
  * Step frames for the UI:
  * - Structure (0–11): direct stage-0 → stage-1 blend (same house, no delta ghosts).
@@ -376,6 +462,9 @@ function buildAllStepFrames(stageImages, info) {
     const frames = new Array(CORE_PART_COUNT + 1);
 
     frames[0] = Buffer.from(stageImages[0].data);
+    solidifyBaseBottom(frames[0], info);
+    stripBottomFeather(frames[0], info, 0.07, 200);
+
     for (let i = 1; i <= structureParts; i++) {
         frames[i] = blendStages(stageImages, 0, 1, i / structureParts);
     }
@@ -403,6 +492,12 @@ function buildAllStepFrames(stageImages, info) {
 
     for (let step = 0; step <= CORE_PART_COUNT; step++) {
         stripGhostPixels(frames[step]);
+        if (step > BUILD_PHASES[0].partIds.length) {
+            stripSageBackdrop(frames[step]);
+        }
+        if (step > 0) {
+            stripBottomFeather(frames[step], info);
+        }
     }
 
     return frames;
@@ -439,8 +534,6 @@ async function main() {
         }
     }
 
-    await saveRaw(stageImages[0].data, info, 'base.png');
-
     const shell = buildShell(stageImages[1].data, info);
     await saveRaw(shell, info, 'shell.png');
 
@@ -461,6 +554,7 @@ async function main() {
         .toFile(join(houseDir, 'house-landscape-complete.png'));
 
     const stepFrames = buildAllStepFrames(stageImages, info);
+    await saveRaw(stepFrames[0], info, 'base.png');
     for (let step = 0; step <= CORE_PART_COUNT; step++) {
         await saveRaw(stepFrames[step], info, `step-${String(step).padStart(2, '0')}.png`);
     }
