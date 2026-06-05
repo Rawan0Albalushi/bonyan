@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Project;
 use App\Services\SettingsService;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class StoreDonationRequest extends FormRequest
 {
@@ -36,5 +38,39 @@ class StoreDonationRequest extends FormRequest
             'amount.max' => __('messages.donation_amount_max', ['max' => $max]),
             'amount.min' => __('messages.donation_amount_min', ['min' => $min]),
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator): void {
+            if ($validator->errors()->isNotEmpty()) {
+                return;
+            }
+
+            $project = Project::query()
+                ->where('id', $this->input('project_id'))
+                ->where('is_active', true)
+                ->first();
+
+            if (! $project) {
+                return;
+            }
+
+            $maxDonatable = $project->maxDonatableAmount();
+            $amount = (float) $this->input('amount');
+
+            if ($maxDonatable <= 0) {
+                $validator->errors()->add('amount', __('messages.project_fully_funded'));
+
+                return;
+            }
+
+            if ($amount > $maxDonatable) {
+                $validator->errors()->add(
+                    'amount',
+                    __('messages.donation_amount_exceeds_remaining', ['max' => $maxDonatable]),
+                );
+            }
+        });
     }
 }

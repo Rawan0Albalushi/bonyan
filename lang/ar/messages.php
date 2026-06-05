@@ -4,6 +4,8 @@ return [
     'donation_payment' => 'تبرع - :title',
     'donation_amount_max' => 'الحد الأقصى للتبرع هو :max ر.ع.',
     'donation_amount_min' => 'الحد الأدنى للتبرع هو :min ر.ع.',
+    'donation_amount_exceeds_remaining' => 'لا يمكن التبرع بأكثر من :max ر.ع. (المبلغ المتبقي للمشروع).',
+    'project_fully_funded' => 'تم جمع المبلغ المطلوب للمشروع بالكامل.',
     'unable_to_initiate_payment' => 'تعذّر بدء الدفع. يرجى المحاولة مرة أخرى لاحقاً.',
     'payment_link_created' => 'تم إنشاء رابط الدفع.',
     'donation_not_found' => 'التبرع غير موجود.',

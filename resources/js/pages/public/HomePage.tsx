@@ -108,7 +108,6 @@ export function HomePage() {
                             size="lg"
                             variant="hero"
                             showLabel={false}
-                            showPhaseIndicator
                             className="w-full max-w-none lg:max-w-full"
                         />
                     </div>

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\DonationStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -48,6 +49,19 @@ class Project extends Model
     public function remainingAmount(): float
     {
         return max(0, (float) $this->goal_amount - (float) $this->raised_amount);
+    }
+
+    public function pendingDonationsAmount(): float
+    {
+        return (float) $this->donations()
+            ->where('status', DonationStatus::Pending)
+            ->sum('amount');
+    }
+
+    /** Maximum amount that can still be donated without exceeding the project goal. */
+    public function maxDonatableAmount(): float
+    {
+        return max(0, $this->remainingAmount() - $this->pendingDonationsAmount());
     }
 
     public function localizedTitle(?string $locale = null): string

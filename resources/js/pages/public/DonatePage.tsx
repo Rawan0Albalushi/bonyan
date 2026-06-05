@@ -42,8 +42,14 @@ export function DonatePage() {
 
     const selectedAmount = customAmount ? parseFloat(customAmount) : amount;
     const min = settings?.min_donation_amount ?? 1;
-    const max = settings?.max_donation_amount ?? 5000;
-    const presets = settings?.donation_amounts ?? [5, 10, 25, 50, 100];
+    const settingsMax = settings?.max_donation_amount ?? 5000;
+    const remainingMax = project?.max_donatable_amount ?? settingsMax;
+    const max = Math.min(settingsMax, remainingMax);
+    const goalReached = remainingMax <= 0;
+    const belowMinRemaining = !goalReached && remainingMax < min;
+    const presets = (settings?.donation_amounts ?? [5, 10, 25, 50, 100]).filter(
+        (preset) => preset >= min && preset <= max,
+    );
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -57,12 +63,24 @@ export function DonatePage() {
             setError(t('donation.phone_required'));
             return;
         }
+        if (goalReached) {
+            setError(t('donation.goal_reached'));
+            return;
+        }
+        if (belowMinRemaining) {
+            setError(t('donation.goal_reached'));
+            return;
+        }
         if (!selectedAmount || selectedAmount < min) {
             setError(t('donation.min_error', { min }));
             return;
         }
         if (selectedAmount > max) {
-            setError(t('donation.max_error', { max }));
+            setError(
+                remainingMax < settingsMax
+                    ? t('donation.remaining_error', { max })
+                    : t('donation.max_error', { max }),
+            );
             return;
         }
 
@@ -114,7 +132,7 @@ export function DonatePage() {
                     <HouseProgress
                         percentage={project.progress_percentage}
                         size="lg"
-                        showPhaseIndicator
+                        showLabel={false}
                     />
                     <p className="mt-6 text-center text-sm text-muted-foreground">{project.title}</p>
                 </div>
@@ -126,6 +144,17 @@ export function DonatePage() {
                             <CardDescription>{t('donation.subtitle')}</CardDescription>
                         </CardHeader>
                         <CardContent>
+                            {goalReached && (
+                                <p className="mb-4 text-sm text-muted-foreground">{t('donation.goal_reached')}</p>
+                            )}
+                            {belowMinRemaining && (
+                                <p className="mb-4 text-sm text-muted-foreground">{t('donation.goal_reached')}</p>
+                            )}
+                            {!goalReached && !belowMinRemaining && remainingMax < settingsMax && (
+                                <p className="mb-4 text-sm text-muted-foreground">
+                                    {t('donation.remaining_error', { max })}
+                                </p>
+                            )}
                             <form onSubmit={(e) => void handleSubmit(e)} className="space-y-6">
                                 <div className="space-y-3">
                                     <Label>{t('donation.amount_label')}</Label>
@@ -201,7 +230,7 @@ export function DonatePage() {
                                     variant="accent"
                                     size="lg"
                                     className="w-full"
-                                    disabled={submitting}
+                                    disabled={submitting || goalReached || belowMinRemaining}
                                 >
                                     {submitting ? t('donation.submitting') : t('donation.submit')}
                                 </Button>

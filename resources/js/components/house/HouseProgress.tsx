@@ -1,16 +1,10 @@
 import { motion } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { HouseBrickBurst } from '@/components/house/HouseBrickBurst';
 import { HouseDonationToast } from '@/components/house/HouseDonationToast';
 import { HouseLifeScene } from '@/components/house/HouseLifeScene';
-import { HousePhaseIndicator } from '@/components/house/HousePhaseIndicator';
 import { getDonationImpact } from '@/components/house/donationImpact';
 import { shouldPopDonationPart } from '@/components/house/houseBuildState';
-import {
-    getLayersToAnimate,
-    getLifeStageLabelKey,
-} from '@/components/house/houseLifeProgress';
+import { getLayersToAnimate } from '@/components/house/houseLifeProgress';
 import {
     clampPercentage,
     getFundingProgressPercentage,
@@ -32,7 +26,6 @@ interface HouseProgressProps {
     donationAmount?: number;
     goalAmount?: number;
     donationsCount?: number;
-    showPhaseIndicator?: boolean;
 }
 
 const TOAST_DELAY_MS = 700;
@@ -52,9 +45,7 @@ export function HouseProgress({
     donationAmount,
     goalAmount,
     donationsCount,
-    showPhaseIndicator = false,
 }: HouseProgressProps) {
-    const { t } = useTranslation();
     const { locale } = useLocale();
 
     const fundingTarget = getFundingProgressPercentage(percentage);
@@ -125,33 +116,18 @@ export function HouseProgress({
 
     const [popPartActive, setPopPartActive] = useState(false);
     const [showToast, setShowToast] = useState(false);
-    const [brickBurstActive, setBrickBurstActive] = useState(false);
-
-    const toastKey = impact?.messageKey ?? 'house.life_toast.touch';
-    const toastParams = impact
-        ? { part: t(impact.partLabelKey) }
-        : undefined;
-
-    const showBrickBurst =
-        isCelebration && impact != null && impact.brickCount > 0 && popPartId == null;
 
     useEffect(() => {
         if (!isCelebration) {
             setPopPartActive(false);
             setShowToast(false);
-            setBrickBurstActive(false);
             return;
         }
 
         setPopPartActive(Boolean(popPartId));
-        setBrickBurstActive(showBrickBurst);
 
         const popOff = popPartId
             ? window.setTimeout(() => setPopPartActive(false), POP_ACTIVE_MS)
-            : undefined;
-
-        const brickOff = showBrickBurst
-            ? window.setTimeout(() => setBrickBurstActive(false), 1600)
             : undefined;
 
         const showTimer = window.setTimeout(() => setShowToast(true), TOAST_DELAY_MS);
@@ -162,13 +138,11 @@ export function HouseProgress({
 
         return () => {
             if (popOff) window.clearTimeout(popOff);
-            if (brickOff) window.clearTimeout(brickOff);
             window.clearTimeout(showTimer);
             window.clearTimeout(hideTimer);
         };
-    }, [isCelebration, popPartId, showBrickBurst, fundingTarget, previousFunding]);
+    }, [isCelebration, popPartId, fundingTarget, previousFunding]);
 
-    const stageLabelKey = getLifeStageLabelKey(displayFunding);
     const labelPercent = isCelebration ? displayFunding : fundingTarget;
 
     const sizeClasses = {
@@ -197,7 +171,7 @@ export function HouseProgress({
                 className={cn('relative w-full', heroSizeClass || sizeClasses[size])}
             >
                 {showLabel && (
-                    <div className="absolute end-0 top-0 z-10 flex flex-col items-end gap-1">
+                    <div className="absolute end-0 top-0 z-10">
                         <span
                             dir="ltr"
                             className={cn(
@@ -207,9 +181,6 @@ export function HouseProgress({
                             )}
                         >
                             {formatNumber(clampPercentage(labelPercent), locale)}%
-                        </span>
-                        <span className="rounded-full bg-card/90 px-2.5 py-0.5 text-[11px] font-semibold text-muted-foreground shadow-sm backdrop-blur-sm">
-                            {t(stageLabelKey)}
                         </span>
                     </div>
                 )}
@@ -223,27 +194,12 @@ export function HouseProgress({
                     variant={variant}
                 />
 
-                {showBrickBurst && impact && (
-                    <HouseBrickBurst
-                        partId={impact.partId}
-                        count={impact.brickCount}
-                        active={brickBurstActive}
-                    />
-                )}
             </Wrapper>
-
-            {showPhaseIndicator && (
-                <HousePhaseIndicator
-                    fundingPercent={labelPercent}
-                    className="mt-1 w-full max-w-lg"
-                />
-            )}
 
             {isCelebration && (
                 <HouseDonationToast
                     visible={showToast}
-                    messageKey={toastKey}
-                    messageParams={toastParams}
+                    messageKey="house.impact.simple"
                 />
             )}
         </div>

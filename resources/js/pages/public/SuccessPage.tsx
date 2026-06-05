@@ -198,7 +198,7 @@ export function SuccessPage() {
                                     donationsCount={donationsCount}
                                     size="md"
                                     inlineCelebration
-                                    showPhaseIndicator
+                                    showLabel={false}
                                     animated
                                     className="mx-auto w-full"
                                 />

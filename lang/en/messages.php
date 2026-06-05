@@ -4,6 +4,8 @@ return [
     'donation_payment' => 'Donation - :title',
     'donation_amount_max' => 'The maximum donation amount is :max OMR.',
     'donation_amount_min' => 'The minimum donation amount is :min OMR.',
+    'donation_amount_exceeds_remaining' => 'You cannot donate more than :max OMR (the remaining project amount).',
+    'project_fully_funded' => 'The project goal has been fully funded.',
     'unable_to_initiate_payment' => 'Unable to initiate payment. Please try again later.',
     'payment_link_created' => 'Payment link created.',
     'donation_not_found' => 'Donation not found.',

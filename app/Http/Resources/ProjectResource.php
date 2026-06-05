@@ -24,6 +24,7 @@ class ProjectResource extends JsonResource
             'goal_amount' => (float) $this->goal_amount,
             'raised_amount' => (float) $this->raised_amount,
             'remaining_amount' => $this->remainingAmount(),
+            'max_donatable_amount' => $this->maxDonatableAmount(),
             'currency' => $this->currency,
             'progress_percentage' => $this->progressPercentage(),
             'donations_count' => (int) ($this->donations_count ?? $this->donations()->where('status', 'completed')->count()),

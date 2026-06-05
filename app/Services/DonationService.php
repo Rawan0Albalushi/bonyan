@@ -8,6 +8,7 @@ use App\Models\Donation;
 use App\Models\PaymentSession;
 use App\Models\Project;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class DonationService
 {
@@ -28,6 +29,20 @@ class DonationService
                 ->where('is_active', true)
                 ->lockForUpdate()
                 ->firstOrFail();
+
+            $maxDonatable = $project->maxDonatableAmount();
+
+            if ($maxDonatable <= 0) {
+                throw ValidationException::withMessages([
+                    'amount' => [__('messages.project_fully_funded')],
+                ]);
+            }
+
+            if ((float) $data['amount'] > $maxDonatable) {
+                throw ValidationException::withMessages([
+                    'amount' => [__('messages.donation_amount_exceeds_remaining', ['max' => $maxDonatable])],
+                ]);
+            }
 
             $donation = Donation::query()->create([
                 'project_id' => $project->id,
@@ -105,7 +120,11 @@ class DonationService
                 'payment_reference' => $sessionId,
             ]);
 
-            $project->increment('raised_amount', $donation->amount);
+            $toAdd = min((float) $donation->amount, $project->remainingAmount());
+
+            if ($toAdd > 0) {
+                $project->increment('raised_amount', $toAdd);
+            }
 
             PaymentSession::query()
                 ->where('id', $sessionId)

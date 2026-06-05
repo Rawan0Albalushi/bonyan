@@ -29,7 +29,7 @@
   "home": {
     "hero_title": "Together We Build a Home and a Decent Life",
     "hero_subtitle": "Help complete the construction of a home for a family in need. Every donation brings us closer.",
-    "progress_label": "Construction Progress",
+    "progress_label": "Progress",
     "raised": "Raised",
     "goal": "Goal",
     "remaining": "Remaining",
@@ -41,7 +41,7 @@
     "how_title": "How to Donate?",
     "step1": "Choose your donation amount",
     "step2": "Enter your phone number",
-    "step3": "Complete donation and watch progress grow"
+    "step3": "Complete your donation successfully"
   },
   "donation": {
     "title": "Donate Now",
@@ -56,7 +56,9 @@
     "submit": "Complete Donation",
     "submitting": "Processing...",
     "min_error": "Minimum donation is {{min}}",
-    "max_error": "Maximum donation is {{max}}"
+    "max_error": "Maximum donation is {{max}}",
+    "remaining_error": "You cannot donate more than {{max}} (the remaining project amount)",
+    "goal_reached": "The project goal has been fully funded"
   },
   "payment_cancel": {
     "title": "Payment Cancelled",
@@ -66,18 +68,18 @@
   "success": {
     "title": "Thank You for Your Generosity!",
     "subtitle": "Your donation was recorded successfully and contributed to the build.",
-    "subtitle_build": "Watch your contribution appear on the home — a new piece was just built.",
+    "subtitle_build": "Thank you for your gift — your contribution brings a family closer to their dream.",
     "verifying": "Confirming your payment...",
     "pending": "Payment is still processing. Please wait a moment.",
     "building": "Building your contribution…",
     "you_built": "You just added to the home",
     "impact_line": "Every brick, window, and detail brings a family closer to a real home.",
     "step_payment": "Payment confirmed",
-    "step_build": "Built on the home",
+    "step_build": "Donation recorded",
     "watch_build": "Watch your donation appear on the home",
     "reference": "Reference",
     "amount": "Amount",
-    "new_progress": "Construction progress",
+    "new_progress": "Progress",
     "back_home": "Back to Home",
     "donate_again": "Donate Again"
   },
@@ -130,7 +132,7 @@
     "delete_project_confirm": "Delete this project?"
   },
   "house": {
-    "viewer_label": "Build progress",
+    "viewer_label": "Project progress",
     "life_stages": {
       "base": "Foundation & structure",
       "roof": "Roof",

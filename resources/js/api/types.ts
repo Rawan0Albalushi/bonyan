@@ -10,6 +10,7 @@ export interface Project {
     goal_amount: number;
     raised_amount: number;
     remaining_amount: number;
+    max_donatable_amount: number;
     currency: string;
     progress_percentage: number;
     donations_count: number;
