@@ -659,20 +659,6 @@
         opacity: 0.85;
     }
 
-    .house-scene-ambient {
-        position: absolute;
-        inset: 8% 4% 6%;
-        z-index: 0;
-        border-radius: 1.5rem;
-        background: radial-gradient(
-            ellipse 85% 70% at 50% 42%,
-            color-mix(in srgb, #fff4d4 35%, transparent),
-            color-mix(in srgb, var(--color-surface) 20%, transparent) 55%,
-            transparent 78%
-        );
-        pointer-events: none;
-    }
-
     .house-scene-realistic .house-scene-layer {
         filter: contrast(1.05) saturate(1.08) brightness(1.02)
             drop-shadow(0 16px 28px color-mix(in srgb, var(--color-primary-dark) 20%, transparent))
@@ -750,11 +736,9 @@
         text-shadow: 0 0 8px color-mix(in srgb, var(--color-accent) 40%, transparent);
     }
 
-    .house-scene-life .house-life-base,
+    .house-scene-life .house-life-layer,
     .house-scene-life-complete .house-scene-layer {
-        filter: contrast(1.06) saturate(1.1) brightness(1.03)
-            drop-shadow(0 18px 32px color-mix(in srgb, var(--color-primary-dark) 22%, transparent))
-            drop-shadow(0 8px 16px color-mix(in srgb, var(--color-foreground) 10%, transparent));
+        filter: contrast(1.05) saturate(1.08) brightness(1.02);
     }
 
     .house-life-layer {

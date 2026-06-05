@@ -230,7 +230,7 @@ export function SuccessPage() {
                                 donationAmount={donation?.amount}
                                 goalAmount={project?.goal_amount}
                                 donationsCount={donationsCount}
-                                size="md"
+                                size="lg"
                                 inlineCelebration
                                 showLabel={false}
                                 animated

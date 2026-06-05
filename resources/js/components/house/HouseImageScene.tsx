@@ -143,7 +143,6 @@ export function HouseImageScene({
             role="img"
             aria-label={t('house.viewer_label')}
         >
-            <div className="house-scene-ambient" aria-hidden />
             <HousePicture
                 src={layoutSrc}
                 className="invisible block w-full h-auto max-h-full object-contain"

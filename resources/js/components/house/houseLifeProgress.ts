@@ -88,6 +88,53 @@ export const HOUSE_LIFE_LAYERS: HouseLifeLayerDef[] = [
 
 export const HOUSE_LIFE_BASE_IMAGE = `${LAYERS}/base.png`;
 
+/** Cumulative build frames (step-00 … step-18) — one image per progress slice. */
+export const HOUSE_LIFE_STEP_COUNT = 18;
+
+export function getLifeStepImage(step: number): string {
+    const clamped = Math.max(0, Math.min(HOUSE_LIFE_STEP_COUNT, Math.round(step)));
+    return `${LAYERS}/step-${String(clamped).padStart(2, '0')}.png`;
+}
+
+export function getLifeStepIndex(progress: number): number {
+    const p = clampPercentage(progress);
+    if (p >= 100) {
+        return HOUSE_LIFE_STEP_COUNT;
+    }
+    return Math.min(HOUSE_LIFE_STEP_COUNT, Math.floor((p / 100) * HOUSE_LIFE_STEP_COUNT));
+}
+
+export function getLifeStepBlend(progress: number): number {
+    const p = clampPercentage(progress);
+    if (p >= 100) {
+        return 0;
+    }
+    const exact = (p / 100) * HOUSE_LIFE_STEP_COUNT;
+    return exact - Math.floor(exact);
+}
+
+export interface LifeStepRender {
+    currentStep: number;
+    nextStep: number | null;
+    nextOpacity: number;
+}
+
+/** Single cumulative frame (+ optional crossfade) instead of stacking faint part deltas. */
+export function getLifeStepRender(progress: number): LifeStepRender {
+    const currentStep = getLifeStepIndex(progress);
+    const blend = getLifeStepBlend(progress);
+
+    if (blend <= 0.01 || currentStep >= HOUSE_LIFE_STEP_COUNT) {
+        return { currentStep, nextStep: null, nextOpacity: 0 };
+    }
+
+    return {
+        currentStep,
+        nextStep: currentStep + 1,
+        nextOpacity: blend,
+    };
+}
+
 export function getLifeBandOpacity(
     progress: number,
     unlockAt: number,

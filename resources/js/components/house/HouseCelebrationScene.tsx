@@ -73,7 +73,6 @@ export function HouseCelebrationScene({
             role="img"
             aria-label={t('house.viewer_label')}
         >
-            <div className="house-scene-ambient" aria-hidden />
             <HousePicture
                 src={showAfter ? transition.afterSrc : transition.beforeSrc}
                 className="invisible block w-full h-auto max-h-full object-contain"

@@ -2,8 +2,6 @@ import { motion } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
 import { HouseDonationToast } from '@/components/house/HouseDonationToast';
 import { HouseLifeScene } from '@/components/house/HouseLifeScene';
-import { getDonationImpact } from '@/components/house/donationImpact';
-import { shouldPopDonationPart } from '@/components/house/houseBuildState';
 import { getLayersToAnimate } from '@/components/house/houseLifeProgress';
 import {
     clampPercentage,
@@ -30,7 +28,6 @@ interface HouseProgressProps {
 
 const TOAST_DELAY_MS = 700;
 const TOAST_VISIBLE_MS = 4200;
-const POP_ACTIVE_MS = 2400;
 const FUNDING_ANIMATION_MS = 2600;
 
 export function HouseProgress({
@@ -66,25 +63,6 @@ export function HouseProgress({
         FUNDING_ANIMATION_MS,
     );
 
-    const impact = useMemo(
-        () =>
-            isCelebration
-                ? getDonationImpact(previousFunding, fundingTarget, {
-                      donationAmount,
-                      goalAmount,
-                      donationsCount,
-                  })
-                : null,
-        [
-            isCelebration,
-            previousFunding,
-            fundingTarget,
-            donationAmount,
-            goalAmount,
-            donationsCount,
-        ],
-    );
-
     const animateLayerIds = useMemo(
         () =>
             isCelebration
@@ -93,42 +71,13 @@ export function HouseProgress({
         [isCelebration, previousFunding, displayFunding],
     );
 
-    const popPartId = useMemo(() => {
-        if (!isCelebration || !impact || impact.partId.startsWith('bonus-')) {
-            return null;
-        }
-        if (impact.size === 'brick' && impact.brickCount > 0 && !impact.isNewFullLayer) {
-            return null;
-        }
-        if (fundingTarget >= 100 && impact.size === 'complete') {
-            return null;
-        }
-        if (
-            shouldPopDonationPart(impact.partId, previousFunding, fundingTarget) ||
-            impact.size === 'stage' ||
-            impact.size === 'phase' ||
-            impact.size === 'complete'
-        ) {
-            return impact.partId;
-        }
-        return null;
-    }, [isCelebration, impact, previousFunding, fundingTarget]);
-
-    const [popPartActive, setPopPartActive] = useState(false);
     const [showToast, setShowToast] = useState(false);
 
     useEffect(() => {
         if (!isCelebration) {
-            setPopPartActive(false);
             setShowToast(false);
             return;
         }
-
-        setPopPartActive(Boolean(popPartId));
-
-        const popOff = popPartId
-            ? window.setTimeout(() => setPopPartActive(false), POP_ACTIVE_MS)
-            : undefined;
 
         const showTimer = window.setTimeout(() => setShowToast(true), TOAST_DELAY_MS);
         const hideTimer = window.setTimeout(
@@ -137,11 +86,10 @@ export function HouseProgress({
         );
 
         return () => {
-            if (popOff) window.clearTimeout(popOff);
             window.clearTimeout(showTimer);
             window.clearTimeout(hideTimer);
         };
-    }, [isCelebration, popPartId, fundingTarget, previousFunding]);
+    }, [isCelebration, fundingTarget, previousFunding]);
 
     const labelPercent = isCelebration ? displayFunding : fundingTarget;
 
@@ -188,8 +136,6 @@ export function HouseProgress({
                 <HouseLifeScene
                     fundingPercentage={displayFunding}
                     animateLayerIds={animateLayerIds}
-                    popPartId={popPartId}
-                    popPartActive={popPartActive}
                     size={size}
                     variant={variant}
                 />

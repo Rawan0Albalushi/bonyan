@@ -357,6 +357,57 @@ function buildShell(stageData, info) {
     return out;
 }
 
+function stripGhostPixels(data, minAlpha = 40) {
+    for (let i = 3; i < data.length; i += 4) {
+        if (data[i] > 0 && data[i] < minAlpha) {
+            data[i] = 0;
+        }
+    }
+}
+
+/**
+ * Step frames for the UI:
+ * - Structure (0–11): direct stage-0 → stage-1 blend (same house, no delta ghosts).
+ * - Landscape + interior (12–18): keep stage-1 shell, overlay filtered deltas only
+ *   (never morph into stage-3/4 — those are different 3D models).
+ */
+function buildAllStepFrames(stageImages, info) {
+    const structureParts = BUILD_PHASES[0].partIds.length;
+    const frames = new Array(CORE_PART_COUNT + 1);
+
+    frames[0] = Buffer.from(stageImages[0].data);
+    for (let i = 1; i <= structureParts; i++) {
+        frames[i] = blendStages(stageImages, 0, 1, i / structureParts);
+    }
+
+    let current = Buffer.from(stageImages[1].data);
+    let stepIdx = structureParts;
+
+    for (const phase of BUILD_PHASES.slice(1)) {
+        const n = phase.partIds.length;
+        const phaseFrames = [];
+
+        for (let i = 0; i <= n; i++) {
+            const t = n === 0 ? 1 : i / n;
+            phaseFrames.push(blendStages(stageImages, phase.startStage, phase.endStage, t));
+        }
+
+        for (let i = 0; i < n; i++) {
+            const rawDelta = extractStepDelta(phaseFrames[i], phaseFrames[i + 1]);
+            const filtered = filterDelta(rawDelta, info, phase);
+            current = compositeOver(current, filtered);
+            stepIdx++;
+            frames[stepIdx] = Buffer.from(current);
+        }
+    }
+
+    for (let step = 0; step <= CORE_PART_COUNT; step++) {
+        stripGhostPixels(frames[step]);
+    }
+
+    return frames;
+}
+
 async function main() {
     await mkdir(layersDir, { recursive: true });
 
@@ -409,9 +460,9 @@ async function main() {
         .png({ compressionLevel: 9 })
         .toFile(join(houseDir, 'house-landscape-complete.png'));
 
-    const stepFrames = [Buffer.from(stageImages[0].data), ...globalCumulative];
+    const stepFrames = buildAllStepFrames(stageImages, info);
     for (let step = 0; step <= CORE_PART_COUNT; step++) {
-        await saveRaw(stepFrames[step] ?? stepFrames[0], info, `step-${String(step).padStart(2, '0')}.png`);
+        await saveRaw(stepFrames[step], info, `step-${String(step).padStart(2, '0')}.png`);
     }
 
     await writeFile(
