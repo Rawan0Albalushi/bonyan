@@ -45,16 +45,28 @@
 
     html {
         scroll-behavior: smooth;
+        width: 100%;
+        overflow-x: hidden;
     }
 
     body {
         @apply bg-background text-foreground font-sans antialiased;
+        width: 100%;
+        max-width: 100%;
         overflow-x: hidden;
         background-image: radial-gradient(
             ellipse 120% 80% at 50% -20%,
             color-mix(in srgb, var(--color-secondary) 55%, transparent),
             transparent 55%
         );
+    }
+
+    #root {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: clip;
+        min-height: 100vh;
+        min-height: 100dvh;
     }
 
     ::selection {
@@ -64,6 +76,100 @@
 }
 
 @layer utilities {
+    .page-container {
+        @apply mx-auto max-w-7xl px-5 sm:px-6 lg:px-8;
+    }
+
+    .page-container-narrow {
+        @apply mx-auto max-w-6xl px-5 sm:px-6 lg:px-8;
+    }
+
+    .page-container-tight {
+        @apply mx-auto max-w-lg px-5 sm:px-6;
+    }
+
+    .hero-mobile-content {
+        @apply sm:px-0;
+    }
+
+    .layout-shell {
+        @apply flex min-h-screen w-full min-w-0 max-w-full flex-col overflow-x-clip;
+    }
+
+    .layout-main {
+        @apply w-full min-w-0 max-w-full flex-1 overflow-x-clip;
+    }
+
+    .admin-shell {
+        @apply flex min-h-screen w-full min-w-0 max-w-full overflow-x-clip;
+        background: linear-gradient(
+            180deg,
+            color-mix(in srgb, var(--color-surface) 60%, transparent),
+            var(--color-background) 40%
+        );
+    }
+
+    .admin-main-column {
+        @apply flex w-full min-w-0 max-w-full flex-1 flex-col overflow-x-clip;
+    }
+
+    .admin-page {
+        @apply w-full min-w-0 max-w-full space-y-5 sm:space-y-6;
+    }
+
+    .admin-card-header {
+        @apply p-4 pb-2 sm:p-6 sm:pb-3;
+    }
+
+    .admin-card-body {
+        @apply p-4 sm:p-6;
+    }
+
+    .page-section {
+        @apply py-10 sm:py-12 md:py-16;
+    }
+
+    .page-title {
+        @apply font-display text-xl font-bold sm:text-2xl;
+        background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary-light));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+        line-height: 1.4;
+        padding-block: 0.08em;
+    }
+
+    .page-title-lg {
+        @apply font-display text-2xl font-extrabold sm:text-3xl lg:text-4xl;
+        background: linear-gradient(
+            135deg,
+            var(--color-primary-dark) 0%,
+            var(--color-primary) 45%,
+            color-mix(in srgb, var(--color-primary-light) 80%, var(--color-accent) 20%) 100%
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+        line-height: 1.4;
+        padding-block: 0.08em;
+    }
+
+    .admin-table-scroll {
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-x: contain;
+        scrollbar-width: thin;
+    }
+
+    .safe-top {
+        padding-top: max(1rem, env(safe-area-inset-top, 0px));
+    }
+
+    .safe-bottom {
+        padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+    }
+
     .text-balance {
         text-wrap: balance;
     }
@@ -77,6 +183,17 @@
         unicode-bidi: isolate;
         font-variant-numeric: lining-nums tabular-nums;
         font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    }
+
+    .no-number-spinners {
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+
+    .no-number-spinners::-webkit-outer-spin-button,
+    .no-number-spinners::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
     }
 
     /* OMR: currency.png (shared for LTR and RTL) */
@@ -452,6 +569,11 @@
     .house-scene {
         isolation: isolate;
         cursor: default;
+        max-width: 100%;
+    }
+
+    .house-scene-life {
+        overflow: hidden;
     }
 
     .house-scene-realistic {
@@ -473,11 +595,21 @@
         .house-scene-stage {
             transform: rotateY(-2deg) rotateX(1deg);
         }
+
+        .house-scene-inner {
+            transform: translateZ(10px) scale(1.06);
+            transform-origin: center center;
+        }
+
+        .house-scene-life.house-scene-hero-mobile {
+            min-height: 11rem;
+            max-height: 20rem;
+        }
     }
 
     .house-scene-inner {
         transform: translateZ(16px) scale(1.22);
-        transform-origin: 50% 76%;
+        transform-origin: center center;
         transform-style: preserve-3d;
     }
 

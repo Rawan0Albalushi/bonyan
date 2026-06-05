@@ -40,7 +40,12 @@ export function AdminDataTable({ children, className }: { children: ReactNode; c
 
     return (
         <AdminTableContext.Provider value={{ isRtl }}>
-            <div className={cn('overflow-x-auto rounded-lg border border-primary/15 shadow-sm', className)}>
+            <div
+                className={cn(
+                    'hidden w-full min-w-0 overflow-x-auto rounded-lg border border-primary/15 shadow-sm admin-table-scroll md:block',
+                    className,
+                )}
+            >
                 <table
                     dir={isRtl ? 'rtl' : 'ltr'}
                     className="w-full min-w-[720px] border-collapse text-sm"
@@ -87,7 +92,7 @@ export function AdminTableTh({
             scope="col"
             dir={dir}
             className={cn(
-                'px-4 py-3 text-xs font-bold uppercase tracking-wide text-primary/80',
+                'px-3 py-2.5 text-xs font-bold uppercase tracking-wide text-primary/80 sm:px-4 sm:py-3',
                 alignClass,
                 className,
             )}
@@ -129,7 +134,7 @@ export function AdminTableTd({
         <td
             dir={dir}
             className={cn(
-                'px-4 py-3 align-middle',
+                'px-3 py-2.5 align-middle sm:px-4 sm:py-3',
                 alignClass,
                 muted && 'text-muted-foreground',
                 mono && 'font-mono text-xs',

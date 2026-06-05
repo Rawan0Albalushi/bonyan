@@ -77,16 +77,16 @@ export function ProjectsPage() {
     };
 
     return (
-        <div className="space-y-6">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-                <h1 className="font-display text-2xl font-bold text-gradient-brand">{t('admin.projects')}</h1>
+        <div className="admin-page">
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-4">
+                <h1 className="page-title">{t('admin.projects')}</h1>
                 <Button
                     onClick={() => {
                         setShowForm(true);
                         setEditingId(null);
                         setForm(emptyForm);
                     }}
-                    className="gap-2"
+                    className="w-full gap-2 sm:w-auto"
                 >
                     <Plus className="h-4 w-4" />
                     {t('common.create')}
@@ -94,11 +94,11 @@ export function ProjectsPage() {
             </div>
 
             {showForm && (
-                <Card>
-                    <CardHeader>
-                        <CardTitle>{t('admin.project_form_title')}</CardTitle>
+                <Card className="min-w-0 overflow-hidden">
+                    <CardHeader className="admin-card-header">
+                        <CardTitle className="text-base sm:text-lg">{t('admin.project_form_title')}</CardTitle>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="admin-card-body pt-0">
                         <form onSubmit={(e) => void handleSave(e)} className="grid gap-4 sm:grid-cols-2">
                             <div className="space-y-2">
                                 <Label>{t('admin.slug')}</Label>
@@ -166,11 +166,11 @@ export function ProjectsPage() {
                                 />
                                 {t('admin.is_active')}
                             </label>
-                            <div className="flex gap-2 sm:col-span-2">
-                                <Button type="submit" disabled={saving}>
+                            <div className="flex flex-col gap-2 sm:flex-row sm:gap-2 sm:col-span-2">
+                                <Button type="submit" disabled={saving} className="w-full sm:w-auto">
                                     {t('common.save')}
                                 </Button>
-                                <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
+                                <Button type="button" variant="outline" onClick={() => setShowForm(false)} className="w-full sm:w-auto">
                                     {t('common.cancel')}
                                 </Button>
                             </div>
@@ -181,9 +181,9 @@ export function ProjectsPage() {
 
             <div className="grid gap-4">
                 {projects.map((p) => (
-                    <Card key={p.id}>
-                        <CardContent className="flex flex-wrap items-center justify-between gap-4 p-6">
-                            <div>
+                    <Card key={p.id} className="min-w-0 overflow-hidden">
+                        <CardContent className="flex flex-col gap-4 p-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:p-6">
+                            <div className="min-w-0 flex-1">
                                 <p className="font-bold">{locale === 'en' ? p.title_en : p.title_ar}</p>
                                 <p className={cn('text-sm text-muted-foreground', ENGLISH_NUMERALS_CLASS)} dir="ltr">
                                     <CurrencyAmountInline
@@ -199,7 +199,7 @@ export function ProjectsPage() {
                                     </span>
                                 )}
                             </div>
-                            <div className="flex gap-2">
+                            <div className="flex shrink-0 gap-2 self-end sm:self-auto">
                                 <Button variant="outline" size="sm" onClick={() => startEdit(p)}>
                                     <Pencil className="h-4 w-4" />
                                 </Button>

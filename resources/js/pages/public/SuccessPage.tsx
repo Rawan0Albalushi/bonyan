@@ -137,7 +137,7 @@ export function SuccessPage() {
                     <div className="absolute -bottom-12 -start-12 h-48 w-48 rounded-full bg-primary/20 blur-3xl" />
                 </div>
 
-                <div className="relative mx-auto max-w-7xl px-4 pb-6 sm:px-6 md:pb-8 lg:px-8">
+                <div className="relative page-container pb-6 md:pb-8">
                     <motion.div
                         initial={{ opacity: 0, y: 12 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -179,7 +179,7 @@ export function SuccessPage() {
                 </div>
             </section>
 
-            <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 md:py-10 lg:px-8">
+            <main className="page-container py-6 md:py-10">
                 {showCelebration ? (
                     <div className="grid gap-8 lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-12">
                         <motion.section
@@ -221,7 +221,7 @@ export function SuccessPage() {
                                     </div>
                                     <p
                                         className={cn(
-                                            'mt-3 font-display text-3xl font-bold text-primary',
+                                            'mt-3 font-display text-2xl font-bold text-primary sm:text-3xl',
                                             ENGLISH_NUMERALS_CLASS,
                                         )}
                                         dir="ltr"
@@ -291,7 +291,7 @@ export function SuccessPage() {
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="mx-auto flex max-w-md flex-col items-center gap-6 rounded-2xl border border-border/80 bg-card p-10 text-center shadow-brand"
+                        className="mx-auto flex w-full max-w-md flex-col items-center gap-5 rounded-2xl border border-border/80 bg-card p-6 text-center shadow-brand sm:gap-6 sm:p-10"
                     >
                         {verifying ? (
                             <Loader2 className="h-10 w-10 animate-spin text-primary" />

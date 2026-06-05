@@ -127,7 +127,7 @@ export function HouseLifeScene({
 
     const heightClass =
         variant === 'hero'
-            ? 'min-h-[22rem] max-h-[42rem] sm:max-h-[52rem] md:max-h-[58rem] lg:min-h-[28rem] lg:max-h-[min(72vh,720px)]'
+            ? 'min-h-[12rem] max-h-[22rem] sm:min-h-[18rem] sm:max-h-[42rem] md:max-h-[58rem] lg:min-h-[28rem] lg:max-h-[min(72vh,720px)] house-scene-hero-mobile'
             : SIZE_HEIGHT[size] ?? SIZE_HEIGHT.lg;
 
     const layerStates = useMemo(
@@ -142,7 +142,7 @@ export function HouseLifeScene({
     return (
         <div
             className={cn(
-                'house-scene house-scene-realistic house-scene-life relative w-full overflow-visible',
+                'house-scene house-scene-realistic house-scene-life relative w-full max-w-full overflow-hidden',
                 isComplete && 'house-scene-life-complete',
                 heightClass,
                 className,

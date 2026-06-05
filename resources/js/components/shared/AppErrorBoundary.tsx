@@ -24,12 +24,12 @@ export class AppErrorBoundary extends Component<Props, State> {
     render() {
         if (this.state.hasError) {
             return (
-                <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-background p-8 text-center">
-                    <h1 className="font-display text-xl font-bold text-destructive">{i18n.t('error.title')}</h1>
+                <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-background p-4 text-center safe-top safe-bottom sm:gap-5 sm:p-8">
+                    <h1 className="font-display text-lg font-bold text-destructive sm:text-xl">{i18n.t('error.title')}</h1>
                     <p className="max-w-md text-sm text-muted-foreground">{this.state.message}</p>
                     <button
                         type="button"
-                        className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+                        className="w-full max-w-xs rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground sm:w-auto"
                         onClick={() => window.location.reload()}
                     >
                         {i18n.t('error.reload')}

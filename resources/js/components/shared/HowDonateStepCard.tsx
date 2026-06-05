@@ -105,11 +105,11 @@ export function HowDonateStepCard({
                 >
                     <div
                         className={cn(
-                            'flex h-28 w-28 items-center justify-center rounded-full bg-gradient-to-br md:h-32 md:w-32',
+                            'flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br sm:h-28 sm:w-28 md:h-32 md:w-32',
                             config.inner,
                         )}
                     >
-                        <Icon className={cn('h-9 w-9 md:h-10 md:w-10', config.iconColor)} strokeWidth={2} aria-hidden />
+                        <Icon className={cn('h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10', config.iconColor)} strokeWidth={2} aria-hidden />
                     </div>
                 </div>
 

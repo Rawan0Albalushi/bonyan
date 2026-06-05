@@ -24,20 +24,20 @@ export function PublicLayout() {
             : siteSettings?.site_name_en || t('site.name');
 
     return (
-        <div className="flex min-h-screen flex-col">
+        <div className="layout-shell">
             <PublicHeader siteSettings={siteSettings} />
 
-            <main className="flex-1">
+            <main className="layout-main">
                 <Outlet />
             </main>
 
-            <footer className="border-t border-primary/15 bg-footer-gradient py-8">
-                <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-4 text-center sm:flex-row sm:justify-between sm:text-start">
+            <footer className="border-t border-primary/15 bg-footer-gradient py-6 safe-bottom sm:py-8">
+                <div className="page-container flex flex-col items-center gap-3 text-center sm:flex-row sm:justify-between sm:gap-4 sm:text-start">
                     <div className="flex items-center gap-2 text-primary">
-                        <Heart className="h-4 w-4 fill-accent text-accent" />
-                        <span className="font-display font-bold">{siteName}</span>
+                        <Heart className="h-4 w-4 shrink-0 fill-accent text-accent" />
+                        <span className="font-display text-sm font-bold sm:text-base">{siteName}</span>
                     </div>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="max-w-md text-xs leading-relaxed text-muted-foreground sm:max-w-none sm:text-sm">
                         © {new Date().getFullYear()} {siteName}. {t('site.copyright')}
                     </p>
                 </div>

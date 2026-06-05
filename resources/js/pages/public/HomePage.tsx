@@ -52,52 +52,52 @@ export function HomePage() {
     const progress = project?.progress_percentage ?? 0;
 
     return (
-        <div>
+        <div className="w-full min-w-0 max-w-full overflow-x-clip">
             <section
                 className={cn(
-                    'bg-hero-gradient-home relative overflow-hidden rounded-b-[2rem] pb-10 shadow-[inset_0_-1px_0_0_color-mix(in_srgb,var(--color-primary)_12%,transparent)] sm:rounded-b-[2.5rem] sm:pb-12 md:pb-14 lg:pb-16',
+                    'relative w-full max-w-full overflow-x-clip bg-hero-gradient-home overflow-hidden rounded-b-[2rem] pb-8 shadow-[inset_0_-1px_0_0_color-mix(in_srgb,var(--color-primary)_12%,transparent)] sm:rounded-b-[2.5rem] sm:pb-12 md:pb-14 lg:pb-16',
                     PUBLIC_HEADER_SPACER_CLASS,
                 )}
             >
                 <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-b-[2rem] sm:rounded-b-[2.5rem]" aria-hidden>
-                    <div className="absolute -end-20 -top-20 h-80 w-80 rounded-full bg-accent/35 blur-3xl" />
-                    <div className="absolute -bottom-12 -start-12 h-64 w-64 rounded-full bg-primary/28 blur-3xl" />
-                    <div className="absolute start-1/2 top-0 h-48 w-[min(92%,38rem)] -translate-x-1/2 rounded-full bg-primary-light/22 blur-3xl" />
-                    <div className="absolute bottom-1/4 end-1/3 h-40 w-40 rounded-full bg-olive/20 blur-2xl" />
+                    <div className="absolute -top-20 -right-20 h-80 w-80 rounded-full bg-accent/35 blur-3xl" />
+                    <div className="absolute -bottom-12 -left-12 h-64 w-64 rounded-full bg-primary/28 blur-3xl" />
+                    <div className="absolute left-1/2 top-0 h-48 w-[min(92%,38rem)] -translate-x-1/2 rounded-full bg-primary-light/22 blur-3xl" />
+                    <div className="absolute bottom-1/4 right-1/3 h-40 w-40 rounded-full bg-olive/20 blur-2xl" />
                 </div>
 
-                <div className="relative mx-auto grid max-w-7xl gap-8 px-4 sm:gap-10 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-12 lg:px-8 xl:gap-14">
+                <div className="relative page-container grid w-full gap-5 sm:gap-8 lg:grid-cols-2 lg:items-center lg:gap-12 xl:gap-14">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="order-2 flex min-w-0 flex-col justify-center space-y-5 overflow-visible sm:space-y-6 lg:order-1 lg:pe-4 xl:pe-8"
+                        className="hero-mobile-content order-2 flex min-w-0 flex-col justify-center space-y-4 sm:space-y-6 lg:order-1 lg:pe-4 xl:pe-8"
                     >
-                        <h1 className="font-display text-3xl font-extrabold leading-snug text-gradient-brand-hero drop-shadow-sm sm:text-4xl lg:text-5xl">
+                        <h1 className="font-display text-[1.625rem] font-extrabold leading-[1.35] text-gradient-brand-hero drop-shadow-sm sm:text-3xl sm:leading-snug md:text-4xl lg:text-5xl">
                             {t('home.hero_title')}
                         </h1>
-                        <p className="text-lg leading-relaxed text-foreground/85">
+                        <p className="max-w-prose text-[0.9375rem] leading-7 text-foreground/88 sm:text-lg sm:leading-relaxed">
                             {project?.description ?? t('home.hero_subtitle')}
                         </p>
-                        <div className="flex flex-wrap gap-3">
-                            <Link to="/donate">
-                                <Button variant="accent" size="lg" className="gap-2">
+                        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                            <Link to="/donate" className="w-full sm:w-auto">
+                                <Button variant="accent" size="lg" className="w-full gap-2 sm:w-auto">
                                     {t('home.cta_donate')}
                                     <Arrow className="h-4 w-4" />
                                 </Button>
                             </Link>
-                            <a href="#about">
+                            <a href="#about" className="w-full sm:w-auto">
                                 <Button
                                     variant="outline"
                                     size="lg"
-                                    className="border-primary/35 bg-white/55 backdrop-blur-sm hover:bg-white/80"
+                                    className="w-full border-primary/35 bg-white/55 backdrop-blur-sm hover:bg-white/80 sm:w-auto"
                                 >
                                     {t('home.cta_learn')}
                                 </Button>
                             </a>
                         </div>
                         {project && (
-                            <div className="space-y-2.5">
-                                <div className="flex justify-between text-sm">
+                            <div className="space-y-2 pt-1">
+                                <div className="flex justify-between gap-3 text-sm">
                                     <span className="font-medium text-foreground/75">{t('home.progress_label')}</span>
                                     <span
                                         className={cn('text-base font-extrabold text-primary-dark', ENGLISH_NUMERALS_CLASS)}
@@ -111,7 +111,7 @@ export function HomePage() {
                         )}
                     </motion.div>
 
-                    <div className="order-1 flex w-full items-center justify-center lg:order-2 lg:justify-end lg:ps-2 xl:ps-6">
+                    <div className="order-1 mx-auto flex w-full max-w-[min(100%,19rem)] items-center justify-center sm:max-w-md lg:order-2 lg:max-w-none lg:justify-end lg:ps-2 xl:ps-6">
                         <HouseProgress
                             percentage={progress}
                             size="lg"
@@ -125,12 +125,12 @@ export function HomePage() {
             </section>
 
             {project && (
-                <section className="py-12 md:py-16">
-                    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                        <h2 className="mb-8 text-center font-display text-2xl font-bold text-gradient-brand">
+                <section className="page-section">
+                    <div className="page-container">
+                        <h2 className="mb-6 text-center font-display text-xl font-bold text-gradient-brand sm:mb-8 sm:text-2xl">
                             {project.title}
                         </h2>
-                        <div className="grid gap-5 sm:grid-cols-3 sm:gap-6">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
                             <StatCard
                                 label={t('home.raised')}
                                 amount={project.raised_amount}
@@ -158,9 +158,9 @@ export function HomePage() {
                 </section>
             )}
 
-            <section id="about" className="bg-section-muted py-12 md:py-16">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <h2 className="mb-10 text-center font-display text-2xl font-bold text-gradient-brand md:mb-12">
+            <section id="about" className="bg-section-muted page-section">
+                <div className="page-container">
+                    <h2 className="mb-8 text-center font-display text-xl font-bold text-gradient-brand sm:mb-10 sm:text-2xl md:mb-12">
                         {t('home.how_title')}
                     </h2>
                     <div className="flex flex-col items-center gap-12 sm:gap-14 md:flex-row md:items-start md:justify-center md:gap-0">
@@ -191,15 +191,15 @@ export function HomePage() {
                 </div>
             </section>
 
-            <section className="py-12">
-                <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
+            <section className="page-section pt-0 sm:pt-0">
+                <div className="page-container-tight text-center">
                     <Card className="border-primary/20 bg-gradient-to-br from-card via-surface/30 to-secondary/50 shadow-brand-lg">
-                        <CardContent className="flex flex-col items-center gap-4 p-8">
-                            <Shield className="h-10 w-10 text-primary drop-shadow-sm" />
-                            <h3 className="font-display text-xl font-bold text-primary">{t('home.trust_title')}</h3>
-                            <p className="text-muted-foreground">{t('home.trust_desc')}</p>
-                            <Link to="/donate">
-                                <Button variant="accent" size="lg" className="gap-2">
+                        <CardContent className="flex flex-col items-center gap-4 p-6 sm:gap-5 sm:p-8">
+                            <Shield className="h-9 w-9 text-primary drop-shadow-sm sm:h-10 sm:w-10" />
+                            <h3 className="font-display text-lg font-bold text-primary sm:text-xl">{t('home.trust_title')}</h3>
+                            <p className="text-sm text-muted-foreground sm:text-base">{t('home.trust_desc')}</p>
+                            <Link to="/donate" className="w-full sm:w-auto">
+                                <Button variant="accent" size="lg" className="w-full gap-2 sm:w-auto">
                                     <Sparkles className="h-4 w-4" />
                                     {t('home.cta_donate')}
                                 </Button>

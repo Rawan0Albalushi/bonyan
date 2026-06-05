@@ -10,14 +10,16 @@ export function CancelPage() {
     const { t } = useTranslation();
 
     return (
-        <div className={cn('bg-page-soft pb-12 md:pb-20', PUBLIC_HEADER_SPACER_CLASS)}>
-            <div className="mx-auto max-w-lg px-4 text-center sm:px-6">
-                <XCircle className="mx-auto h-16 w-16 text-muted-foreground/80" />
-                <h1 className="mt-4 font-display text-3xl font-bold text-gradient-brand">{t('payment_cancel.title')}</h1>
-                <p className="mt-2 text-muted-foreground">{t('payment_cancel.subtitle')}</p>
+        <div className={cn('bg-page-soft pb-10 safe-bottom md:pb-20', PUBLIC_HEADER_SPACER_CLASS)}>
+            <div className="page-container-tight text-center">
+                <XCircle className="mx-auto h-14 w-14 text-muted-foreground/80 sm:h-16 sm:w-16" />
+                <h1 className="mt-4 font-display text-2xl font-bold text-gradient-brand sm:text-3xl">
+                    {t('payment_cancel.title')}
+                </h1>
+                <p className="mt-2 text-sm text-muted-foreground sm:text-base">{t('payment_cancel.subtitle')}</p>
 
-                <Card className="mt-10 shadow-brand-lg">
-                    <CardContent className="p-6">
+                <Card className="mt-8 shadow-brand-lg sm:mt-10">
+                    <CardContent className="p-4 sm:p-6">
                         <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
                             <Link to="/donate">
                                 <Button variant="accent" className="w-full sm:w-auto">

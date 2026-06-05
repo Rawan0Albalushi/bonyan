@@ -47,6 +47,7 @@
     "title": "Donate Now",
     "subtitle": "Select an amount or enter a custom value",
     "amount_label": "Donation Amount",
+    "amount_other": "Other",
     "custom_amount": "Custom amount",
     "phone_label": "Phone Number",
     "phone_placeholder": "9XXXXXXXX",

@@ -31,8 +31,8 @@ export function LoginPage() {
     };
 
     return (
-        <div className="flex min-h-screen flex-col items-center justify-center bg-hero-gradient p-4">
-            <div className="absolute end-4 top-4">
+        <div className="relative flex min-h-screen w-full max-w-[100vw] flex-col items-center justify-center overflow-x-clip bg-hero-gradient p-4 safe-top safe-bottom">
+            <div className="absolute end-3 top-[max(1rem,env(safe-area-inset-top,0px))] sm:end-4">
                 <LanguageSwitcher />
             </div>
             <Card className="w-full max-w-md shadow-brand-lg">

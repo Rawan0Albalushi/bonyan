@@ -16,12 +16,13 @@ import { cn, ENGLISH_NUMERALS_CLASS } from '@/lib/utils';
 
 export function DonatePage() {
     const { t } = useTranslation();
-    const { locale } = useLocale();
+    const { locale, isRtl } = useLocale();
     const navigate = useNavigate();
     const [project, setProject] = useState<Project | null>(null);
     const [settings, setSettings] = useState<PublicSettings | null>(null);
     const [amount, setAmount] = useState<number | null>(null);
     const [customAmount, setCustomAmount] = useState('');
+    const [showCustomAmount, setShowCustomAmount] = useState(false);
     const [phone, setPhone] = useState('');
     const [donorName, setDonorName] = useState('');
     const [error, setError] = useState('');
@@ -40,7 +41,7 @@ export function DonatePage() {
             .finally(() => setLoading(false));
     }, []);
 
-    const selectedAmount = customAmount ? parseFloat(customAmount) : amount;
+    const selectedAmount = showCustomAmount ? parseFloat(customAmount) : amount;
     const min = settings?.min_donation_amount ?? 1;
     const settingsMax = settings?.max_donation_amount ?? 5000;
     const remainingMax = project?.max_donatable_amount ?? settingsMax;
@@ -127,8 +128,8 @@ export function DonatePage() {
 
     return (
         <div className={cn('bg-page-soft min-h-full', PUBLIC_HEADER_SPACER_CLASS)}>
-            <div className="mx-auto grid max-w-6xl gap-10 px-4 pb-10 sm:px-6 md:pb-16 lg:grid-cols-2 lg:gap-16 lg:px-8">
-                <div className="flex flex-col items-center justify-center">
+            <div className="page-container-narrow grid gap-6 pb-8 sm:gap-10 md:pb-16 lg:grid-cols-2 lg:gap-16">
+                <div className="mx-auto flex w-full min-w-0 max-w-[min(100%,19rem)] flex-col items-center justify-center sm:max-w-md lg:max-w-none">
                     <HouseProgress
                         percentage={project.progress_percentage}
                         size="lg"
@@ -137,7 +138,11 @@ export function DonatePage() {
                     <p className="mt-6 text-center text-sm text-muted-foreground">{project.title}</p>
                 </div>
 
-                <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+                <motion.div
+                    initial={{ opacity: 0, x: isRtl ? -20 : 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="w-full min-w-0"
+                >
                     <Card className="shadow-brand-lg">
                         <CardHeader>
                             <CardTitle>{t('donation.title')}</CardTitle>
@@ -158,7 +163,7 @@ export function DonatePage() {
                             <form onSubmit={(e) => void handleSubmit(e)} className="space-y-6">
                                 <div className="space-y-3">
                                     <Label>{t('donation.amount_label')}</Label>
-                                    <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
+                                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
                                         {presets.map((preset) => (
                                             <button
                                                 key={preset}
@@ -166,11 +171,12 @@ export function DonatePage() {
                                                 onClick={() => {
                                                     setAmount(preset);
                                                     setCustomAmount('');
+                                                    setShowCustomAmount(false);
                                                 }}
                                                 className={cn(
                                                     ENGLISH_NUMERALS_CLASS,
-                                                    'rounded-lg border px-2 py-3 text-sm font-semibold transition-all',
-                                                    amount === preset && !customAmount
+                                                    'rounded-lg border px-1.5 py-2.5 text-xs font-semibold transition-all sm:px-2 sm:py-3 sm:text-sm',
+                                                    amount === preset && !showCustomAmount
                                                         ? 'border-accent bg-gradient-to-b from-accent-light/30 to-accent/20 text-primary shadow-accent ring-2 ring-accent/25'
                                                         : 'border-primary/15 bg-card hover:border-primary/40 hover:bg-surface/60',
                                                 )}
@@ -182,21 +188,39 @@ export function DonatePage() {
                                                 />
                                             </button>
                                         ))}
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setShowCustomAmount(true);
+                                                setAmount(null);
+                                            }}
+                                            className={cn(
+                                                'rounded-lg border px-1.5 py-2.5 text-xs font-semibold transition-all sm:px-2 sm:py-3 sm:text-sm',
+                                                showCustomAmount
+                                                    ? 'border-accent bg-gradient-to-b from-accent-light/30 to-accent/20 text-primary shadow-accent ring-2 ring-accent/25'
+                                                    : 'border-primary/15 bg-card hover:border-primary/40 hover:bg-surface/60',
+                                            )}
+                                        >
+                                            {t('donation.amount_other')}
+                                        </button>
                                     </div>
-                                    <div>
-                                        <Label htmlFor="custom">{t('donation.custom_amount')}</Label>
-                                        <Input
-                                            id="custom"
-                                            type="number"
-                                            min={min}
-                                            max={max}
-                                            step="0.001"
-                                            placeholder="0"
-                                            value={customAmount}
-                                            onChange={(e) => setCustomAmount(e.target.value)}
-                                            className="mt-1"
-                                        />
-                                    </div>
+                                    {showCustomAmount && (
+                                        <div>
+                                            <Label htmlFor="custom">{t('donation.custom_amount')}</Label>
+                                            <Input
+                                                id="custom"
+                                                type="number"
+                                                min={min}
+                                                max={max}
+                                                step="0.001"
+                                                placeholder="0"
+                                                value={customAmount}
+                                                onChange={(e) => setCustomAmount(e.target.value)}
+                                                className="mt-1"
+                                                autoFocus
+                                            />
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="space-y-2">

@@ -130,7 +130,7 @@ export function StatCard({
             }}
             whileHover={{ y: -6 }}
             className={cn(
-                'stat-card group relative flex flex-col items-center overflow-hidden rounded-2xl border border-primary/10 bg-gradient-to-b from-card via-card to-secondary/25 px-6 py-7 text-center shadow-brand transition-shadow duration-300 hover:shadow-brand-lg md:px-7 md:py-8',
+                'stat-card group relative flex flex-col items-center overflow-hidden rounded-2xl border border-primary/10 bg-gradient-to-b from-card via-card to-secondary/25 px-4 py-5 text-center shadow-brand transition-shadow duration-300 hover:shadow-brand-lg sm:px-6 sm:py-7 md:px-7 md:py-8',
                 highlight && 'ring-1 ring-accent/35',
                 className,
             )}
