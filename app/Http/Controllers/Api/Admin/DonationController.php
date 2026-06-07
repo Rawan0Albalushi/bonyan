@@ -56,6 +56,17 @@ class DonationController extends Controller
                         ->orWhere('donor_name', 'like', "%{$search}%")
                         ->orWhere('reference', 'like', "%{$search}%");
                 });
-            });
+            })
+            ->when($this->parseDate($request->query('date_from')), fn ($q, $date) => $q->whereDate('created_at', '>=', $date))
+            ->when($this->parseDate($request->query('date_to')), fn ($q, $date) => $q->whereDate('created_at', '<=', $date));
+    }
+
+    private function parseDate(mixed $value): ?string
+    {
+        if (! is_string($value) || ! preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+            return null;
+        }
+
+        return $value;
     }
 }

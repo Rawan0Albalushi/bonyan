@@ -23,8 +23,9 @@ import { AdminPagination } from '@/components/admin/AdminPagination';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { CurrencyAmount } from '@/components/shared/CurrencyAmount';
-import { formatAdminDate, formatPhone, formatReference } from '@/lib/utils';
+import { formatAdminDate, formatPhone, formatReference, getLocalizedProjectTitle } from '@/lib/utils';
 import { useLocale } from '@/contexts/LocaleContext';
 
 const DONATIONS_PER_PAGE = 10;
@@ -34,28 +35,44 @@ export function DonationsPage() {
     const { locale } = useLocale();
     const [donations, setDonations] = useState<Donation[]>([]);
     const [search, setSearch] = useState('');
+    const [dateFrom, setDateFrom] = useState('');
+    const [dateTo, setDateTo] = useState('');
     const [page, setPage] = useState(1);
     const [meta, setMeta] = useState({ total: 0, current_page: 1, last_page: 1 });
     const [exporting, setExporting] = useState(false);
 
+    const buildFilterParams = (includePagination = true): Record<string, string | number> => {
+        const params: Record<string, string | number> = {};
+        if (includePagination) {
+            params.page = page;
+            params.per_page = DONATIONS_PER_PAGE;
+        }
+        if (search.trim()) {
+            params.search = search.trim();
+        }
+        if (dateFrom) {
+            params.date_from = dateFrom;
+        }
+        if (dateTo) {
+            params.date_to = dateTo;
+        }
+        return params;
+    };
+
     useEffect(() => {
         const timer = setTimeout(() => {
-            fetchDonations({ search, page, per_page: DONATIONS_PER_PAGE }).then((res) => {
+            fetchDonations(buildFilterParams()).then((res) => {
                 setDonations(res.data);
                 setMeta(res.meta);
             });
         }, 300);
         return () => clearTimeout(timer);
-    }, [search, page]);
+    }, [search, dateFrom, dateTo, page]);
 
     const handleExport = async () => {
         setExporting(true);
         try {
-            const params: Record<string, string> = {};
-            if (search.trim()) {
-                params.search = search.trim();
-            }
-            await exportDonations(params);
+            await exportDonations(buildFilterParams(false));
         } finally {
             setExporting(false);
         }
@@ -76,15 +93,46 @@ export function DonationsPage() {
                 </Button>
             </div>
 
-            <Input
-                placeholder={t('common.search')}
-                value={search}
-                onChange={(e) => {
-                    setSearch(e.target.value);
-                    setPage(1);
-                }}
-                className="w-full max-w-md"
-            />
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
+                <div className="w-full max-w-md">
+                    <Input
+                        placeholder={t('common.search')}
+                        value={search}
+                        onChange={(e) => {
+                            setSearch(e.target.value);
+                            setPage(1);
+                        }}
+                    />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                    <Label htmlFor="donations-date-from">{t('admin.date_from')}</Label>
+                    <Input
+                        id="donations-date-from"
+                        type="date"
+                        value={dateFrom}
+                        onChange={(e) => {
+                            setDateFrom(e.target.value);
+                            setPage(1);
+                        }}
+                        className="w-full sm:w-auto"
+                        dir="ltr"
+                    />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                    <Label htmlFor="donations-date-to">{t('admin.date_to')}</Label>
+                    <Input
+                        id="donations-date-to"
+                        type="date"
+                        value={dateTo}
+                        onChange={(e) => {
+                            setDateTo(e.target.value);
+                            setPage(1);
+                        }}
+                        className="w-full sm:w-auto"
+                        dir="ltr"
+                    />
+                </div>
+            </div>
 
             <Card className="min-w-0 overflow-hidden">
                 <CardHeader className="admin-card-header">
@@ -120,6 +168,9 @@ export function DonationsPage() {
                                         <AdminMobileField label={t('donation.name_label')}>
                                             {d.donor_name?.trim() || ADMIN_TABLE_EMPTY}
                                         </AdminMobileField>
+                                        <AdminMobileField label={t('admin.projects')}>
+                                            {getLocalizedProjectTitle(d.project, locale) || ADMIN_TABLE_EMPTY}
+                                        </AdminMobileField>
                                         <AdminMobileField label={t('admin.date')}>
                                             <span dir="ltr">{formatAdminDate(d.created_at, locale)}</span>
                                         </AdminMobileField>
@@ -128,12 +179,13 @@ export function DonationsPage() {
                             </AdminMobileList>
 
                             <AdminDataTable>
-                                <AdminTableColGroup widths={['34%', '11%', '15%', '22%', '18%']} />
+                                <AdminTableColGroup widths={['22%', '10%', '12%', '16%', '22%', '18%']} />
                                 <AdminTableHead>
                                     <AdminTableTh variant="numeric">{t('admin.reference')}</AdminTableTh>
                                     <AdminTableTh variant="numeric">{t('success.amount')}</AdminTableTh>
                                     <AdminTableTh variant="numeric">{t('donation.phone_label')}</AdminTableTh>
                                     <AdminTableTh variant="text">{t('donation.name_label')}</AdminTableTh>
+                                    <AdminTableTh variant="text">{t('admin.projects')}</AdminTableTh>
                                     <AdminTableTh variant="numeric">{t('admin.date')}</AdminTableTh>
                                 </AdminTableHead>
                                 <AdminTableBody>
@@ -152,6 +204,9 @@ export function DonationsPage() {
                                             <AdminTableTd variant="numeric">{formatPhone(d.phone)}</AdminTableTd>
                                             <AdminTableTd variant="text">
                                                 {d.donor_name?.trim() || ADMIN_TABLE_EMPTY}
+                                            </AdminTableTd>
+                                            <AdminTableTd variant="text">
+                                                {getLocalizedProjectTitle(d.project, locale) || ADMIN_TABLE_EMPTY}
                                             </AdminTableTd>
                                             <AdminTableTd variant="numeric" muted>
                                                 {formatAdminDate(d.created_at, locale)}

@@ -159,6 +159,8 @@
     "donation_amounts": "Suggested Donation Amounts",
     "site_settings": "Site Settings",
     "date": "Date",
+    "date_from": "From date",
+    "date_to": "To date",
     "reference": "Reference",
     "progress": "Progress",
     "status": "Status",

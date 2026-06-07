@@ -159,6 +159,8 @@
     "donation_amounts": "مبالغ التبرع المقترحة",
     "site_settings": "إعدادات الموقع",
     "date": "التاريخ",
+    "date_from": "من تاريخ",
+    "date_to": "إلى تاريخ",
     "reference": "المرجع",
     "progress": "التقدم",
     "status": "الحالة",
