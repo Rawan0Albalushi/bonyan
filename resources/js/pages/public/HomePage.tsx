@@ -14,7 +14,13 @@ import { Progress } from '@/components/ui/progress';
 import { useLocale } from '@/contexts/LocaleContext';
 import { CurvedSectionBottom } from '@/components/shared/CurvedSectionBottom';
 import { PUBLIC_HEADER_SPACER_CLASS } from '@/components/shared/PublicHeader';
-import { cn, ENGLISH_NUMERALS_CLASS, formatNumber } from '@/lib/utils';
+import {
+    cn,
+    ENGLISH_NUMERALS_CLASS,
+    formatNumber,
+    getLocalizedProjectDescription,
+    getLocalizedProjectTitle,
+} from '@/lib/utils';
 
 export function HomePage() {
     const { t } = useTranslation();
@@ -96,7 +102,7 @@ export function HomePage() {
                             {t('home.hero_title')}
                         </h1>
                         <p className="max-w-prose text-[0.9375rem] leading-7 text-foreground/88 sm:text-lg sm:leading-relaxed">
-                            {project?.description ?? t('home.hero_subtitle')}
+                            {getLocalizedProjectDescription(project, locale) ?? t('home.hero_subtitle')}
                         </p>
                         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                             <Link to="/donate" className="w-full sm:w-auto">
@@ -148,7 +154,9 @@ export function HomePage() {
                 <section className="page-section">
                     <div className="page-container">
                         <h2 className="mb-6 text-center font-display text-xl font-bold sm:mb-8 sm:text-2xl">
-                            <span className="text-gradient-brand">{project.title}</span>
+                            <span className="text-gradient-brand">
+                                {getLocalizedProjectTitle(project, locale) ?? project.title}
+                            </span>
                         </h2>
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
                             <StatCard

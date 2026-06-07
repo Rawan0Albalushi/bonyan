@@ -1,5 +1,7 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import type { Project } from '@/api/types';
+import type { Locale } from '@/i18n';
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -74,6 +76,32 @@ export function formatReference(reference?: string | null): string {
     }
 
     return reference.length > 12 ? `${reference.slice(0, 8)}…` : reference;
+}
+
+export function getLocalizedProjectTitle(
+    project: Project | null | undefined,
+    locale: Locale,
+): string | null {
+    if (!project) {
+        return null;
+    }
+
+    return (locale === 'en' ? project.title_en : project.title_ar) || project.title || null;
+}
+
+export function getLocalizedProjectDescription(
+    project: Project | null | undefined,
+    locale: Locale,
+): string | null {
+    if (!project) {
+        return null;
+    }
+
+    return (
+        (locale === 'en' ? project.description_en : project.description_ar) ||
+        project.description ||
+        null
+    );
 }
 
 export function formatNumber(value: number, _locale = 'ar'): string {

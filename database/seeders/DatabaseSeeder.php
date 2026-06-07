@@ -33,8 +33,8 @@ class DatabaseSeeder extends Seeder
             [
                 'title_ar' => 'بناء منزل لعائلة محتاجة',
                 'title_en' => 'Building a Home for a Family in Need',
-                'description_ar' => 'ساهم معنا في إكمال بناء منزل يوفر المأوى الآمن والكرامة لعائلة محتاجة. كل تبرع يقربنا من إتمام البناء ومنحهم حياة كريمة.',
-                'description_en' => 'Join us in completing the construction of a home that provides safe shelter and dignity for a family in need. Every donation brings us closer to finishing the build and giving them a decent life.',
+                'description_ar' => 'ساهم في توفير منزل آمن وكريم لأسرة محتاجة، ومنحها الاستقرار والأمان وحياة أفضل.',
+                'description_en' => 'Help provide a safe and dignified home for a family in need, giving them stability, security, and a better life.',
                 'goal_amount' => 50000,
                 'raised_amount' => 12500,
                 'currency' => 'OMR',

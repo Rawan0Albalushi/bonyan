@@ -12,7 +12,12 @@ import { Progress } from '@/components/ui/progress';
 import { useLocale } from '@/contexts/LocaleContext';
 import { CurvedSectionBottom } from '@/components/shared/CurvedSectionBottom';
 import { PUBLIC_HEADER_SPACER_CLASS } from '@/components/shared/PublicHeader';
-import { cn, ENGLISH_NUMERALS_CLASS, formatNumber } from '@/lib/utils';
+import {
+    cn,
+    ENGLISH_NUMERALS_CLASS,
+    formatNumber,
+    getLocalizedProjectDescription,
+} from '@/lib/utils';
 
 export function HouseExperiencePage() {
     const { t } = useTranslation();
@@ -70,7 +75,7 @@ export function HouseExperiencePage() {
                         className="mx-auto max-w-3xl text-center"
                     >
                         <h1 className="text-balance font-display text-[1.625rem] font-extrabold leading-[1.4] text-gradient-brand-hero drop-shadow-sm sm:text-3xl sm:leading-snug md:text-4xl lg:max-w-4xl">
-                            {project?.description ?? t('houseExperience.hero_subtitle')}
+                            {getLocalizedProjectDescription(project, locale) ?? t('houseExperience.hero_subtitle')}
                         </h1>
                     </motion.div>
 
