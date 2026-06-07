@@ -18,28 +18,32 @@ import {
     AdminMobileList,
     AdminMobileListItem,
 } from '@/components/admin/AdminMobileList';
+import { AdminPagination } from '@/components/admin/AdminPagination';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { CurrencyAmount } from '@/components/shared/CurrencyAmount';
 import { formatAdminDate, formatPhone, formatReference } from '@/lib/utils';
 import { useLocale } from '@/contexts/LocaleContext';
 
+const DONATIONS_PER_PAGE = 10;
+
 export function DonationsPage() {
     const { t } = useTranslation();
     const { locale } = useLocale();
     const [donations, setDonations] = useState<Donation[]>([]);
     const [search, setSearch] = useState('');
+    const [page, setPage] = useState(1);
     const [meta, setMeta] = useState({ total: 0, current_page: 1, last_page: 1 });
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            fetchDonations({ search, page: 1 }).then((res) => {
+            fetchDonations({ search, page, per_page: DONATIONS_PER_PAGE }).then((res) => {
                 setDonations(res.data);
                 setMeta(res.meta);
             });
         }, 300);
         return () => clearTimeout(timer);
-    }, [search]);
+    }, [search, page]);
 
     return (
         <div className="admin-page">
@@ -48,7 +52,10 @@ export function DonationsPage() {
             <Input
                 placeholder={t('common.search')}
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => {
+                    setSearch(e.target.value);
+                    setPage(1);
+                }}
                 className="w-full max-w-md"
             />
 
@@ -94,7 +101,7 @@ export function DonationsPage() {
                             </AdminMobileList>
 
                             <AdminDataTable>
-                                <AdminTableColGroup widths={['14%', '12%', '14%', '24%', '22%']} />
+                                <AdminTableColGroup widths={['34%', '11%', '15%', '22%', '18%']} />
                                 <AdminTableHead>
                                     <AdminTableTh variant="numeric">{t('admin.reference')}</AdminTableTh>
                                     <AdminTableTh variant="numeric">{t('success.amount')}</AdminTableTh>
@@ -105,8 +112,8 @@ export function DonationsPage() {
                                 <AdminTableBody>
                                     {donations.map((d) => (
                                         <AdminTableRow key={d.id} striped>
-                                            <AdminTableTd variant="numeric" mono muted truncate>
-                                                {formatReference(d.reference)}
+                                            <AdminTableTd variant="text" mono muted className="break-all whitespace-normal">
+                                                <span dir="ltr">{formatReference(d.reference)}</span>
                                             </AdminTableTd>
                                             <AdminTableTd variant="numeric" className="font-medium">
                                                 <CurrencyAmount
@@ -126,6 +133,12 @@ export function DonationsPage() {
                                     ))}
                                 </AdminTableBody>
                             </AdminDataTable>
+
+                            <AdminPagination
+                                currentPage={meta.current_page}
+                                lastPage={meta.last_page}
+                                onPageChange={setPage}
+                            />
                         </>
                     )}
                 </CardContent>

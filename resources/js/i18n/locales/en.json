@@ -176,7 +176,10 @@
     "max_donation": "Maximum donation",
     "saved_success": "Settings saved successfully.",
     "settings_load_error": "Could not load settings. Please sign in again.",
-    "delete_project_confirm": "Delete this project?"
+    "delete_project_confirm": "Delete this project?",
+    "pagination_prev": "Previous",
+    "pagination_next": "Next",
+    "page_of": "Page {{current}} of {{total}}"
   },
   "house": {
     "viewer_label": "Project progress",

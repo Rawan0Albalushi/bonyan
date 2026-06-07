@@ -75,7 +75,7 @@ export function formatReference(reference?: string | null): string {
         return '—';
     }
 
-    return reference.length > 12 ? `${reference.slice(0, 8)}…` : reference;
+    return reference.trim();
 }
 
 export function getLocalizedProjectTitle(

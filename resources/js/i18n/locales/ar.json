@@ -176,7 +176,10 @@
     "max_donation": "الحد الأقصى للتبرع",
     "saved_success": "تم حفظ الإعدادات بنجاح.",
     "settings_load_error": "تعذّر تحميل الإعدادات. يرجى تسجيل الدخول مرة أخرى.",
-    "delete_project_confirm": "هل تريد حذف هذا المشروع؟"
+    "delete_project_confirm": "هل تريد حذف هذا المشروع؟",
+    "pagination_prev": "السابق",
+    "pagination_next": "التالي",
+    "page_of": "صفحة {{current}} من {{total}}"
   },
   "house": {
     "viewer_label": "تقدّم المشروع",

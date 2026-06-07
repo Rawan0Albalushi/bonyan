@@ -23,7 +23,7 @@ class DonationController extends Controller
                 });
             })
             ->latest()
-            ->paginate((int) $request->query('per_page', 20));
+            ->paginate((int) $request->query('per_page', 10));
 
         return response()->json([
             'data' => DonationResource::collection($donations->items()),
