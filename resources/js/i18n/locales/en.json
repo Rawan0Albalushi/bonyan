@@ -11,6 +11,7 @@
   "nav": {
     "home": "Home",
     "donate": "Donate Now",
+    "build_home": "Build a Home",
     "about": "About",
     "admin": "Admin"
   },
@@ -42,6 +43,49 @@
     "step1": "Choose your donation amount",
     "step2": "Enter your phone number",
     "step3": "Complete your donation successfully"
+  },
+  "houseExperience": {
+    "eyebrow": "A living build — one family, one home",
+    "hero_title": "Watch Hope Rise, Brick by Brick",
+    "hero_subtitle": "Step into the journey of building a safe home for a family waiting for shelter, warmth, and dignity.",
+    "progress_feeling": "How close we are to handing over the keys",
+    "cta_donate": "Donate Now",
+    "journey_label": "The journey",
+    "journey_title": "From empty land to a place called home",
+    "journey_desc": "Every stage you see is a chapter in a family's story — not a spreadsheet, but walls rising, light returning, and life beginning again.",
+    "stage_active": "{{percent}}% through this chapter",
+    "stage_done": "This chapter is complete — thank you",
+    "story_title": "More than walls — a future taking shape",
+    "story_p1": "Somewhere, a family waits for the day they can close a door behind them and feel safe. Your gift does not disappear into a report — it becomes foundation, roof, garden, and the warm glow in a window at dusk.",
+    "story_p2": "This is not charity at a distance. It is presence. Every contribution joins hands with others until silence becomes laughter inside a finished home.",
+    "story_quote": "A home is not only shelter. It is where children sleep without fear, where meals are shared, and where tomorrow feels possible again.",
+    "promise_1_title": "Safety that lasts",
+    "promise_1_desc": "Solid structure, secure openings, and a space built to protect — not just for today, but for years to come.",
+    "promise_2_title": "Warmth you can feel",
+    "promise_2_desc": "When the lights come on, the house stops being a project and starts becoming a refuge for a family.",
+    "promise_3_title": "Dignity restored",
+    "promise_3_desc": "Your gift says: you matter, you belong, you deserve a decent life — and we are building it with you.",
+    "closing_eyebrow": "The site is alive because of you",
+    "closing_title": "Add your brick to this home today",
+    "closing_desc": "Join the build. Leave a mark a family will feel every morning when they wake under their own roof.",
+    "moment": {
+      "base": "The ground is prepared. Walls are beginning to rise — and so is hope.",
+      "roof": "A roof means rain stays outside and worry starts to fade.",
+      "openings": "Doors and windows turn structure into shelter — a place someone can enter and breathe.",
+      "garden": "Green returns to the doorstep. Life is planting itself around this home.",
+      "lights": "Warm light spills from the windows — a sign that someone will live here soon.",
+      "interior": "The final touches of life are arriving. A family is almost home.",
+      "complete": "The build is complete. A family can finally call this place theirs."
+    },
+    "stage_story": {
+      "base": "Foundations carry more than weight — they carry the promise that this home will stand.",
+      "roof": "Under a secure roof, fear of the elements gives way to rest.",
+      "openings": "Every opening is an invitation: come in, you are welcome here.",
+      "garden": "Trees sway, paths appear, and the outside world becomes part of the home.",
+      "lights": "Even before move-in day, the glow says: someone cares enough to build this.",
+      "interior": "The last details turn construction into belonging.",
+      "complete": "What began as an empty plot is now a address, a refuge, a future."
+    }
   },
   "donation": {
     "title": "Donate Now",

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { fetchActiveProject, submitDonation } from '@/api/public';
 import type { Project, PublicSettings } from '@/api/types';
-import { HouseProgress } from '@/components/house/HouseProgress';
+import { HouseExperienceViewport } from '@/components/house/experience/HouseExperienceViewport';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -34,9 +34,6 @@ export function DonatePage() {
             .then((res) => {
                 setProject(res.data);
                 setSettings(res.settings);
-                if (res.settings?.donation_amounts?.[1]) {
-                    setAmount(res.settings.donation_amounts[1]);
-                }
             })
             .finally(() => setLoading(false));
     }, []);
@@ -112,7 +109,7 @@ export function DonatePage() {
 
     if (loading) {
         return (
-            <div className={cn('bg-page-soft flex min-h-[50vh] items-center justify-center', PUBLIC_HEADER_SPACER_CLASS)}>
+            <div className={cn('bg-page-soft flex flex-1 items-center justify-center', PUBLIC_HEADER_SPACER_CLASS)}>
                 <p className="text-muted-foreground">{t('common.loading')}</p>
             </div>
         );
@@ -120,22 +117,25 @@ export function DonatePage() {
 
     if (!project) {
         return (
-            <div className={cn('bg-page-soft mx-auto max-w-lg px-4 pb-20 text-center', PUBLIC_HEADER_SPACER_CLASS)}>
+            <div className={cn('bg-page-soft flex flex-1 items-center justify-center px-4 text-center', PUBLIC_HEADER_SPACER_CLASS)}>
                 <p className="text-muted-foreground">{t('admin.no_project')}</p>
             </div>
         );
     }
 
     return (
-        <div className={cn('bg-page-soft min-h-full', PUBLIC_HEADER_SPACER_CLASS)}>
-            <div className="page-container-narrow grid gap-6 pb-8 sm:gap-10 md:pb-16 lg:grid-cols-2 lg:gap-16">
-                <div className="mx-auto flex w-full min-w-0 max-w-[min(100%,19rem)] flex-col items-center justify-center sm:max-w-md lg:max-w-none">
-                    <HouseProgress
-                        percentage={project.progress_percentage}
-                        size="lg"
-                        showLabel={false}
+        <div
+            className={cn(
+                'bg-page-soft flex min-h-[calc(100dvh-var(--public-header-offset,5.75rem))] flex-1 flex-col justify-center',
+                PUBLIC_HEADER_SPACER_CLASS,
+            )}
+        >
+            <div className="page-container-narrow grid w-full gap-6 py-8 sm:gap-10 lg:grid-cols-2 lg:items-center lg:gap-12 xl:gap-16">
+                <div className="mx-auto flex w-full min-w-0 flex-col items-center justify-center lg:max-w-none">
+                    <HouseExperienceViewport
+                        progress={project.progress_percentage}
+                        showLabel
                     />
-                    <p className="mt-6 text-center text-sm text-muted-foreground">{project.title}</p>
                 </div>
 
                 <motion.div

@@ -48,6 +48,7 @@ export function PublicHeader({ siteSettings: externalSettings }: PublicHeaderPro
 
     const navLinks = [
         { to: '/', label: t('nav.home') },
+        { to: '/build-a-home', label: t('nav.build_home') },
         { to: '/donate', label: t('nav.donate') },
     ];
 

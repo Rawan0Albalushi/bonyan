@@ -88,7 +88,8 @@ app/
   Services/
 resources/js/
   api/             # API client & endpoints
-  components/      # UI & house visualization
+  components/
+    house/         # HouseLifeScene progress visualization (step images)
   contexts/        # Locale context
   i18n/locales/    # ar.json, en.json
   layouts/

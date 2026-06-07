@@ -17,7 +17,7 @@ import {
     clampPercentage,
     getFundingProgressBeforeDonation,
 } from '@/components/house/houseProgressVisual';
-import { HouseProgress } from '@/components/house/HouseProgress';
+import { HouseExperienceViewport } from '@/components/house/experience/HouseExperienceViewport';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { useLocale } from '@/contexts/LocaleContext';
@@ -82,7 +82,6 @@ export function SuccessPage() {
         project && project.goal_amount > 0
             ? clampPercentage((project.raised_amount / project.goal_amount) * 100)
             : (project?.progress_percentage ?? 0);
-    const donationsCount = project?.donations_count ?? 0;
     const fundingBefore =
         project && donation && isPaid
             ? getFundingProgressBeforeDonation(
@@ -214,26 +213,19 @@ export function SuccessPage() {
                 <CurvedSectionBottom className="[&_svg]:h-8 [&_svg]:sm:h-10 [&_svg]:md:h-12" />
             </section>
 
-            <main className="page-container py-6 md:py-10">
+            <main className="page-container flex min-h-[50vh] flex-col justify-center py-6 md:py-10">
                 {showCelebration ? (
-                    <div className="grid gap-8 lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-12">
+                    <div className="grid gap-8 lg:grid-cols-2 lg:items-center lg:gap-10 xl:gap-12">
                         <motion.section
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="order-1 lg:order-none"
+                            className="order-1 flex items-center justify-center lg:order-none"
                         >
-                            <HouseProgress
-                                percentage={fundingProgress}
-                                celebrateFromPercentage={
-                                    showCelebration ? fundingBefore : null
-                                }
-                                donationAmount={donation?.amount}
-                                goalAmount={project?.goal_amount}
-                                donationsCount={donationsCount}
-                                size="lg"
-                                inlineCelebration
-                                showLabel={false}
-                                animated
+                            <HouseExperienceViewport
+                                progress={fundingProgress}
+                                celebrateFromPercentage={showCelebration ? fundingBefore : null}
+                                inlineCelebration={showCelebration}
+                                showLabel
                                 className="mx-auto w-full"
                             />
                         </motion.section>
@@ -324,8 +316,16 @@ export function SuccessPage() {
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="mx-auto flex w-full max-w-md flex-col items-center gap-5 rounded-2xl border border-border/80 bg-card p-6 text-center shadow-brand sm:gap-6 sm:p-10"
+                        className="mx-auto flex w-full max-w-2xl flex-col items-center gap-6 sm:gap-8"
                     >
+                        {project && (
+                            <HouseExperienceViewport
+                                progress={fundingProgress}
+                                showLabel
+                                className="w-full"
+                            />
+                        )}
+                        <div className="flex w-full max-w-md flex-col items-center gap-5 rounded-2xl border border-border/80 bg-card p-6 text-center shadow-brand sm:gap-6 sm:p-10">
                         {verifying ? (
                             <Loader2 className="h-10 w-10 animate-spin text-primary" />
                         ) : (
@@ -343,6 +343,7 @@ export function SuccessPage() {
                                 {t('success.back_home')}
                             </Button>
                         </Link>
+                        </div>
                     </motion.div>
                 )}
             </main>

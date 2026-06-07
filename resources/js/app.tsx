@@ -11,6 +11,7 @@ import { HomePage } from '@/pages/public/HomePage';
 import { DonatePage } from '@/pages/public/DonatePage';
 import { SuccessPage } from '@/pages/public/SuccessPage';
 import { CancelPage } from '@/pages/public/CancelPage';
+import { HouseExperiencePage } from '@/pages/public/HouseExperiencePage';
 import { LoginPage } from '@/pages/admin/LoginPage';
 import { DashboardPage } from '@/pages/admin/DashboardPage';
 import { ProjectsPage } from '@/pages/admin/ProjectsPage';
@@ -28,6 +29,7 @@ if (root) {
                     <Routes>
                         <Route element={<PublicLayout />}>
                             <Route index element={<HomePage />} />
+                            <Route path="build-a-home" element={<HouseExperiencePage />} />
                             <Route path="donate" element={<DonatePage />} />
                             <Route path="donation/success/:reference" element={<SuccessPage />} />
                             <Route path="donation/cancel/:reference?" element={<CancelPage />} />

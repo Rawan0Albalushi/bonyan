@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useEffect, useMemo, useState } from 'react';
+import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { HouseDonationToast } from '@/components/house/HouseDonationToast';
 import { HouseLifeScene } from '@/components/house/HouseLifeScene';
 import { getLayersToAnimate } from '@/components/house/houseLifeProgress';
@@ -15,20 +15,21 @@ interface HouseProgressProps {
     percentage: number;
     celebrateFromPercentage?: number | null;
     className?: string;
-    size?: 'sm' | 'md' | 'lg' | 'celebration';
+    size?: 'sm' | 'md' | 'lg' | 'celebration' | 'immersive';
     showLabel?: boolean;
     animated?: boolean;
-    variant?: 'default' | 'hero';
-    /** Success page: animate funding climb + part pop + toast. */
+    variant?: 'default' | 'hero' | 'experience';
+    /** Success page: animate funding climb + layer reveal + toast. */
     inlineCelebration?: boolean;
-    donationAmount?: number;
-    goalAmount?: number;
-    donationsCount?: number;
+    /** Experience page: animate build progress on entry. */
+    liveBuild?: boolean;
+    children?: ReactNode;
 }
 
 const TOAST_DELAY_MS = 700;
 const TOAST_VISIBLE_MS = 4200;
 const FUNDING_ANIMATION_MS = 2600;
+const LIVE_BUILD_ANIMATION_MS = 3400;
 
 export function HouseProgress({
     percentage,
@@ -39,11 +40,11 @@ export function HouseProgress({
     animated = true,
     variant = 'default',
     inlineCelebration = false,
-    donationAmount,
-    goalAmount,
-    donationsCount,
+    liveBuild = false,
+    children,
 }: HouseProgressProps) {
     const { locale } = useLocale();
+    const [liveBuildActive, setLiveBuildActive] = useState(liveBuild);
 
     const fundingTarget = getFundingProgressPercentage(percentage);
     const previousFunding =
@@ -51,17 +52,41 @@ export function HouseProgress({
             ? getFundingProgressPercentage(celebrateFromPercentage)
             : fundingTarget;
 
+    const liveBuildFrom = useMemo(
+        () => Math.max(0, fundingTarget - Math.min(8, Math.max(3, fundingTarget * 0.12))),
+        [fundingTarget],
+    );
+
     const isCelebration =
         inlineCelebration &&
         celebrateFromPercentage != null &&
         previousFunding < fundingTarget - 0.0001;
 
+    const animationFrom = isCelebration
+        ? previousFunding
+        : liveBuildActive
+          ? liveBuildFrom
+          : fundingTarget;
+
+    const animationActive = isCelebration || liveBuildActive;
+
     const displayFunding = useAnimatedFunding(
-        previousFunding,
+        animationFrom,
         fundingTarget,
-        isCelebration,
-        FUNDING_ANIMATION_MS,
+        animationActive,
+        isCelebration ? FUNDING_ANIMATION_MS : LIVE_BUILD_ANIMATION_MS,
     );
+
+    useEffect(() => {
+        if (!liveBuild || isCelebration) {
+            setLiveBuildActive(false);
+            return;
+        }
+
+        setLiveBuildActive(true);
+        const timer = window.setTimeout(() => setLiveBuildActive(false), LIVE_BUILD_ANIMATION_MS + 120);
+        return () => window.clearTimeout(timer);
+    }, [liveBuild, isCelebration, fundingTarget]);
 
     const animateLayerIds = useMemo(
         () =>
@@ -91,13 +116,15 @@ export function HouseProgress({
         };
     }, [isCelebration, fundingTarget, previousFunding]);
 
-    const labelPercent = isCelebration ? displayFunding : fundingTarget;
+    const labelPercent = isCelebration || liveBuildActive ? displayFunding : fundingTarget;
 
     const sizeClasses = {
         sm: 'w-full max-w-[28rem]',
         md: 'w-full max-w-[42rem] sm:max-w-[48rem]',
         lg: 'w-full max-w-[48rem] sm:max-w-[56rem] lg:max-w-[68rem] xl:max-w-[820px]',
         celebration: 'w-full max-w-[50rem] sm:max-w-[60rem] md:max-w-[70rem] lg:max-w-[84rem]',
+        immersive:
+            'w-full max-w-[min(100%,68rem)] sm:max-w-[min(100%,84rem)] md:max-w-[min(100%,98rem)] lg:max-w-[min(100%,112rem)] xl:max-w-[min(100%,120rem)]',
     };
 
     const heroSizeClass = variant === 'hero' ? 'w-full max-w-none lg:max-w-full' : '';
@@ -110,7 +137,7 @@ export function HouseProgress({
         <div
             className={cn(
                 'flex w-full flex-col items-center',
-                variant === 'hero' ? 'gap-0' : 'gap-3',
+                variant === 'hero' || variant === 'experience' ? 'gap-0' : 'gap-3',
                 className,
             )}
         >
@@ -119,13 +146,13 @@ export function HouseProgress({
                 className={cn('relative w-full', heroSizeClass || sizeClasses[size])}
             >
                 {showLabel && (
-                    <div className="absolute end-0 top-0 z-10">
+                    <div className="absolute end-0 top-0 z-30">
                         <span
                             dir="ltr"
                             className={cn(
                                 'rounded-full bg-primary/10 px-3 py-1 text-sm font-bold text-primary backdrop-blur-sm',
                                 ENGLISH_NUMERALS_CLASS,
-                                isCelebration && 'ring-2 ring-primary/25',
+                                (isCelebration || liveBuildActive) && 'ring-2 ring-primary/25',
                             )}
                         >
                             {formatNumber(clampPercentage(labelPercent), locale)}%
@@ -138,15 +165,13 @@ export function HouseProgress({
                     animateLayerIds={animateLayerIds}
                     size={size}
                     variant={variant}
-                />
-
+                >
+                    {children}
+                </HouseLifeScene>
             </Wrapper>
 
             {isCelebration && (
-                <HouseDonationToast
-                    visible={showToast}
-                    messageKey="house.impact.simple"
-                />
+                <HouseDonationToast visible={showToast} messageKey="house.impact.simple" />
             )}
         </div>
     );
