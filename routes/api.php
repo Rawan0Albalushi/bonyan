@@ -31,6 +31,7 @@ Route::prefix('v1')->group(function (): void {
             Route::get('dashboard', [DashboardController::class, 'index']);
 
             Route::apiResource('projects', AdminProjectController::class);
+            Route::get('donations/export', [AdminDonationController::class, 'export']);
             Route::get('donations', [AdminDonationController::class, 'index']);
             Route::get('donations/{donation}', [AdminDonationController::class, 'show']);
 

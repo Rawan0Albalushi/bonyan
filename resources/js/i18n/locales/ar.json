@@ -179,7 +179,9 @@
     "delete_project_confirm": "هل تريد حذف هذا المشروع؟",
     "pagination_prev": "السابق",
     "pagination_next": "التالي",
-    "page_of": "صفحة {{current}} من {{total}}"
+    "page_of": "صفحة {{current}} من {{total}}",
+    "export_report": "تصدير التقرير",
+    "exporting_report": "جاري التصدير..."
   },
   "house": {
     "viewer_label": "تقدّم المشروع",

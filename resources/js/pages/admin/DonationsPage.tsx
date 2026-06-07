@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { fetchDonations } from '@/api/admin';
+import { Download } from 'lucide-react';
+import { exportDonations, fetchDonations } from '@/api/admin';
 import type { Donation } from '@/api/types';
 import {
     AdminDataTable,
@@ -19,6 +20,7 @@ import {
     AdminMobileListItem,
 } from '@/components/admin/AdminMobileList';
 import { AdminPagination } from '@/components/admin/AdminPagination';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { CurrencyAmount } from '@/components/shared/CurrencyAmount';
@@ -34,6 +36,7 @@ export function DonationsPage() {
     const [search, setSearch] = useState('');
     const [page, setPage] = useState(1);
     const [meta, setMeta] = useState({ total: 0, current_page: 1, last_page: 1 });
+    const [exporting, setExporting] = useState(false);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -45,9 +48,33 @@ export function DonationsPage() {
         return () => clearTimeout(timer);
     }, [search, page]);
 
+    const handleExport = async () => {
+        setExporting(true);
+        try {
+            const params: Record<string, string> = {};
+            if (search.trim()) {
+                params.search = search.trim();
+            }
+            await exportDonations(params);
+        } finally {
+            setExporting(false);
+        }
+    };
+
     return (
         <div className="admin-page">
-            <h1 className="page-title">{t('admin.donations')}</h1>
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-4">
+                <h1 className="page-title">{t('admin.donations')}</h1>
+                <Button
+                    variant="outline"
+                    onClick={() => void handleExport()}
+                    disabled={exporting || meta.total === 0}
+                    className="w-full gap-2 sm:w-auto"
+                >
+                    <Download className="h-4 w-4" />
+                    {exporting ? t('admin.exporting_report') : t('admin.export_report')}
+                </Button>
+            </div>
 
             <Input
                 placeholder={t('common.search')}

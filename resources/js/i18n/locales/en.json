@@ -179,7 +179,9 @@
     "delete_project_confirm": "Delete this project?",
     "pagination_prev": "Previous",
     "pagination_next": "Next",
-    "page_of": "Page {{current}} of {{total}}"
+    "page_of": "Page {{current}} of {{total}}",
+    "export_report": "Export Report",
+    "exporting_report": "Exporting..."
   },
   "house": {
     "viewer_label": "Project progress",

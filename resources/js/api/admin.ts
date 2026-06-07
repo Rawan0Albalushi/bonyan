@@ -62,6 +62,26 @@ export async function fetchDonations(params?: Record<string, string | number>) {
     return data;
 }
 
+export async function exportDonations(params?: Record<string, string | number>) {
+    const response = await api.get<Blob>('/admin/donations/export', {
+        params,
+        responseType: 'blob',
+    });
+
+    const disposition = response.headers['content-disposition'] as string | undefined;
+    const filenameMatch = disposition?.match(/filename="?([^"]+)"?/);
+    const filename = filenameMatch?.[1] ?? `donations-report-${new Date().toISOString().slice(0, 10)}.xlsx`;
+
+    const url = window.URL.createObjectURL(response.data);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+}
+
 export async function fetchSettings() {
     const { data } = await api.get<{ data: PublicSettings }>('/admin/settings');
     return data;
