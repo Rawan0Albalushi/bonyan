@@ -84,7 +84,12 @@ export function HouseExperiencePage() {
                         transition={{ duration: 0.65, delay: 0.1 }}
                         className="relative w-full"
                     >
-                        <HouseExperienceViewport progress={progress} showLabel liveBuild />
+                        <HouseExperienceViewport
+                            progress={progress}
+                            showLabel
+                            liveBuild
+                            showGoalPreview={progress < 100}
+                        />
                     </motion.div>
 
                     {project && (

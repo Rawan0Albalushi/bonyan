@@ -540,6 +540,57 @@
         isolation: isolate;
     }
 
+    .house-goal-preview {
+        box-shadow:
+            0 0 0 2px color-mix(in srgb, var(--color-accent) 28%, transparent),
+            0 8px 24px -4px color-mix(in srgb, var(--color-primary-dark) 22%, transparent);
+        animation: house-goal-preview-glow 3.2s ease-in-out infinite;
+    }
+
+    .house-goal-preview-scene .house-scene {
+        min-height: 0;
+        max-height: 4.5rem;
+    }
+
+    @media (max-width: 380px) {
+        .house-goal-preview-scene .house-scene {
+            max-height: 4rem;
+        }
+    }
+
+    @media (min-width: 640px) {
+        .house-goal-preview-scene .house-scene {
+            max-height: 8.5rem;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .house-goal-preview-scene .house-scene {
+            max-height: 10rem;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .house-goal-preview-scene .house-scene {
+            max-height: 10.5rem;
+        }
+    }
+
+    @keyframes house-goal-preview-glow {
+        0%,
+        100% {
+            box-shadow:
+                0 0 0 2px color-mix(in srgb, var(--color-accent) 28%, transparent),
+                0 8px 24px -4px color-mix(in srgb, var(--color-primary-dark) 22%, transparent);
+        }
+        50% {
+            box-shadow:
+                0 0 0 2px color-mix(in srgb, var(--color-accent) 45%, transparent),
+                0 0 20px color-mix(in srgb, var(--color-accent-light) 30%, transparent),
+                0 10px 28px -4px color-mix(in srgb, var(--color-primary-dark) 28%, transparent);
+        }
+    }
+
     .house-scene-immersive-experience {
         min-height: 0;
         height: auto;
