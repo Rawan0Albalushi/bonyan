@@ -86,7 +86,7 @@ export function SuccessPage() {
         <div className="bg-page-soft min-h-full">
             <section
                 className={cn(
-                    'relative w-full max-w-full overflow-x-clip rounded-b-[2rem] bg-hero-gradient-success pb-2 shadow-[inset_0_-1px_0_0_color-mix(in_srgb,var(--color-primary)_12%,transparent)] sm:rounded-b-[2.5rem] sm:pb-3 md:pb-4',
+                    'relative w-full max-w-full overflow-x-clip rounded-b-[2rem] bg-hero-gradient-success pb-6 shadow-[inset_0_-1px_0_0_color-mix(in_srgb,var(--color-primary)_12%,transparent)] sm:rounded-b-[2.5rem] sm:pb-8 md:pb-10',
                     PUBLIC_HEADER_SPACER_CLASS,
                 )}
             >
@@ -121,7 +121,7 @@ export function SuccessPage() {
                     )}
                 </div>
 
-                <div className="relative page-container py-2 pb-5 sm:py-2.5 sm:pb-6 md:pb-8">
+                <div className="relative page-container py-3 pb-4 sm:py-4 sm:pb-5 md:py-5 md:pb-6">
                     <motion.div
                         initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -192,6 +192,17 @@ export function SuccessPage() {
                             </motion.div>
                         )}
                     </motion.div>
+
+                    {showCelebration && (
+                        <motion.p
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.22, duration: 0.4 }}
+                            className="mt-5 text-center text-xs font-semibold uppercase tracking-wider text-primary/80 sm:mt-6 sm:text-sm md:mt-7"
+                        >
+                            {t('success.watch_build')}
+                        </motion.p>
+                    )}
                 </div>
 
                 <CurvedSectionBottom className="[&_svg]:h-5 [&_svg]:sm:h-6 [&_svg]:md:h-7" />
@@ -199,7 +210,7 @@ export function SuccessPage() {
 
             {showCelebration && (
                 <section
-                    className="relative z-10 -mt-5 w-full sm:-mt-6 md:-mt-8 lg:-mt-10"
+                    className="relative z-10 -mt-4 w-full sm:-mt-5 md:-mt-6 lg:-mt-8"
                     aria-label={t('success.watch_build')}
                 >
                     <div className="page-container">
@@ -209,9 +220,6 @@ export function SuccessPage() {
                             transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
                             className="success-house-showcase mx-auto w-full max-w-[min(100%,72rem)] px-1 sm:px-2"
                         >
-                            <p className="mb-4 text-center text-xs font-semibold uppercase tracking-wider text-primary/80 sm:mb-5 sm:text-sm">
-                                {t('success.watch_build')}
-                            </p>
                             <HouseExperienceViewport
                                 progress={fundingProgress}
                                 celebrateFromPercentage={fundingBefore}
