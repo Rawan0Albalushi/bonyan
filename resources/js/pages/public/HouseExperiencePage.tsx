@@ -6,7 +6,7 @@ import { ArrowLeft, ArrowRight, Sparkles } from 'lucide-react';
 import { fetchActiveProject } from '@/api/public';
 import type { Project } from '@/api/types';
 import { HouseExperienceViewport } from '@/components/house/experience/HouseExperienceViewport';
-import { getActiveLifeStage } from '@/components/house/houseLifeProgress';
+import { FundingSummaryRow } from '@/components/shared/FundingSummaryRow';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { useLocale } from '@/contexts/LocaleContext';
@@ -33,7 +33,6 @@ export function HouseExperiencePage() {
 
     const Arrow = isRtl ? ArrowLeft : ArrowRight;
     const progress = project?.progress_percentage ?? 0;
-    const activeStage = getActiveLifeStage(progress);
 
     if (loading) {
         return (
@@ -86,15 +85,6 @@ export function HouseExperiencePage() {
                         className="relative w-full"
                     >
                         <HouseExperienceViewport progress={progress} showLabel liveBuild />
-
-                        <motion.p
-                            key={activeStage}
-                            initial={{ opacity: 0, y: 8 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="mx-auto mt-4 max-w-xl text-center text-sm font-medium text-primary-dark/85 sm:mt-5 sm:text-base"
-                        >
-                            {t(`houseExperience.moment.${activeStage}`)}
-                        </motion.p>
                     </motion.div>
 
                     {project && (
@@ -102,7 +92,7 @@ export function HouseExperiencePage() {
                             initial={{ opacity: 0, y: 12 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.25 }}
-                            className="w-full max-w-xl space-y-3 px-2"
+                            className="w-full max-w-3xl space-y-4 px-2"
                         >
                             <div className="flex items-center justify-between gap-3 text-sm">
                                 <span className="font-medium text-foreground/75">
@@ -119,9 +109,12 @@ export function HouseExperiencePage() {
                                 </span>
                             </div>
                             <Progress value={progress} variant="hero" className="h-2.5 sm:h-3" />
-                            <p className="text-center text-xs text-muted-foreground sm:text-sm">
-                                {t(`house.life_stages.${activeStage}`)}
-                            </p>
+                            <FundingSummaryRow
+                                goalAmount={project.goal_amount}
+                                raisedAmount={project.raised_amount}
+                                remainingAmount={project.remaining_amount}
+                                currency={project.currency}
+                            />
                         </motion.div>
                     )}
 
