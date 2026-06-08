@@ -139,10 +139,10 @@ export function AdminLayout() {
                     </p>
                     <div className="ms-auto flex shrink-0 items-center gap-1 sm:gap-2">
                         <LanguageSwitcher compact />
-                        <Link to="/">
+                        <Link to="/build-a-home">
                             <Button variant="ghost" size="sm" className="gap-1.5 px-2 sm:px-3">
                                 <Home className="h-4 w-4 shrink-0" />
-                                <span className="hidden md:inline">{t('nav.home')}</span>
+                                <span className="hidden md:inline">{t('nav.build_home')}</span>
                             </Button>
                         </Link>
                     </div>

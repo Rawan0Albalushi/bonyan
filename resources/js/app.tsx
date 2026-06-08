@@ -7,7 +7,6 @@ import { LocaleProvider } from '@/contexts/LocaleContext';
 import { AppErrorBoundary } from '@/components/shared/AppErrorBoundary';
 import { PublicLayout } from '@/layouts/PublicLayout';
 import { AdminLayout } from '@/layouts/AdminLayout';
-import { HomePage } from '@/pages/public/HomePage';
 import { DonatePage } from '@/pages/public/DonatePage';
 import { SuccessPage } from '@/pages/public/SuccessPage';
 import { CancelPage } from '@/pages/public/CancelPage';
@@ -28,7 +27,7 @@ if (root) {
                 <BrowserRouter>
                     <Routes>
                         <Route element={<PublicLayout />}>
-                            <Route index element={<HomePage />} />
+                            <Route index element={<Navigate to="/build-a-home" replace />} />
                             <Route path="build-a-home" element={<HouseExperiencePage />} />
                             <Route path="donate" element={<DonatePage />} />
                             <Route path="donation/success/:reference" element={<SuccessPage />} />
@@ -43,7 +42,7 @@ if (root) {
                             <Route path="settings" element={<SettingsPage />} />
                         </Route>
 
-                        <Route path="*" element={<Navigate to="/" replace />} />
+                        <Route path="*" element={<Navigate to="/build-a-home" replace />} />
                     </Routes>
                 </BrowserRouter>
             </LocaleProvider>

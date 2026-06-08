@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Shield, Sparkles } from 'lucide-react';
+import { Shield } from 'lucide-react';
 import { fetchActiveProject } from '@/api/public';
 import type { Project, PublicSettings } from '@/api/types';
 import { HouseProgress } from '@/components/house/HouseProgress';
@@ -24,7 +24,7 @@ import {
 
 export function HomePage() {
     const { t } = useTranslation();
-    const { locale, isRtl } = useLocale();
+    const { locale } = useLocale();
     const [project, setProject] = useState<Project | null>(null);
     const [, setSettings] = useState<PublicSettings | null>(null);
     const [loading, setLoading] = useState(true);
@@ -37,8 +37,6 @@ export function HomePage() {
             })
             .finally(() => setLoading(false));
     }, []);
-
-    const Arrow = isRtl ? ArrowLeft : ArrowRight;
 
     if (loading) {
         return (
@@ -106,9 +104,8 @@ export function HomePage() {
                         </p>
                         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                             <Link to="/donate" className="w-full sm:w-auto">
-                                <Button variant="accent" size="lg" className="w-full gap-2 sm:w-auto">
+                                <Button variant="accent" size="lg" className="w-full sm:w-auto">
                                     {t('home.cta_donate')}
-                                    <Arrow className="h-4 w-4" />
                                 </Button>
                             </Link>
                             <a href="#about" className="w-full sm:w-auto">
@@ -227,8 +224,7 @@ export function HomePage() {
                             <h3 className="font-display text-lg font-bold text-primary sm:text-xl">{t('home.trust_title')}</h3>
                             <p className="text-sm text-muted-foreground sm:text-base">{t('home.trust_desc')}</p>
                             <Link to="/donate" className="w-full sm:w-auto">
-                                <Button variant="accent" size="lg" className="w-full gap-2 sm:w-auto">
-                                    <Sparkles className="h-4 w-4" />
+                                <Button variant="accent" size="lg" className="w-full sm:w-auto">
                                     {t('home.cta_donate')}
                                 </Button>
                             </Link>

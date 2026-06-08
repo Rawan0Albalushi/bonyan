@@ -32,13 +32,28 @@ interface HouseBuildRevealProps {
     progress: number;
     animateReveal: boolean;
     smoothClip: boolean;
+    showGhostLayer: boolean;
+    /** Experience: faint full-house blueprint from 0% (not only the unbuilt slice). */
+    alwaysShowFullGhost?: boolean;
 }
 
 /** Bottom-up clip on the final house artwork — progress maps 1:1 to visible height. */
-function HouseBuildReveal({ progress, animateReveal, smoothClip }: HouseBuildRevealProps) {
+function HouseBuildReveal({
+    progress,
+    animateReveal,
+    smoothClip,
+    showGhostLayer,
+    alwaysShowFullGhost = false,
+}: HouseBuildRevealProps) {
     const revealClip = useMemo(() => getLifeBuildRevealClip(progress), [progress]);
-    const ghostClip = useMemo(() => getLifeBuildGhostClip(progress), [progress]);
-    const showGhost = progress > 0.5 && progress < 99.5;
+    const ghostClip = useMemo(
+        () => (alwaysShowFullGhost ? BUILD_ZONE_CLIP : getLifeBuildGhostClip(progress)),
+        [progress, alwaysShowFullGhost],
+    );
+    const showGhost =
+        showGhostLayer &&
+        progress < 99.5 &&
+        (alwaysShowFullGhost || progress > 0.5);
 
     const builtLayer = (
         <div
@@ -145,9 +160,11 @@ export function HouseLifeScene({
 
             <div className="house-scene-stage absolute inset-0">
                 <div className="house-scene-inner absolute inset-0">
-                    <div className="house-scene-layer house-life-base absolute inset-0 z-0">
-                        <HousePicture src={HOUSE_LIFE_BASE_IMAGE} eager />
-                    </div>
+                    {!isExperience && (
+                        <div className="house-scene-layer house-life-base absolute inset-0 z-0">
+                            <HousePicture src={HOUSE_LIFE_BASE_IMAGE} eager />
+                        </div>
+                    )}
 
                     {isComplete ? (
                         <div
@@ -179,19 +196,23 @@ export function HouseLifeScene({
                                 progress={progress}
                                 animateReveal={animateReveal}
                                 smoothClip={isExperience}
+                                showGhostLayer
+                                alwaysShowFullGhost={isExperience}
                             />
                         </div>
                     )}
 
                     {children}
 
-                    <div
-                        className="house-scene-layer house-life-base-front pointer-events-none absolute inset-0 z-[2]"
-                        style={{ clipPath: PLATFORM_CLIP }}
-                        aria-hidden
-                    >
-                        <HousePicture src={HOUSE_LIFE_BASE_IMAGE} eager />
-                    </div>
+                    {!isExperience && (
+                        <div
+                            className="house-scene-layer house-life-base-front pointer-events-none absolute inset-0 z-[2]"
+                            style={{ clipPath: PLATFORM_CLIP }}
+                            aria-hidden
+                        >
+                            <HousePicture src={HOUSE_LIFE_BASE_IMAGE} eager />
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

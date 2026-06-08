@@ -31,7 +31,7 @@ export function CancelPage() {
                                     {t('payment_cancel.try_again')}
                                 </Button>
                             </Link>
-                            <Link to="/">
+                            <Link to="/build-a-home">
                                 <Button variant="outline" className="w-full sm:w-auto">
                                     {t('success.back_home')}
                                 </Button>

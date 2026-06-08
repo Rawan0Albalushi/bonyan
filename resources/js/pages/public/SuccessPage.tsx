@@ -293,7 +293,7 @@ export function SuccessPage() {
                                             {t('success.donate_again')}
                                         </Button>
                                     </Link>
-                                    <Link to="/">
+                                    <Link to="/build-a-home">
                                         <Button variant="outline" className="h-11 w-full gap-2">
                                             <Home className="h-4 w-4" />
                                             {t('success.back_home')}
@@ -327,7 +327,7 @@ export function SuccessPage() {
                             </p>
                             <p className="text-sm text-muted-foreground">{t('success.pending')}</p>
                         </div>
-                        <Link to="/" className="w-full">
+                        <Link to="/build-a-home" className="w-full">
                             <Button variant="outline" className="w-full gap-2">
                                 <Home className="h-4 w-4" />
                                 {t('success.back_home')}

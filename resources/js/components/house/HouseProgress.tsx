@@ -27,7 +27,6 @@ interface HouseProgressProps {
 }
 
 const TOAST_DELAY_MS = 700;
-const TOAST_VISIBLE_MS = 4200;
 const FUNDING_ANIMATION_MS = 2600;
 const LIVE_BUILD_ANIMATION_MS = 3400;
 
@@ -52,10 +51,7 @@ export function HouseProgress({
             ? getFundingProgressPercentage(celebrateFromPercentage)
             : fundingTarget;
 
-    const liveBuildFrom = useMemo(
-        () => Math.max(0, fundingTarget - Math.min(8, Math.max(3, fundingTarget * 0.12))),
-        [fundingTarget],
-    );
+    const liveBuildFrom = 0;
 
     const isCelebration =
         inlineCelebration &&
@@ -105,14 +101,9 @@ export function HouseProgress({
         }
 
         const showTimer = window.setTimeout(() => setShowToast(true), TOAST_DELAY_MS);
-        const hideTimer = window.setTimeout(
-            () => setShowToast(false),
-            TOAST_DELAY_MS + TOAST_VISIBLE_MS,
-        );
 
         return () => {
             window.clearTimeout(showTimer);
-            window.clearTimeout(hideTimer);
         };
     }, [isCelebration, fundingTarget, previousFunding]);
 

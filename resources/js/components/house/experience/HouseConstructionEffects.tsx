@@ -288,7 +288,7 @@ export function HouseConstructionEffects({ progress, className }: HouseConstruct
     const stage = getActiveLifeStage(progress);
     const p = clampPercentage(progress);
     const isBuilding = p < 100;
-    const showWorkers = isBuilding && p < 75;
+    const showWorkers = isBuilding;
     const showSparks = stage === 'base' || stage === 'roof';
     const showWarmLights = stage === 'lights' || stage === 'interior' || stage === 'complete';
 

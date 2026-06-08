@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Sparkles } from 'lucide-react';
 import { fetchActiveProject } from '@/api/public';
 import type { Project } from '@/api/types';
 import { HouseExperienceViewport } from '@/components/house/experience/HouseExperienceViewport';
@@ -21,7 +20,7 @@ import {
 
 export function HouseExperiencePage() {
     const { t } = useTranslation();
-    const { locale, isRtl } = useLocale();
+    const { locale } = useLocale();
     const [project, setProject] = useState<Project | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -31,7 +30,6 @@ export function HouseExperiencePage() {
             .finally(() => setLoading(false));
     }, []);
 
-    const Arrow = isRtl ? ArrowLeft : ArrowRight;
     const progress = project?.progress_percentage ?? 0;
 
     if (loading) {
@@ -130,10 +128,8 @@ export function HouseExperiencePage() {
                         className="flex w-full max-w-md flex-col gap-3 px-2 sm:max-w-none sm:flex-row sm:justify-center"
                     >
                         <Link to="/donate" className="w-full sm:w-auto">
-                            <Button variant="accent" size="lg" className="w-full gap-2 shadow-accent sm:min-w-[14rem]">
-                                <Sparkles className="h-4 w-4" />
+                            <Button variant="accent" size="lg" className="w-full shadow-accent sm:min-w-[14rem]">
                                 {t('houseExperience.cta_donate')}
-                                <Arrow className="h-4 w-4" />
                             </Button>
                         </Link>
                     </motion.div>
