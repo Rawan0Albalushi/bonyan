@@ -2,15 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import {
-    CheckCircle2,
-    Heart,
-    Home,
-    Loader2,
-    PartyPopper,
-    Receipt,
-    TrendingUp,
-} from 'lucide-react';
+import { CheckCircle2, Heart, Home, Loader2, PartyPopper, Receipt } from 'lucide-react';
 import { checkDonationPaymentStatus, fetchDonationConfirmation } from '@/api/public';
 import type { Donation, Project } from '@/api/types';
 import {
@@ -19,16 +11,14 @@ import {
 } from '@/components/house/houseProgressVisual';
 import { HouseExperienceViewport } from '@/components/house/experience/HouseExperienceViewport';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { useLocale } from '@/contexts/LocaleContext';
 import { CurrencyAmount } from '@/components/shared/CurrencyAmount';
 import { CurvedSectionBottom } from '@/components/shared/CurvedSectionBottom';
 import { PUBLIC_HEADER_SPACER_CLASS } from '@/components/shared/PublicHeader';
-import { cn, ENGLISH_NUMERALS_CLASS, formatNumber } from '@/lib/utils';
+import { SuccessProgressCard } from '@/components/success/SuccessProgressCard';
+import { cn } from '@/lib/utils';
 
 export function SuccessPage() {
     const { t } = useTranslation();
-    const { locale } = useLocale();
     const { reference } = useParams<{ reference: string }>();
     const [searchParams] = useSearchParams();
     const location = useLocation();
@@ -90,6 +80,7 @@ export function SuccessPage() {
                   donation.amount,
               )
             : fundingProgress;
+    const progressAdded = clampPercentage(fundingProgress - fundingBefore);
 
     return (
         <div className="bg-page-soft min-h-full">
@@ -244,27 +235,17 @@ export function SuccessPage() {
                         initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="mx-auto w-full max-w-md"
+                        className="mx-auto w-full max-w-2xl"
                     >
                             <div className="card-elevated overflow-hidden rounded-2xl">
-                                <div className="border-b border-border/50 p-5 sm:p-6">
-                                    <div className="flex items-center gap-2.5 text-primary">
-                                        <TrendingUp className="h-4 w-4 shrink-0" />
-                                        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                                            {t('success.new_progress')}
-                                        </p>
-                                    </div>
-                                    <p
-                                        className={cn(
-                                            'mt-3 font-display text-2xl font-bold text-primary sm:text-3xl',
-                                            ENGLISH_NUMERALS_CLASS,
-                                        )}
-                                        dir="ltr"
-                                    >
-                                        {formatNumber(fundingProgress, locale)}%
-                                    </p>
-                                    <Progress value={fundingProgress} className="mt-4 h-2.5" />
-                                </div>
+                                {project && (
+                                    <SuccessProgressCard
+                                        fundingProgress={fundingProgress}
+                                        fundingBefore={fundingBefore}
+                                        progressAdded={progressAdded}
+                                        project={project}
+                                    />
+                                )}
 
                                 {donation && (
                                     <div className="border-b border-border/50 p-5 sm:p-6">

@@ -1,3 +1,4 @@
+import { HOUSE_FULL_IMAGE } from '@/components/house/houseImages';
 import { clampPercentage } from '@/components/house/houseProgressVisual';
 
 const LAYERS = '/image/house/layers';
@@ -32,8 +33,8 @@ export const HOUSE_LIFE_BASE_IMAGE = `${LAYERS}/base.png`;
 /** Cumulative build frames (step-00 … step-18) — one image per progress slice. */
 export const HOUSE_LIFE_STEP_COUNT = 18;
 
-/** Final build frame — same silhouette as the goal / completed house. */
-export const HOUSE_LIFE_COMPLETE_IMAGE = getLifeStepImage(HOUSE_LIFE_STEP_COUNT);
+/** Final house artwork — same asset shown in the goal preview and at 100% progress. */
+export const HOUSE_LIFE_COMPLETE_IMAGE = HOUSE_FULL_IMAGE;
 
 export function getLifeStepImage(step: number): string {
     const clamped = Math.max(0, Math.min(HOUSE_LIFE_STEP_COUNT, Math.round(step)));
@@ -77,6 +78,27 @@ export function getLifeStepRender(progress: number): LifeStepRender {
         nextStep: currentStep + 1,
         nextOpacity: blend,
     };
+}
+
+/** Bottom-up reveal clip — only the funded slice of the house is shown. */
+export function getLifeBuildRevealClip(progress: number): string {
+    const p = clampPercentage(progress);
+    if (p <= 0) {
+        return 'inset(100% 0 0 0)';
+    }
+    if (p >= 100) {
+        return 'none';
+    }
+    return `inset(${100 - p}% 0 0 0)`;
+}
+
+/** Faint silhouette of the unbuilt upper slice. */
+export function getLifeBuildGhostClip(progress: number): string {
+    const p = clampPercentage(progress);
+    if (p <= 0 || p >= 100) {
+        return 'inset(100% 0 0 0)';
+    }
+    return `inset(0 0 ${p}% 0)`;
 }
 
 function getLifeBandOpacity(progress: number, unlockAt: number, fullAt: number): number {

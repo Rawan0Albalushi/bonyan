@@ -5,8 +5,8 @@ import { HousePicture } from '@/components/house/HousePicture';
 import {
     HOUSE_LIFE_BASE_IMAGE,
     HOUSE_LIFE_COMPLETE_IMAGE,
-    getLifeStepImage,
-    getLifeStepRender,
+    getLifeBuildGhostClip,
+    getLifeBuildRevealClip,
     type HouseLifeLayerId,
 } from '@/components/house/houseLifeProgress';
 import {
@@ -28,75 +28,68 @@ const SIZE_HEIGHT: Record<string, string> = {
         'w-full max-h-[46rem] sm:max-h-[58rem] md:max-h-[68rem] lg:max-h-[min(88vh,980px)] xl:max-h-[min(92vh,1080px)]',
 };
 
-interface LifeStepFrameProps {
-    step: number;
-    opacity?: number;
-    animate: boolean;
-    layerId?: HouseLifeLayerId | 'complete' | 'step';
+interface HouseBuildRevealProps {
+    progress: number;
+    animateReveal: boolean;
+    smoothClip: boolean;
 }
 
-function LifeStepFrame({ step, opacity = 1, animate, layerId = 'step' }: LifeStepFrameProps) {
-    if (opacity <= 0.01) {
-        return null;
-    }
+/** Bottom-up clip on the final house artwork — progress maps 1:1 to visible height. */
+function HouseBuildReveal({ progress, animateReveal, smoothClip }: HouseBuildRevealProps) {
+    const revealClip = useMemo(() => getLifeBuildRevealClip(progress), [progress]);
+    const ghostClip = useMemo(() => getLifeBuildGhostClip(progress), [progress]);
+    const showGhost = progress > 0.5 && progress < 99.5;
 
-    const src = getLifeStepImage(step);
-    const content = <HousePicture src={src} eager className="absolute inset-0" />;
+    const builtLayer = (
+        <div
+            className="house-scene-layer house-life-layer house-life-built absolute inset-0 overflow-hidden"
+            style={smoothClip ? undefined : { clipPath: revealClip }}
+            data-life-layer="built"
+        >
+            {smoothClip ? (
+                <motion.div
+                    className="absolute inset-0"
+                    initial={false}
+                    animate={{ clipPath: revealClip }}
+                    transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                >
+                    <HousePicture src={HOUSE_LIFE_COMPLETE_IMAGE} eager className="absolute inset-0" />
+                </motion.div>
+            ) : (
+                <HousePicture src={HOUSE_LIFE_COMPLETE_IMAGE} eager className="absolute inset-0" />
+            )}
+        </div>
+    );
 
-    if (!animate) {
+    const ghostLayer = showGhost ? (
+        <div
+            className="house-scene-layer house-life-ghost absolute inset-0 overflow-hidden"
+            style={{ clipPath: ghostClip }}
+            aria-hidden
+        >
+            <HousePicture src={HOUSE_LIFE_COMPLETE_IMAGE} eager className="absolute inset-0" />
+        </div>
+    ) : null;
+
+    if (!animateReveal) {
         return (
-            <div
-                className="house-scene-layer house-life-layer absolute inset-0"
-                style={{ opacity }}
-                data-life-layer={layerId}
-                data-life-step={step}
-            >
-                {content}
+            <div className="absolute inset-0">
+                {ghostLayer}
+                {builtLayer}
             </div>
         );
     }
 
     return (
         <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity, scale: 1 }}
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
-            className="house-scene-layer house-life-layer house-life-layer-reveal absolute inset-0"
-            data-life-layer={layerId}
-            data-life-step={step}
+            className="house-life-layer-reveal absolute inset-0"
         >
-            {content}
+            {ghostLayer}
+            {builtLayer}
         </motion.div>
-    );
-}
-
-interface ExperienceStepStackProps {
-    currentStep: number;
-    nextStep: number | null;
-    nextBlend: number;
-}
-
-/** Wipe reveal avoids ghosting from overlapping semi-transparent step PNGs. */
-function ExperienceStepStack({ currentStep, nextStep, nextBlend }: ExperienceStepStackProps) {
-    const revealPercent = Math.round((1 - nextBlend) * 100);
-
-    return (
-        <div className="absolute inset-0">
-            <div className="house-scene-layer house-life-layer absolute inset-0">
-                <HousePicture src={getLifeStepImage(currentStep)} eager className="absolute inset-0" />
-            </div>
-
-            {nextStep != null && nextBlend > 0.01 && (
-                <motion.div
-                    className="house-scene-layer house-life-layer absolute inset-0 overflow-hidden"
-                    initial={false}
-                    animate={{ clipPath: `inset(${revealPercent}% 0 0 0)` }}
-                    transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                >
-                    <HousePicture src={getLifeStepImage(nextStep)} eager className="absolute inset-0" />
-                </motion.div>
-            )}
-        </div>
     );
 }
 
@@ -130,7 +123,6 @@ export function HouseLifeScene({
               ? 'house-scene-immersive-experience max-h-[46rem] sm:max-h-[58rem] md:max-h-[68rem] lg:max-h-[min(88vh,980px)] xl:max-h-[min(92vh,1080px)]'
               : SIZE_HEIGHT[size] ?? SIZE_HEIGHT.lg;
 
-    const stepRender = useMemo(() => getLifeStepRender(progress), [progress]);
     const layoutSrc = HOUSE_LIFE_BASE_IMAGE;
 
     return (
@@ -158,7 +150,10 @@ export function HouseLifeScene({
                     </div>
 
                     {isComplete ? (
-                        <div className="absolute inset-0 z-[1]" style={{ clipPath: BUILD_ZONE_CLIP }}>
+                        <div
+                            className="house-scene-build-zone absolute inset-0 z-[3]"
+                            style={{ clipPath: BUILD_ZONE_CLIP }}
+                        >
                             {animateLayerIds.includes('complete') ? (
                                 <motion.div
                                     initial={{ opacity: 0, scale: 0.96 }}
@@ -176,37 +171,22 @@ export function HouseLifeScene({
                             )}
                         </div>
                     ) : (
-                        <div className="absolute inset-0 z-[1]" style={{ clipPath: BUILD_ZONE_CLIP }}>
-                            {isExperience ? (
-                                <div className="absolute inset-0 z-[1]">
-                                    <ExperienceStepStack
-                                        currentStep={stepRender.currentStep}
-                                        nextStep={stepRender.nextStep}
-                                        nextBlend={stepRender.nextOpacity}
-                                    />
-                                </div>
-                            ) : (
-                                <>
-                                    <LifeStepFrame
-                                        step={stepRender.currentStep}
-                                        animate={animateReveal}
-                                    />
-                                    {stepRender.nextStep != null && (
-                                        <LifeStepFrame
-                                            step={stepRender.nextStep}
-                                            opacity={stepRender.nextOpacity}
-                                            animate={animateReveal}
-                                        />
-                                    )}
-                                </>
-                            )}
+                        <div
+                            className="house-scene-build-zone absolute inset-0 z-[3]"
+                            style={{ clipPath: BUILD_ZONE_CLIP }}
+                        >
+                            <HouseBuildReveal
+                                progress={progress}
+                                animateReveal={animateReveal}
+                                smoothClip={isExperience}
+                            />
                         </div>
                     )}
 
                     {children}
 
                     <div
-                        className="house-scene-layer house-life-base-front pointer-events-none absolute inset-0 z-[4]"
+                        className="house-scene-layer house-life-base-front pointer-events-none absolute inset-0 z-[2]"
                         style={{ clipPath: PLATFORM_CLIP }}
                         aria-hidden
                     >

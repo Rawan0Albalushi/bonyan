@@ -611,30 +611,39 @@
         animation: house-goal-preview-glow 3.2s ease-in-out infinite;
     }
 
+    .house-goal-preview-scene .house-final-image,
     .house-goal-preview-scene .house-scene {
         min-height: 0;
         max-height: 4.5rem;
     }
 
+    .house-final-image-house {
+        transform: translateY(-2.5%);
+    }
+
     @media (max-width: 380px) {
+        .house-goal-preview-scene .house-final-image,
         .house-goal-preview-scene .house-scene {
             max-height: 4rem;
         }
     }
 
     @media (min-width: 640px) {
+        .house-goal-preview-scene .house-final-image,
         .house-goal-preview-scene .house-scene {
             max-height: 8.5rem;
         }
     }
 
     @media (min-width: 768px) {
+        .house-goal-preview-scene .house-final-image,
         .house-goal-preview-scene .house-scene {
             max-height: 10rem;
         }
     }
 
     @media (min-width: 1024px) {
+        .house-goal-preview-scene .house-final-image,
         .house-goal-preview-scene .house-scene {
             max-height: 10.5rem;
         }
@@ -679,6 +688,10 @@
         transform-style: flat;
     }
 
+    .house-scene-build-zone {
+        transform: translateY(-2.5%);
+    }
+
     @media (max-width: 640px) {
         .house-scene-life.house-scene-hero-mobile {
             min-height: 11rem;
@@ -709,6 +722,15 @@
 
     .house-life-layer {
         will-change: opacity, transform;
+    }
+
+    .house-life-ghost {
+        opacity: 0.14;
+        filter: grayscale(1) brightness(0.55) contrast(0.85);
+    }
+
+    .house-scene-experience .house-life-ghost {
+        opacity: 0.18;
     }
 
     .house-life-layer-reveal {

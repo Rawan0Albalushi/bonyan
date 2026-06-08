@@ -485,37 +485,90 @@ function solidifyBaseBottom(data, info) {
     }
 }
 
-/**
- * Step frames for the UI:
- * - Structure (0–11): direct 0→final morph so the silhouette matches house-full.png.
- * - Landscape + interior (12–18): overlay filtered deltas on the structure frame.
- */
-function buildAllStepFrames(stageImages, info) {
-    const structureParts = BUILD_PHASES[0].partIds.length;
-    const structurePhase = BUILD_PHASES[0];
-    const frames = new Array(CORE_PART_COUNT + 1);
+function collectHouseFullPixels(houseFullData, info, phase) {
+    const { width, height } = info;
+    const pixels = [];
 
-    frames[0] = Buffer.from(stageImages[0].data);
-    solidifyBaseBottom(frames[0], info);
-    stripBottomFeather(frames[0], info, 0.07, 200);
-
-    for (let i = 1; i <= structureParts; i++) {
-        frames[i] = revealHouseOverFoundation(
-            stageImages,
-            phaseBlendAt(structurePhase, i / structureParts),
-        );
-    }
-
-    const postStructureSteps = CORE_PART_COUNT - structureParts;
-    for (let i = 1; i <= postStructureSteps; i++) {
-        const t = structurePhase.tEnd + (1 - structurePhase.tEnd) * (i / postStructureSteps);
-        frames[structureParts + i] = revealHouseOverFoundation(stageImages, t);
-    }
-
-    for (let step = 0; step <= CORE_PART_COUNT; step++) {
-        if (step > 0) {
-            stripBottomFeather(frames[step], info);
+    for (let i = 0; i < houseFullData.length; i += 4) {
+        const alpha = houseFullData[i + 3];
+        if (alpha < 24) {
+            continue;
         }
+
+        const pixel = i / 4;
+        const y = Math.floor(pixel / width);
+        const r = houseFullData[i];
+        const g = houseFullData[i + 1];
+        const b = houseFullData[i + 2];
+
+        if (!passesFilter(phase.pixelFilter, r, g, b, alpha, y, height, phase)) {
+            continue;
+        }
+
+        pixels.push({ index: i, y, x: pixel % width });
+    }
+
+    if (phase.pixelFilter === 'structure') {
+        const deckY = Math.floor(height * 0.64);
+        const houseStructure = pixels.filter((pixel) => pixel.y < deckY);
+        houseStructure.sort((a, b) => b.y - a.y || a.x - b.x);
+        return houseStructure;
+    }
+
+    if (phase.pixelFilter === 'interior') {
+        pixels.sort((a, b) => a.y - b.y || a.x - b.x);
+        return pixels;
+    }
+
+    pixels.sort((a, b) => b.y - a.y || a.x - b.x);
+    return pixels;
+}
+
+function buildFoundationBase(stageImages, info) {
+    const base = Buffer.from(stageImages[0].data);
+    solidifyBaseBottom(base, info);
+    stripBottomFeather(base, info, 0.07, 200);
+    return base;
+}
+
+/**
+ * Step frames for the UI — bottom-up reveal of house-full.png on the stone base.
+ * Progress maps 1:1 to visible height so 63% funding does not look like a finished home.
+ */
+function buildAllStepFrames(houseFullData, baseFrame, info) {
+    const frames = [Buffer.from(baseFrame)];
+    const { width, height } = info;
+
+    let minY = height;
+    let maxY = 0;
+    for (let i = 0; i < houseFullData.length; i += 4) {
+        if (houseFullData[i + 3] > 24) {
+            const y = Math.floor(i / 4 / width);
+            minY = Math.min(minY, y);
+            maxY = Math.max(maxY, y);
+        }
+    }
+
+    const houseHeight = Math.max(1, maxY - minY + 1);
+
+    for (let step = 1; step <= CORE_PART_COUNT; step++) {
+        const progress = step / CORE_PART_COUNT;
+        const revealY = Math.floor(maxY - houseHeight * progress);
+        const slice = Buffer.alloc(houseFullData.length);
+
+        for (let i = 0; i < houseFullData.length; i += 4) {
+            const y = Math.floor(i / 4 / width);
+            if (houseFullData[i + 3] > 24 && y >= revealY) {
+                slice[i] = houseFullData[i];
+                slice[i + 1] = houseFullData[i + 1];
+                slice[i + 2] = houseFullData[i + 2];
+                slice[i + 3] = houseFullData[i + 3];
+            }
+        }
+
+        const frame = compositeOver(baseFrame, slice);
+        stripBottomFeather(frame, info);
+        frames.push(Buffer.from(frame));
     }
 
     return frames;
@@ -570,7 +623,9 @@ async function main() {
         .png({ compressionLevel: 9 })
         .toFile(join(houseDir, 'house-landscape-complete.png'));
 
-    const stepFrames = buildAllStepFrames(stageImages, info);
+    const houseFullImage = await loadTransparentImage('house-full.png');
+    const baseFrame = buildFoundationBase(stageImages, info);
+    const stepFrames = buildAllStepFrames(houseFullImage.data, baseFrame, info);
     await saveRaw(stepFrames[0], info, 'base.png');
     for (let step = 0; step <= CORE_PART_COUNT; step++) {
         await saveRaw(stepFrames[step], info, `step-${String(step).padStart(2, '0')}.png`);

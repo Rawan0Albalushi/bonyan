@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { HouseLifeScene } from '@/components/house/HouseLifeScene';
+import { HouseFinalImage } from '@/components/house/HouseFinalImage';
 import { cn } from '@/lib/utils';
 
 interface HouseGoalPreviewProps {
@@ -27,11 +27,11 @@ export function HouseGoalPreview({ className }: HouseGoalPreviewProps) {
             )}
             aria-hidden
         >
-            <p className="px-1.5 py-1 text-center text-[0.5625rem] font-semibold leading-tight text-accent sm:px-2.5 sm:py-2 sm:text-xs">
+            <p className="px-1.5 py-1 text-center text-[0.5625rem] font-semibold leading-tight text-primary-dark sm:px-2.5 sm:py-2 sm:text-xs">
                 {t('houseExperience.goal_preview_label')}
             </p>
             <div className="house-goal-preview-scene px-0.5 pb-0.5 sm:px-1.5 sm:pb-1.5">
-                <HouseLifeScene fundingPercentage={100} size="sm" variant="experience" />
+                <HouseFinalImage />
             </div>
         </motion.div>
     );
