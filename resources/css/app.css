@@ -527,6 +527,10 @@
         background: transparent;
     }
 
+    .house-experience-worker {
+        overflow: visible;
+    }
+
     .house-scene-experience .house-life-layer {
         filter: contrast(1.06) saturate(1.1) brightness(1.03)
             drop-shadow(0 14px 26px color-mix(in srgb, var(--color-primary-dark) 16%, transparent));
