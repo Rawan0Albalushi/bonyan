@@ -1,8 +1,11 @@
 /**
  * Phase-aware layers with pixel filters so structure ≠ furniture.
- * - Structure (0–50%): brick/stone/concrete only (stage 0→1)
- * - Landscape (50–80%): plants & exterior ground (stage 1→3, lower band)
- * - Interior (80–100%): furnishings & lights (stage 1→4, interior pixels)
+ * All build steps progress toward the same final model (stage 0→4) so the
+ * animated house matches house-full.png. Intermediate stages 1–3 are not blended
+ * directly — they are different 3D models and would cause shape mismatches.
+ * - Structure (0–52%): brick/stone/concrete only
+ * - Landscape (52–78%): plants & exterior ground (lower band)
+ * - Interior (78–100%): furnishings & lights
  */
 import sharp from 'sharp';
 import { mkdir, writeFile } from 'fs/promises';
@@ -22,11 +25,13 @@ const STAGE_FILES = [
     'house-stage-4.png',
 ];
 
+const FINAL_STAGE_INDEX = 4;
+
 const BUILD_PHASES = [
     {
         id: 'structure',
-        startStage: 0,
-        endStage: 1,
+        tStart: 0,
+        tEnd: 0.52,
         partIds: [
             'foundation',
             'ground-walls',
@@ -44,16 +49,16 @@ const BUILD_PHASES = [
     },
     {
         id: 'landscape',
-        startStage: 1,
-        endStage: 3,
+        tStart: 0.52,
+        tEnd: 0.78,
         partIds: ['walkway', 'garden', 'olive-tree', 'fence'],
         pixelFilter: 'landscape',
         minYPercent: 0.62,
     },
     {
         id: 'interior',
-        startStage: 1,
-        endStage: 4,
+        tStart: 0.78,
+        tEnd: 1,
         partIds: ['facade', 'lights', 'heart'],
         pixelFilter: 'interior',
     },
@@ -204,6 +209,35 @@ function blendRaw(a, b, weight) {
 
 function blendStages(stageImages, startIdx, endIdx, t) {
     return blendRaw(stageImages[startIdx].data, stageImages[endIdx].data, t);
+}
+
+/** Progress blend from empty foundation toward the completed house model. */
+function blendTowardFinal(stageImages, t) {
+    return blendStages(stageImages, 0, FINAL_STAGE_INDEX, t);
+}
+
+/** Fade the completed house in over the foundation (avoids ghosting the base through walls). */
+function revealHouseOverFoundation(stageImages, weight) {
+    return compositeOver(stageImages[0].data, fadeLayer(stageImages[FINAL_STAGE_INDEX].data, weight));
+}
+
+function fadeLayer(data, weight) {
+    const out = Buffer.alloc(data.length);
+    const w = Math.min(1, Math.max(0, weight));
+
+    for (let i = 0; i < data.length; i += 4) {
+        out[i] = data[i];
+        out[i + 1] = data[i + 1];
+        out[i + 2] = data[i + 2];
+        out[i + 3] = Math.round(data[i + 3] * w);
+    }
+
+    return out;
+}
+
+function phaseBlendAt(phase, localT) {
+    const t = Math.min(1, Math.max(0, localT));
+    return phase.tStart + (phase.tEnd - phase.tStart) * t;
 }
 
 function extractStepDelta(prev, next) {
@@ -453,12 +487,12 @@ function solidifyBaseBottom(data, info) {
 
 /**
  * Step frames for the UI:
- * - Structure (0–11): direct stage-0 → stage-1 blend (same house, no delta ghosts).
- * - Landscape + interior (12–18): keep stage-1 shell, overlay filtered deltas only
- *   (never morph into stage-3/4 — those are different 3D models).
+ * - Structure (0–11): direct 0→final morph so the silhouette matches house-full.png.
+ * - Landscape + interior (12–18): overlay filtered deltas on the structure frame.
  */
 function buildAllStepFrames(stageImages, info) {
     const structureParts = BUILD_PHASES[0].partIds.length;
+    const structurePhase = BUILD_PHASES[0];
     const frames = new Array(CORE_PART_COUNT + 1);
 
     frames[0] = Buffer.from(stageImages[0].data);
@@ -466,35 +500,19 @@ function buildAllStepFrames(stageImages, info) {
     stripBottomFeather(frames[0], info, 0.07, 200);
 
     for (let i = 1; i <= structureParts; i++) {
-        frames[i] = blendStages(stageImages, 0, 1, i / structureParts);
+        frames[i] = revealHouseOverFoundation(
+            stageImages,
+            phaseBlendAt(structurePhase, i / structureParts),
+        );
     }
 
-    let current = Buffer.from(stageImages[1].data);
-    let stepIdx = structureParts;
-
-    for (const phase of BUILD_PHASES.slice(1)) {
-        const n = phase.partIds.length;
-        const phaseFrames = [];
-
-        for (let i = 0; i <= n; i++) {
-            const t = n === 0 ? 1 : i / n;
-            phaseFrames.push(blendStages(stageImages, phase.startStage, phase.endStage, t));
-        }
-
-        for (let i = 0; i < n; i++) {
-            const rawDelta = extractStepDelta(phaseFrames[i], phaseFrames[i + 1]);
-            const filtered = filterDelta(rawDelta, info, phase);
-            current = compositeOver(current, filtered);
-            stepIdx++;
-            frames[stepIdx] = Buffer.from(current);
-        }
+    const postStructureSteps = CORE_PART_COUNT - structureParts;
+    for (let i = 1; i <= postStructureSteps; i++) {
+        const t = structurePhase.tEnd + (1 - structurePhase.tEnd) * (i / postStructureSteps);
+        frames[structureParts + i] = revealHouseOverFoundation(stageImages, t);
     }
 
     for (let step = 0; step <= CORE_PART_COUNT; step++) {
-        stripGhostPixels(frames[step]);
-        if (step > BUILD_PHASES[0].partIds.length) {
-            stripSageBackdrop(frames[step]);
-        }
         if (step > 0) {
             stripBottomFeather(frames[step], info);
         }
@@ -520,8 +538,7 @@ async function main() {
         const phaseFrames = [];
 
         for (let i = 0; i <= n; i++) {
-            const t = n === 0 ? 1 : i / n;
-            phaseFrames.push(blendStages(stageImages, phase.startStage, phase.endStage, t));
+            phaseFrames.push(blendTowardFinal(stageImages, phaseBlendAt(phase, n === 0 ? 1 : i / n)));
         }
 
         for (let i = 0; i < n; i++) {
@@ -534,10 +551,10 @@ async function main() {
         }
     }
 
-    const shell = buildShell(stageImages[1].data, info);
+    const shell = buildShell(stageImages[FINAL_STAGE_INDEX].data, info);
     await saveRaw(shell, info, 'shell.png');
 
-    const exterior = buildExteriorOnly(stageImages[1].data, info);
+    const exterior = buildExteriorOnly(stageImages[FINAL_STAGE_INDEX].data, info);
     await sharp(exterior, { raw: { width: info.width, height: info.height, channels: 4 } })
         .png({ compressionLevel: 9 })
         .toFile(join(houseDir, 'house-exterior.png'));

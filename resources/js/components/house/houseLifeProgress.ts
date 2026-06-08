@@ -32,6 +32,9 @@ export const HOUSE_LIFE_BASE_IMAGE = `${LAYERS}/base.png`;
 /** Cumulative build frames (step-00 … step-18) — one image per progress slice. */
 export const HOUSE_LIFE_STEP_COUNT = 18;
 
+/** Final build frame — same silhouette as the goal / completed house. */
+export const HOUSE_LIFE_COMPLETE_IMAGE = getLifeStepImage(HOUSE_LIFE_STEP_COUNT);
+
 export function getLifeStepImage(step: number): string {
     const clamped = Math.max(0, Math.min(HOUSE_LIFE_STEP_COUNT, Math.round(step)));
     return `${LAYERS}/step-${String(clamped).padStart(2, '0')}.png`;

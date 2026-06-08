@@ -540,6 +540,70 @@
         isolation: isolate;
     }
 
+    .success-house-showcase {
+        position: relative;
+        isolation: isolate;
+    }
+
+    .success-house-showcase::before {
+        content: '';
+        position: absolute;
+        inset: 8% 0 0;
+        z-index: -1;
+        margin-inline: auto;
+        width: min(100%, 52rem);
+        height: 78%;
+        background:
+            radial-gradient(
+                ellipse 88% 72% at 50% 88%,
+                color-mix(in srgb, var(--color-accent) 32%, transparent),
+                transparent 58%
+            ),
+            radial-gradient(
+                ellipse 72% 56% at 50% 92%,
+                color-mix(in srgb, var(--color-primary) 22%, transparent),
+                transparent 62%
+            );
+        filter: blur(18px);
+        pointer-events: none;
+        animation: success-house-glow 4.2s ease-in-out infinite;
+    }
+
+    .success-house-showcase::after {
+        content: '';
+        position: absolute;
+        inset-inline: 6%;
+        bottom: 4%;
+        z-index: -1;
+        height: 42%;
+        border-radius: 50%;
+        background: radial-gradient(
+            ellipse 100% 100% at 50% 100%,
+            color-mix(in srgb, var(--color-primary-dark) 14%, transparent),
+            transparent 68%
+        );
+        filter: blur(28px);
+        pointer-events: none;
+    }
+
+    @keyframes success-house-glow {
+        0%,
+        100% {
+            opacity: 0.82;
+            transform: scale(1);
+        }
+        50% {
+            opacity: 1;
+            transform: scale(1.04);
+        }
+    }
+
+    .success-house-showcase .house-experience-viewport .house-scene-experience .house-life-layer {
+        filter: contrast(1.08) saturate(1.14) brightness(1.04)
+            drop-shadow(0 18px 32px color-mix(in srgb, var(--color-primary-dark) 24%, transparent))
+            drop-shadow(0 8px 18px color-mix(in srgb, var(--color-foreground) 10%, transparent));
+    }
+
     .house-goal-preview {
         box-shadow:
             0 0 0 2px color-mix(in srgb, var(--color-accent) 28%, transparent),

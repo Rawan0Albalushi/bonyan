@@ -28,7 +28,7 @@ import { cn, ENGLISH_NUMERALS_CLASS, formatNumber } from '@/lib/utils';
 
 export function SuccessPage() {
     const { t } = useTranslation();
-    const { locale, isRtl } = useLocale();
+    const { locale } = useLocale();
     const { reference } = useParams<{ reference: string }>();
     const [searchParams] = useSearchParams();
     const location = useLocation();
@@ -95,7 +95,7 @@ export function SuccessPage() {
         <div className="bg-page-soft min-h-full">
             <section
                 className={cn(
-                    'relative w-full max-w-full overflow-x-clip rounded-b-[2rem] bg-hero-gradient-success pb-6 shadow-[inset_0_-1px_0_0_color-mix(in_srgb,var(--color-primary)_12%,transparent)] sm:rounded-b-[2.5rem] sm:pb-8 md:pb-10',
+                    'relative w-full max-w-full overflow-x-clip rounded-b-[2rem] bg-hero-gradient-success pb-2 shadow-[inset_0_-1px_0_0_color-mix(in_srgb,var(--color-primary)_12%,transparent)] sm:rounded-b-[2.5rem] sm:pb-3 md:pb-4',
                     PUBLIC_HEADER_SPACER_CLASS,
                 )}
             >
@@ -130,12 +130,12 @@ export function SuccessPage() {
                     )}
                 </div>
 
-                <div className="relative page-container py-3 pb-14 sm:py-4 sm:pb-16 md:pb-[4.5rem]">
+                <div className="relative page-container py-2 pb-5 sm:py-2.5 sm:pb-6 md:pb-8">
                     <motion.div
                         initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.45, ease: 'easeOut' }}
-                        className="flex w-full min-w-0 flex-col items-center gap-4 overflow-visible text-center sm:gap-5 md:gap-6"
+                        className="flex w-full min-w-0 flex-col items-center gap-2.5 overflow-visible text-center sm:gap-3 md:gap-3.5"
                     >
                         {showCelebration ? (
                             <motion.span
@@ -167,16 +167,9 @@ export function SuccessPage() {
                                     {verifying ? t('success.verifying') : t('success.title')}
                                 </h1>
                             </div>
-                            <p className="mx-auto max-w-xl text-[0.9375rem] leading-7 text-foreground/80 sm:text-base sm:leading-relaxed">
-                                {verifying
-                                    ? t('success.pending')
-                                    : showCelebration
-                                      ? t('success.subtitle_build')
-                                      : t('success.pending')}
-                            </p>
-                            {showCelebration && (
-                                <p className="mx-auto max-w-md text-xs leading-relaxed text-muted-foreground sm:text-sm sm:leading-6">
-                                    {t('success.impact_line')}
+                            {!showCelebration && (
+                                <p className="mx-auto max-w-xl text-[0.9375rem] leading-7 text-foreground/80 sm:text-base sm:leading-relaxed">
+                                    {t('success.pending')}
                                 </p>
                             )}
                         </div>
@@ -186,7 +179,7 @@ export function SuccessPage() {
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.18, duration: 0.4 }}
-                                className="mt-0.5 inline-flex max-w-full items-center gap-2.5 rounded-2xl border border-accent/30 bg-white/65 px-5 py-3 shadow-brand backdrop-blur-md sm:mt-1 sm:gap-3 sm:px-6 sm:py-3.5"
+                                className="inline-flex max-w-full items-center gap-2 rounded-2xl border border-accent/30 bg-white/65 px-4 py-2.5 shadow-brand backdrop-blur-md sm:gap-2.5 sm:px-5 sm:py-3"
                             >
                                 <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent/15 sm:h-10 sm:w-10">
                                     <Heart className="h-4 w-4 fill-accent text-accent sm:h-5 sm:w-5" />
@@ -210,32 +203,49 @@ export function SuccessPage() {
                     </motion.div>
                 </div>
 
-                <CurvedSectionBottom className="[&_svg]:h-8 [&_svg]:sm:h-10 [&_svg]:md:h-12" />
+                <CurvedSectionBottom className="[&_svg]:h-5 [&_svg]:sm:h-6 [&_svg]:md:h-7" />
             </section>
 
-            <main className="page-container flex min-h-[50vh] flex-col justify-center py-6 md:py-10">
-                {showCelebration ? (
-                    <div className="grid gap-8 lg:grid-cols-2 lg:items-center lg:gap-10 xl:gap-12">
-                        <motion.section
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="order-1 flex items-center justify-center lg:order-none"
+            {showCelebration && (
+                <section
+                    className="relative z-10 -mt-5 w-full sm:-mt-6 md:-mt-8 lg:-mt-10"
+                    aria-label={t('success.watch_build')}
+                >
+                    <div className="page-container">
+                        <motion.div
+                            initial={{ opacity: 0, y: 28, scale: 0.97 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
+                            className="success-house-showcase mx-auto w-full max-w-[min(100%,72rem)] px-1 sm:px-2"
                         >
+                            <p className="mb-4 text-center text-xs font-semibold uppercase tracking-wider text-primary/80 sm:mb-5 sm:text-sm">
+                                {t('success.watch_build')}
+                            </p>
                             <HouseExperienceViewport
                                 progress={fundingProgress}
-                                celebrateFromPercentage={showCelebration ? fundingBefore : null}
-                                inlineCelebration={showCelebration}
+                                celebrateFromPercentage={fundingBefore}
+                                inlineCelebration
                                 showLabel
                                 className="mx-auto w-full"
                             />
-                        </motion.section>
+                        </motion.div>
+                    </div>
+                </section>
+            )}
 
-                        <motion.aside
-                            initial={{ opacity: 0, x: isRtl ? -16 : 16 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.12 }}
-                            className="order-2 space-y-5 lg:sticky lg:top-20 lg:order-none"
-                        >
+            <main
+                className={cn(
+                    'page-container flex flex-col justify-center',
+                    showCelebration ? 'py-8 md:py-10' : 'min-h-[50vh] py-6 md:py-10',
+                )}
+            >
+                {showCelebration ? (
+                    <motion.aside
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="mx-auto w-full max-w-md"
+                    >
                             <div className="card-elevated overflow-hidden rounded-2xl">
                                 <div className="border-b border-border/50 p-5 sm:p-6">
                                     <div className="flex items-center gap-2.5 text-primary">
@@ -310,8 +320,7 @@ export function SuccessPage() {
                                     </Link>
                                 </div>
                             </div>
-                        </motion.aside>
-                    </div>
+                    </motion.aside>
                 ) : (
                     <motion.div
                         initial={{ opacity: 0 }}

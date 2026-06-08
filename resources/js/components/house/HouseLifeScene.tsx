@@ -4,11 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { HousePicture } from '@/components/house/HousePicture';
 import {
     HOUSE_LIFE_BASE_IMAGE,
+    HOUSE_LIFE_COMPLETE_IMAGE,
     getLifeStepImage,
     getLifeStepRender,
     type HouseLifeLayerId,
 } from '@/components/house/houseLifeProgress';
-import { HOUSE_FULL_IMAGE } from '@/components/house/houseImages';
 import {
     HOUSE_SCENE_BUILD_ZONE_CLIP,
     HOUSE_SCENE_PLATFORM_CLIP,
@@ -167,11 +167,11 @@ export function HouseLifeScene({
                                     className="house-scene-layer house-life-layer house-life-layer-reveal absolute inset-0"
                                     data-life-layer="complete"
                                 >
-                                    <HousePicture src={HOUSE_FULL_IMAGE} eager />
+                                    <HousePicture src={HOUSE_LIFE_COMPLETE_IMAGE} eager />
                                 </motion.div>
                             ) : (
                                 <div className="house-scene-layer house-life-layer absolute inset-0">
-                                    <HousePicture src={HOUSE_FULL_IMAGE} eager />
+                                    <HousePicture src={HOUSE_LIFE_COMPLETE_IMAGE} eager />
                                 </div>
                             )}
                         </div>
