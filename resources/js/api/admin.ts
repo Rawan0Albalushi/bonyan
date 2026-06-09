@@ -1,5 +1,5 @@
 import api, { ensureCsrfCookie } from './client';
-import type { AdminUser, DashboardStats, Donation, Project, PublicSettings } from './types';
+import type { AdminUser, DashboardStats, Donation, DonationListStats, Project, PublicSettings } from './types';
 
 export async function adminLogin(email: string, password: string) {
     await ensureCsrfCookie();
@@ -58,6 +58,7 @@ export async function fetchDonations(params?: Record<string, string | number>) {
     const { data } = await api.get<{
         data: Donation[];
         meta: { current_page: number; last_page: number; per_page: number; total: number };
+        stats: DonationListStats;
     }>('/admin/donations', { params });
     return data;
 }

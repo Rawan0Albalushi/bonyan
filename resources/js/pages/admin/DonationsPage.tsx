@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Download } from 'lucide-react';
-import { exportDonations, fetchDonations } from '@/api/admin';
-import type { Donation } from '@/api/types';
+import { exportDonations, fetchDonations, fetchProjects } from '@/api/admin';
+import type { Donation, DonationListStats, Project } from '@/api/types';
 import {
     AdminDataTable,
     AdminTableBody,
@@ -25,7 +25,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { CurrencyAmount } from '@/components/shared/CurrencyAmount';
-import { formatAdminDate, formatPhone, formatReference, getLocalizedProjectTitle } from '@/lib/utils';
+import { cn, ENGLISH_NUMERALS_CLASS, formatAdminDate, formatPhone, formatReference, getLocalizedProjectTitle } from '@/lib/utils';
 import { useLocale } from '@/contexts/LocaleContext';
 
 const DONATIONS_PER_PAGE = 10;
@@ -34,12 +34,19 @@ export function DonationsPage() {
     const { t } = useTranslation();
     const { locale } = useLocale();
     const [donations, setDonations] = useState<Donation[]>([]);
+    const [projects, setProjects] = useState<Project[]>([]);
     const [search, setSearch] = useState('');
+    const [projectId, setProjectId] = useState('');
     const [dateFrom, setDateFrom] = useState('');
     const [dateTo, setDateTo] = useState('');
     const [page, setPage] = useState(1);
     const [meta, setMeta] = useState({ total: 0, current_page: 1, last_page: 1 });
+    const [stats, setStats] = useState<DonationListStats>({ total_donations: 0, total_raised: 0 });
     const [exporting, setExporting] = useState(false);
+
+    useEffect(() => {
+        fetchProjects().then((res) => setProjects(res.data));
+    }, []);
 
     const buildFilterParams = (includePagination = true): Record<string, string | number> => {
         const params: Record<string, string | number> = {};
@@ -49,6 +56,9 @@ export function DonationsPage() {
         }
         if (search.trim()) {
             params.search = search.trim();
+        }
+        if (projectId) {
+            params.project_id = projectId;
         }
         if (dateFrom) {
             params.date_from = dateFrom;
@@ -64,10 +74,11 @@ export function DonationsPage() {
             fetchDonations(buildFilterParams()).then((res) => {
                 setDonations(res.data);
                 setMeta(res.meta);
+                setStats(res.stats);
             });
         }, 300);
         return () => clearTimeout(timer);
-    }, [search, dateFrom, dateTo, page]);
+    }, [search, projectId, dateFrom, dateTo, page]);
 
     const handleExport = async () => {
         setExporting(true);
@@ -93,6 +104,39 @@ export function DonationsPage() {
                 </Button>
             </div>
 
+            <div className="grid grid-cols-2 gap-3 sm:max-w-md">
+                <Card className="min-w-0">
+                    <CardContent className="p-3 sm:p-6">
+                        <p className="text-[11px] leading-snug text-muted-foreground sm:text-sm">
+                            {t('admin.stats_total')}
+                        </p>
+                        <p
+                            className={cn(
+                                'mt-1.5 text-lg font-extrabold text-gradient-brand sm:mt-2 sm:text-2xl',
+                                ENGLISH_NUMERALS_CLASS,
+                            )}
+                        >
+                            {stats.total_donations}
+                        </p>
+                    </CardContent>
+                </Card>
+                <Card className="min-w-0">
+                    <CardContent className="p-3 sm:p-6">
+                        <p className="text-[11px] leading-snug text-muted-foreground sm:text-sm">
+                            {t('admin.stats_raised')}
+                        </p>
+                        <div className="mt-1.5 sm:mt-2">
+                            <CurrencyAmount
+                                amount={stats.total_raised}
+                                brand
+                                iconSize="md"
+                                className="text-lg font-extrabold sm:text-2xl"
+                            />
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+
             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
                 <div className="w-full max-w-md">
                     <Input
@@ -103,6 +147,25 @@ export function DonationsPage() {
                             setPage(1);
                         }}
                     />
+                </div>
+                <div className="flex w-full flex-col gap-1.5 sm:w-auto sm:min-w-[12rem]">
+                    <Label htmlFor="donations-project">{t('admin.filter_by_project')}</Label>
+                    <select
+                        id="donations-project"
+                        value={projectId}
+                        onChange={(e) => {
+                            setProjectId(e.target.value);
+                            setPage(1);
+                        }}
+                        className="flex h-11 w-full rounded-lg border-2 border-input bg-card px-4 py-2 text-sm shadow-sm transition-all focus-visible:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30 sm:w-auto sm:min-w-[12rem]"
+                    >
+                        <option value="">{t('admin.all_projects')}</option>
+                        {projects.map((project) => (
+                            <option key={project.id} value={project.id}>
+                                {project.id} — {getLocalizedProjectTitle(project, locale)}
+                            </option>
+                        ))}
+                    </select>
                 </div>
                 <div className="flex flex-col gap-1.5">
                     <Label htmlFor="donations-date-from">{t('admin.date_from')}</Label>
@@ -148,6 +211,11 @@ export function DonationsPage() {
                             <AdminMobileList>
                                 {donations.map((d) => (
                                     <AdminMobileListItem key={d.id}>
+                                        <AdminMobileField label={t('admin.id')}>
+                                            <span className={ENGLISH_NUMERALS_CLASS} dir="ltr">
+                                                {d.id}
+                                            </span>
+                                        </AdminMobileField>
                                         <AdminMobileGrid>
                                             <AdminMobileField label={t('success.amount')}>
                                                 <CurrencyAmount
@@ -179,8 +247,9 @@ export function DonationsPage() {
                             </AdminMobileList>
 
                             <AdminDataTable>
-                                <AdminTableColGroup widths={['22%', '10%', '12%', '16%', '22%', '18%']} />
+                                <AdminTableColGroup widths={['6%', '20%', '10%', '12%', '16%', '20%', '16%']} />
                                 <AdminTableHead>
+                                    <AdminTableTh variant="numeric">{t('admin.id')}</AdminTableTh>
                                     <AdminTableTh variant="numeric">{t('admin.reference')}</AdminTableTh>
                                     <AdminTableTh variant="numeric">{t('success.amount')}</AdminTableTh>
                                     <AdminTableTh variant="numeric">{t('donation.phone_label')}</AdminTableTh>
@@ -191,6 +260,9 @@ export function DonationsPage() {
                                 <AdminTableBody>
                                     {donations.map((d) => (
                                         <AdminTableRow key={d.id} striped>
+                                            <AdminTableTd variant="numeric" muted>
+                                                {d.id}
+                                            </AdminTableTd>
                                             <AdminTableTd variant="text" mono muted className="break-all whitespace-normal">
                                                 <span dir="ltr">{formatReference(d.reference)}</span>
                                             </AdminTableTd>

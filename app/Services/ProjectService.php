@@ -23,6 +23,9 @@ class ProjectService
     public function listForAdmin(): Collection
     {
         return Project::query()
+            ->withCount([
+                'donations as donations_count' => fn ($query) => $query->where('status', DonationStatus::Completed),
+            ])
             ->orderBy('display_order')
             ->orderByDesc('created_at')
             ->get();

@@ -15,7 +15,9 @@ class DonationController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $donations = $this->filteredQuery($request)
+        $query = $this->filteredQuery($request);
+
+        $donations = (clone $query)
             ->latest()
             ->paginate((int) $request->query('per_page', 10));
 
@@ -26,6 +28,10 @@ class DonationController extends Controller
                 'last_page' => $donations->lastPage(),
                 'per_page' => $donations->perPage(),
                 'total' => $donations->total(),
+            ],
+            'stats' => [
+                'total_donations' => (clone $query)->count(),
+                'total_raised' => (float) (clone $query)->sum('amount'),
             ],
         ]);
     }

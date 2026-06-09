@@ -8,7 +8,6 @@ import {
     LogOut,
     Menu,
     X,
-    Home,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher';
@@ -139,12 +138,6 @@ export function AdminLayout() {
                     </p>
                     <div className="ms-auto flex shrink-0 items-center gap-1 sm:gap-2">
                         <LanguageSwitcher compact />
-                        <Link to="/build-a-home">
-                            <Button variant="ghost" size="sm" className="gap-1.5 px-2 sm:px-3">
-                                <Home className="h-4 w-4 shrink-0" />
-                                <span className="hidden md:inline">{t('nav.build_home')}</span>
-                            </Button>
-                        </Link>
                     </div>
                 </header>
                 <main className="layout-main p-4 sm:p-6 lg:p-8">

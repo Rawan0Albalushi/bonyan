@@ -41,6 +41,11 @@ export interface Donation {
     project?: Project;
 }
 
+export interface DonationListStats {
+    total_donations: number;
+    total_raised: number;
+}
+
 export interface DashboardStats {
     total_donations: number;
     total_raised: number;
