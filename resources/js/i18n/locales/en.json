@@ -2,7 +2,10 @@
   "site": {
     "name": "Bonyan",
     "tagline": "We build a decent life for them",
-    "copyright": "All rights reserved."
+    "copyright": "All rights reserved.",
+    "liwan_name": "Liwan Coding",
+    "developed_by": "Developed by",
+    "developed_by_liwan": "Visit Liwan Coding website"
   },
   "error": {
     "title": "Something went wrong",

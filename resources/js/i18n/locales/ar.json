@@ -2,7 +2,10 @@
   "site": {
     "name": "بُنيان",
     "tagline": "نبني لهم حياة كريمة",
-    "copyright": "جميع الحقوق محفوظة"
+    "copyright": "جميع الحقوق محفوظة",
+    "liwan_name": "ليوان البرمجة",
+    "developed_by": "تطوير بواسطة",
+    "developed_by_liwan": "زيارة موقع ليوان البرمجة"
   },
   "error": {
     "title": "حدث خطأ",
