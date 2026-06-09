@@ -19,13 +19,14 @@ import {
     AdminMobileList,
     AdminMobileListItem,
 } from '@/components/admin/AdminMobileList';
+import { AdminDateTime } from '@/components/admin/AdminDateTime';
 import { AdminPagination } from '@/components/admin/AdminPagination';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { CurrencyAmount } from '@/components/shared/CurrencyAmount';
-import { cn, ENGLISH_NUMERALS_CLASS, formatAdminDate, formatPhone, formatReference, getLocalizedProjectTitle } from '@/lib/utils';
+import { cn, ENGLISH_NUMERALS_CLASS, formatPhone, formatReference, getLocalizedProjectTitle } from '@/lib/utils';
 import { useLocale } from '@/contexts/LocaleContext';
 
 const DONATIONS_PER_PAGE = 10;
@@ -240,7 +241,7 @@ export function DonationsPage() {
                                             {getLocalizedProjectTitle(d.project, locale) || ADMIN_TABLE_EMPTY}
                                         </AdminMobileField>
                                         <AdminMobileField label={t('admin.date')}>
-                                            <span dir="ltr">{formatAdminDate(d.created_at, locale)}</span>
+                                            <AdminDateTime value={d.created_at} />
                                         </AdminMobileField>
                                     </AdminMobileListItem>
                                 ))}
@@ -281,7 +282,7 @@ export function DonationsPage() {
                                                 {getLocalizedProjectTitle(d.project, locale) || ADMIN_TABLE_EMPTY}
                                             </AdminTableTd>
                                             <AdminTableTd variant="numeric" muted>
-                                                {formatAdminDate(d.created_at, locale)}
+                                                <AdminDateTime value={d.created_at} />
                                             </AdminTableTd>
                                         </AdminTableRow>
                                     ))}

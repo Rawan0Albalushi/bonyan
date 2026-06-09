@@ -40,18 +40,33 @@ export function formatCurrency(amount: number, currency = 'OMR', _locale = 'ar')
     return `${formatted} ${safeCurrency}`;
 }
 
-export function formatAdminDate(iso: string, locale = 'ar'): string {
+const ADMIN_DATE_TIME_LOCALE = 'en-OM';
+
+function parseAdminIsoDate(iso: string): Date | null {
     const date = new Date(iso);
-    const datePart = date.toLocaleDateString(locale === 'ar' ? 'ar-OM' : 'en-OM', {
-        numberingSystem: 'latn',
+
+    return Number.isNaN(date.getTime()) ? null : date;
+}
+
+export function formatAdminDate(iso: string): string {
+    const date = parseAdminIsoDate(iso);
+    if (!date) {
+        return '—';
+    }
+
+    const intlOptions = { numberingSystem: 'latn' as const };
+
+    const datePart = date.toLocaleDateString(ADMIN_DATE_TIME_LOCALE, {
+        ...intlOptions,
         year: 'numeric',
         month: 'short',
         day: 'numeric',
     });
-    const timePart = date.toLocaleTimeString('en-US', {
+    const timePart = date.toLocaleTimeString(ADMIN_DATE_TIME_LOCALE, {
+        ...intlOptions,
         hour: '2-digit',
         minute: '2-digit',
-        hour12: false,
+        hour12: true,
     });
 
     return `${datePart} ${timePart}`;
