@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Enums\DonationStatus;
 use App\Exports\DonationsExporter;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DonationResource;
@@ -55,6 +56,7 @@ class DonationController extends Controller
     {
         return Donation::query()
             ->with('project')
+            ->where('status', DonationStatus::Completed)
             ->when($request->query('project_id'), fn ($q, $id) => $q->where('project_id', $id))
             ->when($request->query('search'), function ($q, $search) {
                 $q->where(function ($query) use ($search) {
